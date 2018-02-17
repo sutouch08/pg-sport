@@ -1,0 +1,68 @@
+tr.col-border-1 > td, th {
+  vertical-align: middle !important;
+  border-right: solid 1px #CCC;
+  border-top: 0px !important;
+}
+
+tr.col-border-1 > td:last-child, th:last-child {
+  border-right: 0px;
+  border-top: 0px !important;
+}
+
+tr.total-row > td {
+  border-top: solid 1px #CCC !important;
+}
+
+@media (max-width: 767px){
+  .first{
+    padding-left : 5px !important;
+  }
+
+  .last{
+    padding-right : 5px !important;
+  }
+}
+
+
+.sell-table {
+  height: 100px;
+  border: solid 1px #CCC;
+  margin-bottom:5px;
+  padding-top:5px;
+}
+
+
+.sell-row {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+
+.sell-total-row{
+  padding: 0px !important;
+  height: 100px;
+  border: solid 1px #CCC;
+}
+
+.total-sell-label{
+  width:100%;
+  height:60px;
+  font-size:30px;
+  text-align: center;
+  vertical-align: text-top;
+  padding-top:10px;
+  padding-bottom: 10px;
+  padding-left:5px;
+  padding-right:5px;
+  color:lime;
+  background-color: black;
+
+}
+
+.form-control {
+  border-radius: 0px !important;
+}
+
+.btn {
+  border-radius: 0px !important;
+}

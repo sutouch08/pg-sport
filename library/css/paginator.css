@@ -1,0 +1,44 @@
+.paginate {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: .7em;
+	}
+	a.paginate {
+	border: 1px solid #37bc9b;
+	padding: 2px 6px 2px 6px;
+	text-decoration: none;
+	color: #37bc9b;
+	}
+	h2 {
+		font-size: 12pt;
+		color: #003366;
+		}
+		
+		 h2 {
+		line-height: 1.2em;
+		letter-spacing:-1px;
+		margin: 0;
+		padding: 0;
+		text-align: left;
+		}
+	a.paginate:hover {
+	background-color: #37bc9b;
+	color: #FFF;
+	text-decoration: underline;
+	}
+	a.current {
+	border: 1px solid #37bc9b;
+	font: bold .7em Arial,Helvetica,sans-serif;
+	padding: 2px 6px 2px 6px;
+	cursor: default;
+	background:#37bc9b;
+	color: #FFF;
+	text-decoration: none;
+	}
+	span.inactive {
+	border: 1px solid #999;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: .7em;
+	padding: 2px 6px 2px 6px;
+	color: #999;
+	cursor: default;
+	}

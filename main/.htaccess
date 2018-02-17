@@ -1,0 +1,4 @@
+RewriteEngine On
+RewriteBase /main/
+RewriteCond $1 !^(index\.php|asset|images|doc)
+RewriteRule ^(.*)$ index.php

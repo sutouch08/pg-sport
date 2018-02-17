@@ -1,0 +1,4 @@
+RewriteEngine On
+RewriteBase /warrix/shop/
+RewriteCond $1 !^(index\.php|asset|images)
+RewriteRule ^(.*)$ index.php
