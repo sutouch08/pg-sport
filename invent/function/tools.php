@@ -1579,7 +1579,7 @@ function employeeList($selected=""){
 
 
 function saleGroupList($selected=""){
-	$sql = dbQuery("SELECT id_group, group_name FROM tbl_group WHERE id_group !=1");
+	$sql = dbQuery("SELECT id_group, group_name FROM tbl_group");
 	echo "<option value='' "; if($selected == ""){ echo"selected='selected'";} echo">------ เลือก ------</option>";
 	$row = dbNumRows($sql);
 	$i=0;

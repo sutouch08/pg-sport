@@ -26,7 +26,7 @@ function isProductInCategory($id_pd, $id_cat)
 	$qs = dbQuery("SELECT id_category FROM tbl_category_product WHERE id_product = ".$id_pd." AND id_category = ".$id_cat);
 	if( dbNumRows($qs) > 0 )
 	{
-		$sc = TRUE;	
+		$sc = TRUE;
 	}
 	return $sc;
 }
@@ -77,20 +77,20 @@ function categoryTree($id_pd)
 	{
 		$isChecked = isProductInCategory($id_pd, $rs['id_category']) === TRUE ? 'checked' : '' ;
 		$sc .= '<li>';
-		
-		
+
+
 		//----- Next Level
 		if( hasSubCategory($rs['id_category']) === TRUE )
 		{
 			$sc .= '<i class="fa fa-plus-square-o" id="catbox-'.$rs['id_category'].'" onClick="toggleTree('.$rs['id_category'].')"></i>';
 			$sc .= '<label class="padding-10"><input type="checkbox" class="margin-right-10" name="category_id[]" value="'.$rs['id_category'].'" '.$isChecked.' />'.$rs['category_name'].'</label>';
 			$sc .= '<ul id="catchild-'.$rs['id_category'].'" class="">';
-			$sc .= subCategory($rs['id_category'], $id_pd) ;		
-			$sc .= '</ul>';	
+			$sc .= subCategory($rs['id_category'], $id_pd) ;
+			$sc .= '</ul>';
 		}
 		else
 		{
-			$sc .= '<label><input type="checkbox" class="padding-10" name="category_id[]" value="'.$rs['id_category'].'" '.$isChecked.' />'.$rs['category_name'].'</label>';		
+			$sc .= '<label><input type="checkbox" class="padding-10" name="category_id[]" value="'.$rs['id_category'].'" '.$isChecked.' />'.$rs['category_name'].'</label>';
 		}//---- has sub cate
 		$sc .= '</li>';
 	}
@@ -128,17 +128,17 @@ function subCategory($parent, $id_pd = '')
 		{
 			$isChecked = $id_pd == '' ? '' : (isProductInCategory($id_pd, $rs['id_category']) === TRUE ? 'checked' : '' );
 			$sc .= '<li>';
-			if( hasSubCategory($rs['id_category']) === TRUE ) //----- ถ้ามี sub category 
+			if( hasSubCategory($rs['id_category']) === TRUE ) //----- ถ้ามี sub category
 			{
 				$sc .= '<i class="fa fa-plus-square-o" id="catbox-'.$rs['id_category'].'" onClick="toggleTree('.$rs['id_category'].')"></i>';
-				$sc .= '<label class="padding-10"><input type="checkbox" class="margin-right-10" name="category_id[]" value="'.$rs['id_category'].'" '.$isChecked.' />'.$rs['category_name'].'</label>'; 
+				$sc .= '<label class="padding-10"><input type="checkbox" class="margin-right-10" name="category_id[]" value="'.$rs['id_category'].'" '.$isChecked.' />'.$rs['category_name'].'</label>';
 				$sc .= '<ul id="catchild-'.$rs['id_category'].'" class="hide">';
 				$sc .= getSubCategory($rs['id_category'], $id_pd);
 				$sc .= '</ul>';
 			}
 			else
 			{
-				$sc .= '<label><input type="checkbox" class="padding-10" name="category_id[]" value="'.$rs['id_category'].'" '.$isChecked.' />'.$rs['category_name'].'</label>'; 
+				$sc .= '<label><input type="checkbox" class="padding-10" name="category_id[]" value="'.$rs['id_category'].'" '.$isChecked.' />'.$rs['category_name'].'</label>';
 			}
 			$sc .= '</li>';
 		}
@@ -156,31 +156,31 @@ function getSubCategory($parent, $id_pd='')
 		{
 			$isChecked = $id_pd == '' ? '' : (isProductInCategory($id_pd, $rs['id_category']) === TRUE ? 'checked' : '' );
 			$sc .= '<li>';
-			if( hasSubCategory($rs['id_category']) === TRUE ) //----- ถ้ามี sub category 
+			if( hasSubCategory($rs['id_category']) === TRUE ) //----- ถ้ามี sub category
 			{
 				$sc .= '<i class="fa fa-plus-square-o" id="catbox-'.$rs['id_category'].'" onClick="toggleTree('.$rs['id_category'].')"></i>';
-				$sc .= '<label><input type="checkbox" class="padding-10" name="category_id[]" value="'.$rs['id_category'].'" '.$isChecked.' />'.$rs['category_name'].'</label>'; 
+				$sc .= '<label><input type="checkbox" class="padding-10" name="category_id[]" value="'.$rs['id_category'].'" '.$isChecked.' />'.$rs['category_name'].'</label>';
 				$sc .= '<ul id="catchild-'.$rs['id_category'].'" class="hide">';
 				$sc .= subCategory($rs['id_category'], $id_pd);
 				$sc .= '</ul>';
 			}
 			else
 			{
-				$sc .= '<label><input type="checkbox" class="padding-10" name="category_id[]" value="'.$rs['id_category'].'" '.$isChecked.' />'.$rs['category_name'].'</label>'; 
+				$sc .= '<label><input type="checkbox" class="padding-10" name="category_id[]" value="'.$rs['id_category'].'" '.$isChecked.' />'.$rs['category_name'].'</label>';
 			}
 			$sc .= '</li>';
 		}
 	}
 	return $sc;
 }
-		
+
 function categoryName($id)
 {
 	$sc = '';
 	$qs = dbQuery("SELECT category_name FROM tbl_category WHERE id_category = ".$id);
 	if( dbNumRows($qs) == 1 )
 	{
-		list( $sc ) = dbFetchArray($qs);	
+		list( $sc ) = dbFetchArray($qs);
 	}
 	return $sc;
 }
@@ -196,18 +196,18 @@ function selectCategory($se = 0)
 			$sc .= '<option value="'.$rs['id_category'].'" '. isSelected($rs['id_category'], $se).' >'.$rs['category_name'].'</option>';
 		}
 	}
-	return $sc;	
+	return $sc;
 }
 
 //--------------------------------------------------------- End Category  -----------------------------------------------------//
 
 //---------------------------------------------------------  Product  -----------------------------------------------------//
-		
+
 function getProductDetail($id='')
 {
 	if($id != '')
 	{
-		$qs  = dbQuery("SELECT * FROM tbl_product WHERE id_product = ".$id);	
+		$qs  = dbQuery("SELECT * FROM tbl_product WHERE id_product = ".$id);
 	}
 	$rs = $id == '' ? '' : dbFetchArray($qs);
 	$ds = array(
@@ -227,9 +227,9 @@ function getProductDetail($id='')
 				'date_upd'		=> $id != '' ? $rs['date_upd'] : '',
 				'id_product_group'		=> $id != '' ? $rs['id_product_group'] : '',
 				'show_in_shop'	=> $id != '' ? $rs['show_in_shop'] : '0',
-				'is_visual'		=> $id != '' ? $rs['is_visual'] : '0'				
+				'is_visual'		=> $id != '' ? $rs['is_visual'] : '0'
 			);
-	return $ds;			
+	return $ds;
 }
 
 
@@ -243,7 +243,7 @@ function productDescription($id = '' )
 		$qs = dbQuery("SELECT product_detail FROM tbl_product_detail WHERE id_product = ".$id);
 		if( dbNumRows($qs) == 1 )
 		{
-			list( $sc ) = dbFetchArray($qs);	
+			list( $sc ) = dbFetchArray($qs);
 		}
 	}
 	return $sc;
@@ -275,8 +275,8 @@ function productAttributeIn($id_pd)
 		{
 			$sc .= $rs['id_product_attribute'];
 			if( $i < $row ){ $sc .= ', '; }
-			$i++;	
-		}		
+			$i++;
+		}
 	}
 	return $sc;
 }
@@ -329,7 +329,7 @@ function getBarcodePack($id_pa)
 	$qs = dbQuery("SELECT barcode_pack FROM tbl_product_pack WHERE id_product_attribute = ".$id_pa." LIMIT 1");
 	if( dbNumRows($qs) == 1 )
 	{
-		list( $sc ) = dbFetchArray($qs);	
+		list( $sc ) = dbFetchArray($qs);
 	}
 	return $sc;
 }
@@ -340,7 +340,7 @@ function getPackQty($id_pa)
 	$qs = dbQuery("SELECT qty FROM tbl_product_pack WHERE id_product_attribute = ".$id_pa." LIMIT 1");
 	if( dbNumRows($qs) == 1 )
 	{
-		list( $sc ) = dbFetchArray($qs);	
+		list( $sc ) = dbFetchArray($qs);
 	}
 	return $sc;
 }
@@ -356,7 +356,7 @@ function hasImage($id_product)
 	$qs = dbQuery("SELECT id_image FROM tbl_image WHERE id_product = ".$id_product);
 	if( dbNumRows($qs) > 0 )
 	{
-		$sc = TRUE;	
+		$sc = TRUE;
 	}
 	return $sc;
 }
@@ -373,7 +373,7 @@ function addImage($id_image, $id_product, $position, $cover)
 
 function newImageId()
 {
-	$sc = 0;
+	$sc = 1;
 	$qs = dbQuery("SELECT MAX(id_image) AS id FROM tbl_image");
 	list( $rs ) = dbFetchArray($qs);
 	if( ! is_null( $rs ) )
@@ -407,7 +407,7 @@ function haveCover($id_product)
 	$qs = dbQuery("SELECT id_image FROM tbl_image WHERE id_product = ".$id_product." AND cover = 1");
 	if( dbNumRows($qs) > 0 )
 	{
-		$sc = TRUE;	
+		$sc = TRUE;
 	}
 	return $sc;
 }
@@ -429,7 +429,7 @@ function newCover($id_pd)
 {
 	$sc = TRUE;
 	$rs = haveCover($id_pd);
-	if( ! $rs )	
+	if( ! $rs )
 	{
 		$qs = dbQuery("SELECT MAX( position ) AS max FROM tbl_image WHERE id_product = ".$id_pd);
 		list( $rd ) = dbFetchArray($qs);
@@ -446,11 +446,11 @@ function newCover($id_pd)
 function ImagePath($id_image, $size)
 {
 	$sc 		= '';
-	$path		= str_split($id_image);	
+	$path		= str_split($id_image);
 	$iPath		= WEB_ROOT .'img/product';
 	foreach( $path as $p )
 	{
-		$iPath .= '/' . $p;	
+		$iPath .= '/' . $p;
 	}
 	$iPath .= '/';
 	$img	= getImageSizeProperties($size);
@@ -465,7 +465,7 @@ function getProductAttributeImagePath($id_pa, $useSize)
 	$imgId		= getProductAttributeImageId($id_pa);
 	if( $imgId !== FALSE )
 	{
-		$sc = ImagePath($imgId, $useSize);	
+		$sc = ImagePath($imgId, $useSize);
 	}
 	return $sc;
 }
@@ -494,7 +494,7 @@ function getCoverImagePath($id_pd, $useSize = 2)
 	{
 		$sc = noImage($useSize);
 	}
-	return $sc;		
+	return $sc;
 }
 
 function getCoverImageId($id_pd)
@@ -517,24 +517,24 @@ function noImage($useSize = 2)
 		case 1 :
 		$iPath .= '/no_image_mini.jpg';
 		break;
-		
+
 		case 2 :
 		$iPath .= '/no_image_default.jpg';
 		break;
-		
+
 		case 3 :
 		$iPath .= '/no_image_medium.jpg';
 		break;
-		
+
 		case 4 :
 		$iPath .= '/no_image_lage.jpg';
 		break;
-		
+
 		default :
-		$iPath .= '/no_image_default.jpg';	
+		$iPath .= '/no_image_default.jpg';
 	}
 	return $iPath;
-		
+
 }
 
 //---------------- ลบไฟล์ออกจาก server --------------//
@@ -549,7 +549,7 @@ function deleteImage($id_image)
 		{
 			$sc = FALSE;
 		}
-		$size--;	
+		$size--;
 	}
 	return $sc;
 }
@@ -579,13 +579,13 @@ function getImageSizeProperties($size)
 		$sc['prefix'] 	= "";
 		$sc['size'] 	= 300;
 		break;
-	}//--- end switch	
+	}//--- end switch
 	return $sc;
 }
 
 function getProductImage($id_product)
 {
-	return dbQuery("SELECT * FROM tbl_image WHERE id_product = ".$id_product);	
+	return dbQuery("SELECT * FROM tbl_image WHERE id_product = ".$id_product);
 }
 
 function doUpload($file, $id_pd)
@@ -609,7 +609,7 @@ function doUpload($file, $id_pd)
 		while( $size > 0 )
 		{
 			$img	= getImageSizeProperties($size); //--- ได้ $img['prefix'] , $img['size'] กลับมา
-			$size--;				
+			$size--;
 			$image->file_new_name_body	= $img['prefix'] . $imgName; 		//--- เปลี่ยนชือ่ไฟล์ตาม prefix + id_image
 			$image->image_resize			= TRUE;		//--- อนุญาติให้ปรับขนาด
 			$image->image_retio_fill			= TRUE;		//--- เติกสีให้เต็มขนาดหากรูปภาพไม่ได้สัดส่วน
@@ -619,9 +619,9 @@ function doUpload($file, $id_pd)
 			$image->image_y					= $img['size'];		//--- ปรับขนาดแนวนอน
 			$image->image_background_color	= "#FFFFFF";		//---  เติมสีให้ตามี่กำหนดหากรูปภาพไม่ได้สัดส่วน
 			$image->image_convert			= 'jpg';		//--- แปลงไฟล์
-			
+
 			$image->process($imgPath);						//--- ดำเนินการตามที่ได้ตั้งค่าไว้ข้างบน
-			
+
 			if( ! $image->processed )	//--- ถ้าไม่สำเร็จ
 			{
 				$sc 	= $image->error;
@@ -631,7 +631,7 @@ function doUpload($file, $id_pd)
 	$image->clean();	//--- เคลียร์รูปภาพออกจากหน่วยความจำ
 	$cover	= haveCover($id_pd) == TRUE ? 0 : 1  ;  		//--- มี cover อยู่แล้วหรือป่าว  มีอยู่แล้ว = TRUE , ไม่มี = FALSE
 	$top		= newImagePosition($id_pd); 					//--- ตำแหน่งล่าสุดของรูปสินค้านั้นๆ +1
-	$rs 		= addImage($id_image, $id_pd, $top, $cover);		//--- เพิ่มข้อมูลรูปภาพลงฐานข้อมูล		
+	$rs 		= addImage($id_image, $id_pd, $top, $cover);		//--- เพิ่มข้อมูลรูปภาพลงฐานข้อมูล
 	return $sc;
 }
 
@@ -648,9 +648,9 @@ function imageAttributeGrid($id_pd)
 		$topRow	= $qr;
 		$imgs		= array();
 		$width	= ceil(80/$ic);
-		
+
 		$sc = '<table class="table table-bordered">';
-		
+
 		//---- image header
 		$sc .= '<tr><td style="width:20%;"></td>';
 		while($ra = dbFetchArray($topRow) )
@@ -662,7 +662,7 @@ function imageAttributeGrid($id_pd)
 		}
 		$sc .= '</tr>';
 		//---- End image header
-		
+
 		while( $rs = dbFetchArray($qs) )
 		{
 			$img	= $imgs;
@@ -670,12 +670,12 @@ function imageAttributeGrid($id_pd)
 			$sc .= '<td>'.$rs['reference'].'</td>';
 			$qa = dbQuery("SELECT id_image FROM tbl_product_attribute_image WHERE id_product_attribute = ".$rs['id_product_attribute']." LIMIT 1");
 			if( dbNumRows($qa) == 1 )
-			{ 
+			{
 				list( $id_image )	= dbFetchArray($qa);
 			}
 			else
 			{
-				$id_image = '';	
+				$id_image = '';
 			}
 			foreach($img as $id)
 			{
@@ -683,9 +683,9 @@ function imageAttributeGrid($id_pd)
 			}
 			$sc .= '</tr>';
 		}
-		$sc .= '</table>';		
-	}	
-	
+		$sc .= '</table>';
+	}
+
 	return $sc;
 }
 
@@ -699,17 +699,17 @@ function isProductGroupExists($name, $id='')
 	$sc = FALSE; //--- false = ไม่ซ้ำ
 	if( $id != '' )
 	{
-		$qs = dbQuery("SELECT * FROM tbl_product_group WHERE id != ".$id." AND name = '".$name."'");	
+		$qs = dbQuery("SELECT * FROM tbl_product_group WHERE id != ".$id." AND name = '".$name."'");
 	}
 	else
 	{
-		$qs = dbQuery("SELECT * FROM tbl_product_group WHERE name = '".$name."'");	
+		$qs = dbQuery("SELECT * FROM tbl_product_group WHERE name = '".$name."'");
 	}
 	if( dbNumRows($qs) > 0 )
 	{
-		$sc = TRUE;	
+		$sc = TRUE;
 	}
-	return $sc;		
+	return $sc;
 }
 
 
@@ -717,7 +717,7 @@ function productInGroup($id_product_group)
 {
 	$qs = dbQuery("SELECT COUNT(*) FROM tbl_product WHERE id_product_group = ".$id_product_group);
 	list( $rs ) = dbFetchArray($qs);
-	return $rs;	
+	return $rs;
 }
 
 function getDefaultProductGroup()
@@ -785,8 +785,8 @@ function validBarcodePack($bc, $id_pa)
 	$qr 		= dbQuery("SELECT barcode FROM tbl_product_attribute WHERE barcode = '".$bc."'");
 	if( dbNumRows($qr) > 0 )
 	{
-		$sc = FALSE;	
-	}	
+		$sc = FALSE;
+	}
 	return $sc;
 }
 
@@ -796,7 +796,7 @@ function validReference($reference, $id_pa)
 	$qs = dbQuery("SELECT id_product FROM tbl_product_attribute WHERE reference = '".$reference."' AND id_product_attribute != ".$id_pa);
 	if( dbNumRows($qs) > 0 )
 	{
-		$sc = FALSE;	
+		$sc = FALSE;
 	}
 	return $sc;
 }

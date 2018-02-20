@@ -66,3 +66,19 @@ tr.total-row > td {
 .btn {
   border-radius: 0px !important;
 }
+
+.pos-bill {
+  padding: 0px !important;
+  border: 0px !important;
+}
+
+.pos-bill > tbody > tr > td {
+  border-top: 0px !important;
+  font-size:8px !important;
+  padding:4px;
+}
+
+.pos-bill > thead > tr > th {
+  border: 0px;
+  font-size: 8px !important;
+}

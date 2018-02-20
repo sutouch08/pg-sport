@@ -21,11 +21,11 @@
     	<p class="pull-right top-p">
         <?php if( isset( $_GET['add'] ) OR isset( $_GET['edit'] ) ) : ?>
         		<button type="button" class="btn btn-sm btn-warning" onClick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
-			<?php if( $add OR $edit ) : ?>               
-				<?php if( ! isset( $_GET['id_product'] ) ) : ?>               
+			<?php if( $add OR $edit ) : ?>
+				<?php if( ! isset( $_GET['id_product'] ) ) : ?>
                     <button type="button" class="btn btn-sm btn-success" onClick="addProduct()"><i class="fa fa-save"></i> บันทึก</button>
                 <?php endif; ?>
-			<?php endif; ?>                           
+			<?php endif; ?>
         <?php else : ?>
         	<button type="button" class="btn btn-sm btn-success" onClick="newProduct()"><i class="fa fa-plus"></i> เพิ่มใหม่</button>
 		<?php endif; ?>
@@ -55,7 +55,7 @@
     <?php else: ?>
                 <li class="li-block <?php echo $tab1; ?>" onClick="changeURL(1)"><a href="#tab1" data-toggle="tab">ข้อมูลสินค้า</a></li>
                 <li class="li-block <?php echo $tab2; ?>" onClick="changeURL(2)"><a href="#tab2" data-toggle="tab">รายการสินค้า</a></li>
-                <li class="li-block <?php echo $tab3; ?>" onClick="changeURL(3)"><a href="#tab3" data-toggle="tab">รูปภาพ</a></li>        
+                <li class="li-block <?php echo $tab3; ?>" onClick="changeURL(3)"><a href="#tab3" data-toggle="tab">รูปภาพ</a></li>
     <?php endif; ?>
        </ul>
     </div>
@@ -71,24 +71,24 @@
                         <span id="pCode-error" class="label-left red" style="margin-left:15px; display:none;">รหัสสินค้าซ้ำ</span>
                     </div>
                     <div class="divider-hidden" style="margin-top:5px; margin-bottom:5px;"></div>
-                    
+
                     <div class="col-sm-3"><span class="form-control label-left">ชื่อสินค้า</span></div>
                     <div class="col-sm-9">
                         <input type="text" class="form-control input-sm input-large inline" name="pName" id="pName" value="<?php echo $rs['product_name']; ?>" placeholder="กำหนดชื่อของสินค้า"  />
                         <span id="pName-error" class="label-left red" style="margin-left:15px; display:none;">จำเป็นต้องกำหนดช่องนี้</span>
-                    </div>                    
+                    </div>
                     <div class="divider-hidden" style="margin-top:5px; margin-bottom:5px;"></div>
-                    
-                    
+
+
                     <div class="col-sm-3"><span class="form-control label-left">กลุ่มสินค้า</span></div>
                     <div class="col-sm-9">
                         <select class="form-control input-sm input-large" name="pGroup" id="pGroup">
                         <?php echo selectProductGroup($rs['id_product_group']); ?>
                         </select>
-                    </div>                    
+                    </div>
                     <div class="divider-hidden" style="margin-top:5px; margin-bottom:5px;"></div>
-                    
-                    
+
+
                     <div class="col-sm-3"><span class="form-control label-left">หมวดหมู่หลัก</span></div>
                     <div class="col-sm-9">
                     	<select class="form-control input-sm input-large" name="dCategory" id="dCategory">
@@ -96,25 +96,25 @@
                         </select>
                     </div>
                     <div class="divider-hidden" style="margin-top:5px; margin-bottom:5px;"></div>
-                    
+
                     <div class="col-sm-3"><span class="form-control label-left">หมวดหมู่ย่อย</span></div>
                     <div class="col-sm-9"><?php echo categoryTree($id_pd);  ?></div>
                     <div class="divider-hidden" style="margin-top:5px; margin-bottom:5px;"></div>
-                    
+
                     <div class="col-sm-3"><span class="form-control label-left">ทุน</span></div>
                     <div class="col-sm-9">
                     <input type="text" class="form-control input-sm input-mini inline" name="cost" id="cost" value="<?php echo $rs['product_cost']; ?>"  />
                     <span id="cost-error" class="label-left red" style="margin-left:15px; display:none;">ตัวเลขไม่ถูกต้อง</span>
                     </div>
                     <div class="divider-hidden" style="margin-top:5px; margin-bottom:5px;"></div>
-                    
+
                     <div class="col-sm-3"><span class="form-control label-left">ราคาขาย</span></div>
                     <div class="col-sm-9">
                     <input type="text" class="form-control input-sm input-mini inline" name="price" id="price" value="<?php echo $rs['product_price']; ?>" />
                     <span id="price-error" class="label-left red" style="margin-left:15px; display:none;">ตัวเลขไม่ถูกต้อง</span>
                     </div>
                     <div class="divider-hidden" style="margin-top:5px; margin-bottom:5px;"></div>
-                    
+
                     <div class="col-sm-3"><span class="form-control label-left">ส่วนลด</span></div>
                     <div class="col-sm-9">
                     <input type="text" class="form-control input-sm input-mini" style="position:relative; float:left; margin-right:5px;" name="discount" id="discount" value="<?php echo $rs['discount']; ?>" />
@@ -124,37 +124,37 @@
                      </select>
                      <span id="discount-error" class="label-left red" style="margin-left:15px; display:none;">ตัวเลขไม่ถูกต้อง</span>
                     </div>
-                   
+
                     <div class="divider-hidden" style="margin-top:5px; margin-bottom:5px;"></div>
-                    
+
                     <div class="col-sm-3"><span class="form-control label-left">น้ำหนัก</span></div>
                     <div class="col-sm-9">
                     	<input type="text" class="form-control input-sm input-mini inline ops" name="weight" id="weight" value="<?php echo $rs['weight']; ?>" />
                         <span class="label-left inline" style="margin-left:15px;">กิโลกรัม</span>
                     </div>
                     <div class="divider-hidden" style="margin-top:5px; margin-bottom:5px;"></div>
-                    
+
                     <div class="col-sm-3"><span class="form-control label-left">ความกว้าง</span></div>
                     <div class="col-sm-9">
                     	<input type="text" class="form-control input-sm input-mini inline ops" name="width" id="width" value="<?php echo $rs['width']; ?>" />
                         <span class="label-left inline" style="margin-left:15px;">เซ็นติเมตร</span>
                     </div>
                     <div class="divider-hidden" style="margin-top:5px; margin-bottom:5px;"></div>
-                    
+
                     <div class="col-sm-3"><span class="form-control label-left">ยาว</span></div>
                     <div class="col-sm-9">
                     	<input type="text" class="form-control input-sm input-mini inline ops" name="length" id="length" value="<?php echo $rs['length']; ?>" />
                         <span class="label-left inline" style="margin-left:15px;">เซ็นติเมตร</span>
                     </div>
                     <div class="divider-hidden" style="margin-top:5px; margin-bottom:5px;"></div>
-                    
+
                     <div class="col-sm-3"><span class="form-control label-left">สูง</span></div>
                     <div class="col-sm-9">
                     	<input type="text" class="form-control input-sm input-mini inline ops" name="height" id="height" value="<?php echo $rs['height']; ?>" />
                         <span class="label-left inline" style="margin-left:15px;">เซ็นติเมตร</span>
                     </div>
                     <div class="divider-hidden" style="margin-top:5px; margin-bottom:5px;"></div>
-                    
+
                     <div class="col-sm-3"><span class="form-control label-left">สินค้าเสมือน</span></div>
                     <div class="col-sm-9">
                     	<div class="btn-group input-small">
@@ -163,27 +163,27 @@
                         </div>
                     </div>
                     <div class="divider-hidden" style="margin-top:5px; margin-bottom:5px;"></div>
-                    
+
                     <div class="col-sm-3"><span class="form-control label-left">เปิดใช้งาน</span></div>
                     <div class="col-sm-9">
                     	<div class="btn-group input-small">
                         	<button type="button" class="btn btn-sm <?php echo $ac; ?>" id="btn-ac" onClick="toggleActived(1)" style="width:50%;">ใช่</button>
                             <button type="button" class="btn btn-sm <?php echo $dac; ?>" id="btn-dac" onClick="toggleActived(0)" style="width:50%;">ไม่ใช่</button>
                         </div>
-                        
+
                     </div>
                     <div class="divider-hidden" style="margin-top:5px; margin-bottom:5px;"></div>
-                    
+
                     <div class="col-sm-3"><span class="form-control label-left">แสดงในหน้าลูกค้า</span></div>
                     <div class="col-sm-9">
                     	<div class="btn-group input-small">
                         	<button type="button" class="btn btn-sm <?php echo $is; ?>" id="btn-is" onClick="toggleInShop(1)" style="width:50%;">ใช่</button>
                             <button type="button" class="btn btn-sm <?php echo $nis; ?>" id="btn-nis" onClick="toggleInShop(0)" style="width:50%;">ไม่ใช่</button>
                         </div>
-                        
+
                     </div>
                     <div class="divider-hidden" style="margin-top:5px; margin-bottom:5px;"></div>
-                    
+
                     <div class="col-sm-3"><span class="form-control label-left">คำอธิบายสินค้า</span></div>
                     <div class="col-sm-9">
                     	<textarea class="form-control input-xlarge" name="description" rows="4" placeholder="กำหนดคำอธิบายสินค้า ( สำหรับลูกค้า )"><?php echo productDescription($id_pd); ?></textarea>
@@ -194,19 +194,19 @@
                     <input type="hidden" name="inShop" id="inShop" value="<?php echo $rs['show_in_shop']; ?>" />
                     <input type="hidden" id="isDuplicated" value="0" />
                     <div class="divider-hidden" style="margin-top:25px; margin-bottom:25px;"></div>
-                    
+
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">
                     <?php if( $id_pd != 0 ) : ?>
                         <button type="button" class="btn btn-success input-xlarge" onClick="saveProduct(<?php echo $id_pd; ?>)" ><i class="fa fa-save"></i> บันทึก</button>
-					<?php endif; ?>                        
+					<?php endif; ?>
                     </div>
                     <div class="divider-hidden" style="margin-top:5px; margin-bottom:5px;"></div>
 
-				</div>                    
+				</div>
             </form>
             </div><!--/ tab-pane #tab1 -->
-		<!-------------------------------------------------------  รายการสินค้า  ----------------------------------------------------->        
+		<!-------------------------------------------------------  รายการสินค้า  ----------------------------------------------------->
          <div class="tab-pane fade <?php echo $tab2; ?>" id="tab2">
          	<div class="row">
             	<div class="col-sm-12">
@@ -216,7 +216,7 @@
                 </div>
             </div>
             <hr/>
-        	
+
                 <?php if( $id_pd != 0 ) : ?>
                 <?php 	$qs = dbQuery("SELECT * FROM tbl_product_attribute WHERE id_product = ".$id_pd); ?>
                 <?php	if( dbNumRows($qs) > 0 ) : ?>
@@ -226,7 +226,7 @@
                             <button type="button" class="btn btn-sm btn-default" onClick="editBarcode()">แก้ไขบาร์โค้ด</button>
                             <button type="button" class="btn btn-sm btn-default" onClick="editBarcodePack()">แก้ไขบาร์โค้ดแพ็ค</button>
                             <button type="button" class="btn btn-sm btn-default" onClick="editPackQty()">แก้ไขจำนวนในแพ็ค</button>
-						</p>                            
+						</p>
                     </div>
                 </div>
                 <hr/>
@@ -245,7 +245,7 @@
                                 <th style="width:8%; text-align:center;">อื่นๆ</th>
                                 <th style="width:5%; text-align:center;">ทุน</th>
                                 <th style="width:5%; text-align:center;">ขาย</th>
-                                <th style="width:5%; text-align:center;">สถานะ</th> 
+                                <th style="width:5%; text-align:center;">สถานะ</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -268,7 +268,7 @@
                                 <td class="middle text-center">
 									<span class="bp-label" id="bp-<?php echo $id_pa; ?>-label"><?php echo $pack['barcode']; ?></span>
                                     <input type="text" class="form-control input-sm barcode-pack hide bp-no-<?php echo $n; ?>" id="bp-<?php echo $id_pa; ?>" value="<?php echo $pack['barcode']; ?>" />
-                                    <input type="hidden" id="bp-<?php echo $id_pa; ?>-id" value="<?php echo $id_pa; ?>" />                                    
+                                    <input type="hidden" id="bp-<?php echo $id_pa; ?>-id" value="<?php echo $id_pa; ?>" />
                                     <input type="hidden" id="bp-<?php echo $id_pa; ?>-no" value="<?php echo $n; ?>" />
                                 </td>
                                 <td align="center" class="middle">
@@ -285,24 +285,24 @@
                                 <td align="center" class="middle"><a href="javascript:void(0)" id="active_<?php echo $id_pa; ?>" onclick="toggleActiveItem(<?php echo $id_pa; ?>)"><?php echo isActived($rs['active']); ?></a></td>
                                 <td align="right" class="middle">
                                 	<button type="button" class="btn btn-xs btn-warning" onClick="getEdit(<?php echo $id_pa; ?>)"><i class="fa fa-pencil"></i></button>
-                                    <button type="button" class="btn btn-xs btn-danger" onClick="getDelete(<?php echo $id_pa; ?>,'<?php echo $rs['reference'] ; ?>')"><i class="fa fa-trash"></i></button>                                
+                                    <button type="button" class="btn btn-xs btn-danger" onClick="getDelete(<?php echo $id_pa; ?>,'<?php echo $rs['reference'] ; ?>')"><i class="fa fa-trash"></i></button>
                                 </td>
                             </tr>
                            <?php $n++; ?>
-						<?php endwhile; ?>                             
+						<?php endwhile; ?>
                         </tbody>
                     </table>
 					</div>
-                </div>                    
+                </div>
 				<?php else : ?>
                 <div class="row">
 				<div class="col-sm-12">
-						<h4 style="text-align:center; padding-top:50px; color:#AAA;"><i class="fa fa-tags fa-2x"></i> No SKU Now</h4>     
-				</div> 
-                </div>                                                 
-				<?php	endif; ?>                    
-				<?php endif; ?>	
-             
+						<h4 style="text-align:center; padding-top:50px; color:#AAA;"><i class="fa fa-tags fa-2x"></i> No SKU Now</h4>
+				</div>
+                </div>
+				<?php	endif; ?>
+				<?php endif; ?>
+
             <div class="modal fade" id="itemEditModal" tabindex="-1" role="dialog" aria-labelledby="itemedit" aria-hidden="true">
             	<div class="modal-dialog" style="width:600px">
                 	<div class="modal-content">
@@ -310,7 +310,7 @@
                             <h4 class="modal-title text-center">แก้ไขรายการสินค้า</h4>
                         </div>
                         <div class="modal-body" id="itemEditModalBody">
-                            
+
                         </div>
                         <div class="modal-footer">
                         	<button type="button" class="btn btn-sm btn-default" data-dismiss="modal">ปิด</button>
@@ -327,7 +327,7 @@
                             <h4 class="modal-title">จับคู่รูปภาพกับสินค้า</h4>
                         </div>
                         <div class="modal-body" id="mappingBody">
-                        
+
                         </div>
                         <div class="modal-footer">
                         	<button type="button" class="btn btn-sm btn-default" data-dismiss="modal">ปิด</button>
@@ -336,9 +336,9 @@
                     </div>
                 </div>
             </div>
-            </form>    				
+            </form>
          </div><!--/ tab-pane #tab2 -->
-         
+
          <!-----------------------------------------------------  รูปภาพ  ---------------------------------------------------->
          <div class="tab-pane fade <?php echo $tab3; ?>" id="tab3">
          	<div class="row">
@@ -372,13 +372,13 @@
 			<?php		endwhile; ?>
             <?php	else : ?>
             	<div class="col-sm-12"><h4 style="text-align:center; padding-top:50px; color:#AAA;"><i class="fa fa-file-image-o fa-2x"></i> No image now</h4></div>
-            <?php	endif;	?>            	
+            <?php	endif;	?>
             <?php endif; ?>
-	
-         			<!-- Load Image Table with ajax -->            
+
+         			<!-- Load Image Table with ajax -->
             </div><!--/ row -->
-        
-            
+
+
             <div class="modal fade" id="uploadBox" tabindex="-1" role="dialog" aria-labelledby="uploader" aria-hidden="true">
             	<div class="modal-dialog" style="width:800px">
                 	<div class="modal-content">
@@ -387,7 +387,7 @@
                         </div>
                         <div class="modal-body">
                         	<form class="dropzone" id="imageForm" action="">
-                            </form> 
+                            </form>
                         </div>
                         <div class="modal-footer">
                         	<button type="button" class="btn btn-sm btn-default" onClick="clearUploadBox()">ปิด</button>
@@ -396,7 +396,7 @@
                     </div>
                 </div>
             </div>
-            
+
          </div><!--/ tab-pane #tab3 -->
 
 		</div><!--/ tab-content -->
@@ -413,26 +413,26 @@
                 	<label>รหัสอ้างอิง</label>
                 </div>
                 <div class="col-sm-8">
-                	<input type="text" name="reference" id="editReference" class="form-control input-sm" value="{{ reference }}" />  
-					<input type="hidden" name="id_pa" id="id_pa" value="{{ id_pa }}" />  
+                	<input type="text" name="reference" id="editReference" class="form-control input-sm" value="{{ reference }}" />
+					<input type="hidden" name="id_pa" id="id_pa" value="{{ id_pa }}" />
                 </div>
                 <div class="col-sm-4 label-left top-col">
                 	<label>สี</label>
                 </div>
                 <div class="col-sm-8 top-col">
-                	<select class="form-control input-sm" name="color" id="editColor">{{{ colors }}}</select>   
+                	<select class="form-control input-sm" name="color" id="editColor">{{{ colors }}}</select>
                 </div>
                 <div class="col-sm-4 label-left top-col">
-                	<label>ไซส์</label>       
+                	<label>ไซส์</label>
                 </div>
                 <div class="col-sm-8 top-col">
-                	<select class="form-control input-sm" name="size" id="editSize">{{{ sizes }}}</select>   
+                	<select class="form-control input-sm" name="size" id="editSize">{{{ sizes }}}</select>
                 </div>
                 <div class="col-sm-4 label-left top-col">
                 	<label>คุณลักษณะ</label>
                 </div>
                 <div class="col-sm-8 top-col">
-                	<select class="form-control input-sm" name="attribute" id="editAttribute">{{{ attributes }}}</select>   
+                	<select class="form-control input-sm" name="attribute" id="editAttribute">{{{ attributes }}}</select>
                 </div>
                 <div class="col-sm-4 label-left top-col">
                 	<label>บาร์โค้ด</label>
@@ -440,17 +440,17 @@
                 <div class="col-sm-8 top-col">
                 	<input type="text" class="form-control input-sm" name="barcode" id="editBarcode" value="{{barcode}}" />
                 </div>
-                
+
             </div><!--/ row -->
         </div>
-                                        
+
         <div class="col-sm-6">
             <div class="row">
                 <div class="col-sm-4 label-left">
                 	<label>ทุน</label>
                 </div>
                 <div class="col-sm-8">
-                	<input type="text" name="cost" id="editCost" class="form-control input-sm input-mini input-number" value="{{ cost }}" />    
+                	<input type="text" name="cost" id="editCost" class="form-control input-sm input-mini input-number" value="{{ cost }}" />
                 </div>
                 <div class="col-sm-4 label-left top-col">
                 	<label>ราคาขาย</label>
@@ -522,7 +522,7 @@ function toggleActiveItem(id_pa)
 			if( rs == '1' ){
 				$("#active_"+id_pa).html('<i class="fa fa-check" style="color:green"></i>');
 			}else{
-				$("#active_"+id_pa).html('<i class="fa fa-remove" style="color:red"></i>');	
+				$("#active_"+id_pa).html('<i class="fa fa-remove" style="color:red"></i>');
 			}
 		}
 	});
@@ -533,7 +533,7 @@ $(document).ready(function(e) {
 //----------------  Dropzone --------------------//
 Dropzone.autoDiscover = false;
 var myDropzone = new Dropzone("#imageForm", {
-	url: "controller/productController.php?upload&id_style="+$("#id_product").val(),
+	url: "controller/productController.php?upload&id_product="+$("#id_product").val(),
 	paramName: "file", // The name that will be used to transfer the file
 	maxFilesize: 2, // MB
 	uploadMultiple: true,
@@ -544,14 +544,14 @@ var myDropzone = new Dropzone("#imageForm", {
 	addRemoveLinks: true
 });
 
-myDropzone.on('complete', function(){ 
+myDropzone.on('complete', function(){
 	clearUploadBox();
 	loadImageTable();
 });
-					
+
 function doUpload()
 {
-	myDropzone.processQueue();	
+	myDropzone.processQueue();
 }
 
 function clearUploadBox()
@@ -562,7 +562,7 @@ function clearUploadBox()
 
 function showUploadBox()
 {
-	$("#uploadBox").modal('show');	
+	$("#uploadBox").modal('show');
 }
 
 
@@ -595,7 +595,7 @@ function removeImage(id_pd, id_img)
 			var rs = $.trim(rs);
 			if( rs == 'success' )
 			{
-				$("#div-image-"+id_img).remove();	
+				$("#div-image-"+id_img).remove();
 			}
 			else
 			{
@@ -620,7 +620,7 @@ function setAsCover(id_pd, id_img)
 				$("#btn-cover-"+id_img).addClass('btn-success');
 			}
 		}
-	});			
+	});
 }
 
 
@@ -643,12 +643,12 @@ function setColorbox()
 					$.colorbox.resize();
 				}
 		}
-		
+
 	$('[data-rel="colorbox"]').colorbox(colorbox_params);
 }
 </script>
 <?php else : ?>
-<?php 
+<?php
 	$sCode	= isset( $_POST['sCode'] ) ? $_POST['sCode'] : ( getCookie('sCode') ? getCookie('sCode') : '' );
 	$sName	= isset( $_POST['sName'] ) ? $_POST['sName'] : ( getCookie('sName') ? getCookie('sName') : '');
 	$sCategory	= isset( $_POST['sCategory'] ) ? $_POST['sCategory'] : ( getCookie('sCategory') ? getCookie('sCategory') : '');
@@ -661,13 +661,13 @@ function setColorbox()
 	$sAll		= $sShop == 3 ? 'btn-primary' : '';
 	$sYes	= $sShop == 1 ? 'btn-primary' : '';
 	$sNo		= $sShop == 0 ? 'btn-primary' : '';
-	
+
 	$paginator = new paginator();
-	$get_rows = isset( $_POST['get_rows'] ) ? $_POST['get_rows'] : ( getCookie('get_rows') ? getCookie('get_rows') : 50);	
+	$get_rows = isset( $_POST['get_rows'] ) ? $_POST['get_rows'] : ( getCookie('get_rows') ? getCookie('get_rows') : 50);
 ?>
 <style>
 	.table > tbody > tr > td {
-		vertical-align:middle !important;	
+		vertical-align:middle !important;
 	}
 </style>
 <form id="searchForm" method="post">
@@ -707,7 +707,7 @@ function setColorbox()
         	<button type="button" class="btn btn-sm <?php echo $sAll; ?>" style="width:34%;" id="btn-sAll" onClick="toggleShop(3)">All</button>
             <button type="button" class="btn btn-sm <?php echo $sYes; ?>" style="width:33%;" id="btn-sYes" onClick="toggleShop(1)"><i class="fa fa-check"></i></button>
             <button type="button" class="btn btn-sm <?php echo $sNo; ?>" style="width:33%;" id="btn-sNo" onClick="toggleShop(0)"><i class="fa fa-times"></i></button>
-        </div>        
+        </div>
     </div>
     <div class="col-sm-1 padding-0">
     	<label style="display:block; visibility:hidden;">xx</label>
@@ -723,18 +723,18 @@ function setColorbox()
 </form>
 <hr style="margin-top:10px; margin-bottom:10px;"/>
 
-<?php  
+<?php
 	//--------------- เงื่อนไขตัวกรอง -------------//
 	$where = "WHERE id_product != 0 ";
 	if( $sCode != '' )
 	{
 		createCookie('sCode', $sCode);
-		$where .= "AND product_code LIKE '%".$sCode."%' ";	
+		$where .= "AND product_code LIKE '%".$sCode."%' ";
 	}
 	if( $sName != '' )
 	{
 		createCookie('sName', $sName);
-		$where .= "AND product_name LIKE '%".$sName."%' ";	
+		$where .= "AND product_name LIKE '%".$sName."%' ";
 	}
 	if( $sCategory != 0 )
 	{
@@ -742,7 +742,7 @@ function setColorbox()
 		$in		= productInCategory($sCategory);
 		if( $in !== FALSE )
 		{
-			$where .= "AND id_product IN(".$in.") ";	
+			$where .= "AND id_product IN(".$in.") ";
 		}
 	}
 	if( $sGroup != 0 )
@@ -753,7 +753,7 @@ function setColorbox()
 	if( $sStatus != 3 )
 	{
 		createCookie('sStatus', $sStatus);
-		$where .= "AND active = ".$sStatus." ";	
+		$where .= "AND active = ".$sStatus." ";
 	}
 	if( $sShop != 3 )
 	{
@@ -762,7 +762,7 @@ function setColorbox()
 	}
 	//----------- End เงื่อนไข -----------//
 	$where .= "ORDER BY id_product DESC";
-?>	
+?>
 
 <div class="row">
     <div class="col-sm-12">
@@ -783,7 +783,7 @@ function setColorbox()
             <th ></th>
         </thead>
         <tbody>
-	<?php	$qs = dbQuery("SELECT * FROM tbl_product ".$where." LIMIT ".$paginator->Page_Start." , ".$paginator->Per_Page);		?> 
+	<?php	$qs = dbQuery("SELECT * FROM tbl_product ".$where." LIMIT ".$paginator->Page_Start." , ".$paginator->Per_Page);		?>
     <?php 	if( dbNumRows($qs) > 0 ) : ?>
     <?php		while( $rs = dbFetchArray($qs) ) : ?>
     <?php		$id = $rs['id_product']; 			?>
@@ -807,21 +807,21 @@ function setColorbox()
                 <td align="right">
                 <?php if( $edit OR $add ) : ?>
                 	<button type="button" class="btn btn-sm btn-warning" onClick="goEdit(<?php echo $id; ?>)"><i class="fa fa-pencil"></i></button>
-				<?php endif; ?>                    
+				<?php endif; ?>
                 <?php if( $delete ) : ?>
                 	<button type="button" class="btn btn-sm btn-danger" onClick="confirmRemove(<?php echo $id; ?>, '<?php echo $rs['product_code']; ?>')"><i class="fa fa-trash"></i></button>
                 <?php endif; ?>
                 </td>
             </tr>
-	<?php			endwhile; ?>			
-    <?php 	endif; ?>       
+	<?php			endwhile; ?>
+    <?php 	endif; ?>
         </tbody>
         </table>
-<?php 	echo $paginator->display_pages(); ?>        
+<?php 	echo $paginator->display_pages(); ?>
     </div><!--/ col-sm-12 -->
 </div><!--/ row -->
-         
-            
+
+
 <?php endif; ?>
 
 </div><!--  end Container -->
@@ -833,7 +833,7 @@ function confirmRemove(id_pd, pCode)
 {
 	swal({
 		title: 'ต้องการลบสินค้า ?',
-		text: 'คุณแน่ใจว่าต้องการลบ <span style="color:red; font-weight:bold;">'+pCode+'</span>  โปรดจำไว้ว่าการกระทำนี้ไม่สามารถกู้คืนได้',	
+		text: 'คุณแน่ใจว่าต้องการลบ <span style="color:red; font-weight:bold;">'+pCode+'</span>  โปรดจำไว้ว่าการกระทำนี้ไม่สามารถกู้คืนได้',
 		type: 'warning',
 		html: true,
 		showCancelButton: true,
@@ -844,7 +844,7 @@ function confirmRemove(id_pd, pCode)
 		showLoaderOnConfirm: true
 		}, function(){
 			deleteProduct(id_pd);
-		});		
+		});
 }
 
 //-------------  ตรวจสอบก่อนว่าลบได้หรือไม่ -----------//
@@ -870,7 +870,7 @@ function deleteProduct(id_pd)
 
 function goEdit(id)
 {
-	window.location.href = "index.php?content=product&edit&id_product="+id;	
+	window.location.href = "index.php?content=product&edit&id_product="+id;
 }
 
 function toggleActived(i)
@@ -931,7 +931,7 @@ function toggleShowInShop(id_pd)
 function toggleShop(i)
 {
 	$("#sShop").val(i);
-	if( i == 0 ){	
+	if( i == 0 ){
 		$("#btn-sAll").removeClass('btn-primary');
 		$("#btn-sYes").removeClass('btn-primary');
 		$("#btn-sNo").addClass('btn-primary');
@@ -950,7 +950,7 @@ function toggleShop(i)
 function toggleStatus(i)
 {
 	$("#sStatus").val(i);
-	if( i == 0 ){	
+	if( i == 0 ){
 		$("#btn-all").removeClass('btn-primary');
 		$("#btn-yes").removeClass('btn-primary');
 		$("#btn-no").addClass('btn-primary');
@@ -968,7 +968,7 @@ function toggleStatus(i)
 
 function getSearch()
 {
-	$("#searchForm").submit();	
+	$("#searchForm").submit();
 }
 
 
@@ -987,7 +987,7 @@ $("#sCode").keyup(function(e) {
 	{
 		if( $(this).val() != '' )
 		{
-			getSearch();	
+			getSearch();
 		}
 	}
 });
@@ -1019,7 +1019,3 @@ $("#length").numberOnly();
 $("#height").numberOnly();
 
 </script>
-
-
-
-

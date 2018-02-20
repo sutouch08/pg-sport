@@ -45,6 +45,18 @@ public function __construct()
 }
 
 
+public function getCost($id_pa)
+{
+	$sc = 0;
+	$qs = dbQuery("SELECT cost FROM tbl_product_attribute WHERE id_product_attribute = '".$id_pa."'");
+	if(dbNumRows($qs) == 1)
+	{
+		list($sc) = dbFetchArray($qs);
+	}
+
+	return $sc;
+}
+
 //-------------------------  NEW CODE  ------------------------//
 public function addProduct(array $ds)
 {
@@ -1070,6 +1082,50 @@ public function available_product_qty($id_pd)
 
 	return $sc;
 }
+
+
+
+
+public function getIdProductAttributeByBarcode($barcode)
+{
+	$sc = FALSE;
+	$qs = dbQuery("SELECT barcode FROM tbl_product_attribute WHERE barcode = '".$barcode."'");
+	if(dbNumRows($qs) == 1)
+	{
+		list($sc) = dbFetchArray($qs);
+	}
+
+	return $sc;
+}
+
+
+
+public function getProductAttributeByBarcode($barcode)
+{
+	$sc = FALSE;
+	$qs = dbQuery("SELECT * FROM tbl_product_attribute WHERE barcode = '".$barcode."'");
+	if(dbNumRows($qs) == 1)
+	{
+		$sc = dbFetchObject($qs);
+	}
+
+	return $sc;
+}
+
+
+
+public function getName($id_pd)
+{
+	$sc = '';
+	$qs = dbQuery("SELECT product_name FROM tbl_product WHERE id_product = '".$id_pd."'");
+	if(dbNumRows($qs) == 1)
+	{
+		list($sc) = dbFetchArray($qs);
+	}
+
+	return $sc;
+}
+
 
 
 public function get_id_product_attribute_by_barcode($barcode){

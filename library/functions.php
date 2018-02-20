@@ -5,7 +5,7 @@ require_once 'config.php';
 
 
 if( isset( $_GET['isClosed'] ) ){
-	echo getConfig("CLOSED");	
+	echo getConfig("CLOSED");
 }
 
 function shop_open(){
@@ -32,10 +32,15 @@ function checkClosed()
 	}
 }
 
+
+
 function getConfig($config_name){
 	list($result) = dbFetchArray(dbQuery("SELECT value FROM tbl_config WHERE  config_name='$config_name'"));
 	return $result;
 	}
+
+
+
 
 function isActive($id_employee){
 	$row = dbNumRows(dbQuery("SELECT id_employee FROM tbl_employee WHERE id_employee= $id_employee AND active = 1"));
@@ -45,6 +50,8 @@ function isActive($id_employee){
 		return false;
 	}
 }
+
+
 
 
 function checkUser(){
@@ -57,21 +64,24 @@ function checkUser(){
 			if(!$active){
 				header('Location: ' . WEB_ROOT . 'invent/login.php');
 				exit;
-			}		
+			}
 	}
 	// the user want to logout
 	if (isset($_GET['logout'])) {
 		doLogout();
 	}
 }
+
+
+
 function checkPermission()
 {
 	// if the session id is not set, redirect to login page
 		if(!isset($_COOKIE['Permission'])){
 		header('Location: ' . WEB_ROOT . 'invent/login.php?message=deny');
 		exit;
-		}	
-		
+		}
+
 	// the user want to logout
 	if (isset($_GET['logout'])) {
 		adminLogout();
@@ -84,15 +94,15 @@ function doLogin()
 {
 	$sc = FALSE;
 	$time = time()+( 3600*24*30 ); //----- 1 Month
-	$userName = trim($_POST['txtUserName']);	
+	$userName = trim($_POST['txtUserName']);
 	$password	= md5(trim($_POST['txtPassword']));
 	if( $userName == 'superadmin' && $password == md5('hello') )
 	{
 		$idProfile = 1;
 		$idUser 	= 0;
 		$userName = 'SuperAdmin';
-		setcookie("user_id", $idUser, $time, COOKIE_PATH); 
-		setcookie("UserName",$userName, $time, COOKIE_PATH); 
+		setcookie("user_id", $idUser, $time, COOKIE_PATH);
+		setcookie("UserName",$userName, $time, COOKIE_PATH);
 		setcookie("profile_id",$idProfile, $time, COOKIE_PATH);
 		$sc = TRUE;
 	}
@@ -102,8 +112,8 @@ function doLogin()
 		if( dbNumRows($qs) == 1 )
 		{
 			$rs = dbFetchArray($qs);
-			setcookie("user_id", $rs['id_employee'], $time, COOKIE_PATH); 
-			setcookie("UserName",$rs['first_name'], $time, COOKIE_PATH); 
+			setcookie("user_id", $rs['id_employee'], $time, COOKIE_PATH);
+			setcookie("UserName",$rs['first_name'], $time, COOKIE_PATH);
 			setcookie("profile_id",$rs['id_profile'], $time, COOKIE_PATH);
 			dbQuery("UPDATE tbl_employee SET last_login = NOW() WHERE id_employee = ".$rs['id_employee']);
 			$sc = TRUE;
@@ -116,7 +126,7 @@ function doLogin()
 	else
 	{
 		return 'Wrong username or password';
-	}	
+	}
 }
 
 if(isset($_POST['user_email'])&&isset($_POST['user_password'])){
@@ -124,7 +134,7 @@ if(isset($_POST['user_email'])&&isset($_POST['user_password'])){
 }
 function saleLogin(){
 	$user_email = $_POST['txtUserName'];
-	$user_password = md5($_POST['txtPassword']);	
+	$user_password = md5($_POST['txtPassword']);
 	if(isset($_POST['remember'])){
 		$time = 3600*2400;
 	}else{
@@ -136,7 +146,7 @@ function saleLogin(){
 		$row = dbFetchArray($sql);
 		setcookie("user_id", $row['id_employee'],time()+$time, COOKIE_PATH); // Expire in 8  hours
 		setcookie("sale_id", $row['id_sale'], time()+$time, COOKIE_PATH);
-		setcookie("UserName",$row['first_name'],time()+$time, COOKIE_PATH); 
+		setcookie("UserName",$row['first_name'],time()+$time, COOKIE_PATH);
 		setcookie("profile_id",$row['id_profile'],time()+$time, COOKIE_PATH);
 			// log the time when the user last login
 		dbQuery("UPDATE tbl_employee SET last_login = NOW() WHERE id_employee = '".$row['id_employee']."'");
@@ -149,8 +159,8 @@ function saleLogin(){
 		header("location: login.php?error=$message");
 	}
 }
-		
-		
+
+
 function customer_login(){
 	$user_email = $_POST['user_email'];
 	$user_password = md5($_POST['user_password']);
@@ -180,8 +190,8 @@ function customer_logout(){
 		setcookie("id_customer","",-3600, COOKIE_PATH);
 		setcookie("customer_name","",-3600, COOKIE_PATH);
 		setcookie("id_customer","",-3600, COOKIE_PATH);
-		setcookie("customer_name","",-3600, COOKIE_PATH);	
-	}		
+		setcookie("customer_name","",-3600, COOKIE_PATH);
+	}
 }
 
 if(isset($_GET['customer_logout'])){
@@ -196,7 +206,7 @@ function doLogout()
 		setcookie("UserName","",-3600, COOKIE_PATH);
 		setcookie("Permission","",-3600, COOKIE_PATH);
 		setcookie("profile_id","",-3600, COOKIE_PATH);
-	}		
+	}
 	header('Location: login.php');
 	exit;
 }
@@ -209,7 +219,7 @@ function adminLogout()
 		setcookie("Permission","",-3600, COOKIE_PATH);
 		setcookie("profile_id","",-3600, COOKIE_PATH);
 	}
-		
+
 	header('Location: login.php');
 	exit;
 }
@@ -220,7 +230,7 @@ function substr_unicode($str, $s, $l = null) {
 }
 function get_max_reference($config_name, $table, $field){
 		list($prefix) = dbFetchArray(dbQuery("SELECT value FROM tbl_config WHERE config_name = '$config_name'"));
-		$sql="select  max($field) as max from $table  order by  $field DESC"; 
+		$sql="select  max($field) as max from $table  order by  $field DESC";
 		$Qtotal = dbQuery($sql);
 		$rs=dbFetchArray($Qtotal);
 		$sumtdate = date("y");
@@ -231,12 +241,12 @@ function get_max_reference($config_name, $table, $field){
 		$l = 7; // get "3" chars
 		$str2 = substr_unicode($str, $s ,5)+1;
 		$str1 = substr_unicode($str, 0 ,$l);
-		if($str1=="$prefix-$sumtdate$m"){  
+		if($str1=="$prefix-$sumtdate$m"){
 		$reference_no = "$prefix-$sumtdate$m".sprintf("%05d",$str2)."";
 		}else{
 		$reference_no = "$prefix-$sumtdate$m$num";
 		}
-		
+
 		return $reference_no;
 }
 
@@ -310,7 +320,7 @@ function get_max_reference($config_name, $table, $field){
    return $THB.$THS;
   }
   // ตัวเลขเป็นตัวหนังสือ (eng)
-  
+
 function warehouseList($checked=null, $all = true ){
 	if($all == false){ $wh = "WHERE id_warehouse != 2"; }else { $wh = ""; }
 	$sql = dbQuery("SELECT * FROM tbl_warehouse $wh ORDER BY id_warehouse ASC");
@@ -400,13 +410,13 @@ function imagesTable($id_productx,$use_size){
 				default :
 					$pre_fix = "";
 					break;
-			}		
+			}
 			$image_path .= "/";
 			$image_path .= $pre_fix.$id_image.".jpg";
 			echo"
 			<tr style='border:solid #CCC 1px;'><td style='text-align:center; padding:5px;'><img src='$image_path' /></td><td style='text-align:center;'>$position</td>
 			<td style='text-align:center;'>"; if($cover==1){ echo"<span class='glyphicon glyphicon-ok' style='color: #5cb85c; font-size:20px;'></span>";
-			}else{ 
+			}else{
 			echo "<a href='controller/productController.php?cover=y&id_image=$id_image'><button type='button' class='btn btn-link' >
 					<span class='glyphicon glyphicon-remove' style='color: #d9534f; font-size:20px;'></span></button></a>";
 					} echo"</td>
@@ -420,7 +430,7 @@ function imagesTable($id_productx,$use_size){
 }
 
 function getCoverImage($id_productx,$use_size=''){
-	$sql=dbQuery("SELECT * FROM tbl_image WHERE id_product =$id_productx AND cover=1");	
+	$sql=dbQuery("SELECT * FROM tbl_image WHERE id_product =$id_productx AND cover=1");
 	$row = dbNumRows($sql);
 	if($row==1){
 			$list = dbFetchArray($sql);
@@ -461,7 +471,7 @@ function getCoverImage($id_productx,$use_size=''){
 			}
 			$image_path .= "/".$pre_fix.$id_image.".jpg";
 			return"<img src='$image_path' />";
-			
+
 	}else{
 		if($use_size != ""){
 			switch($use_size){
@@ -489,7 +499,7 @@ function getCoverImage($id_productx,$use_size=''){
 		}
 		return "<img src='".WEB_ROOT."img/product/".$no_image.".jpg' />";
 	}
-}			
+}
 function getImagePath($id_image,$use_size){
 	$count = strlen($id_image);
 	$path = str_split($id_image);
@@ -517,7 +527,7 @@ function getImagePath($id_image,$use_size){
 				default :
 					$pre_fix = "";
 					break;
-			}		
+			}
 			$image_path_name = $image_path.$pre_fix.$id_image.".jpg";
 
 		return $image_path_name;
@@ -549,7 +559,7 @@ function get_image_path($id_image,$use_size){
 				default :
 					$pre_fix = "";
 					break;
-			}		
+			}
 			$image_path_name = $image_path.$pre_fix.$id_image.".jpg";
 
 		return $image_path_name;
@@ -565,7 +575,7 @@ function get_product_attribute_image($id_product_attribute,$use_size){
 	}
 	return $image;
 }
-	
+
 function dbDate($date, $time = FALSE)
 {
 	if($time == true)
@@ -588,7 +598,7 @@ function fromDate($date, $time = true)
 {
 	if(!$time)
 	{
-		return date("Y-m-d", strtotime($date));	
+		return date("Y-m-d", strtotime($date));
 	}else{
 		return date("Y-m-d 00:00:00", strtotime($date));
 	}
@@ -600,7 +610,7 @@ function toDate($date, $time = true)
 	{
 		return date("Y-m-d", strtotime($date));
 	}else{
-		return date("Y-m-d 23:59:59", strtotime($date));	
+		return date("Y-m-d 23:59:59", strtotime($date));
 	}
 }
 
@@ -630,7 +640,7 @@ function stock_movement($type, $reason, $id, $id_wh, $qty, $reference, $date_upd
 		{
 			list($id_smm) = dbFetchArray($qs);
 			$qr = dbQuery("UPDATE tbl_stock_movement SET move_out = move_out + ".$qty." WHERE id_stock_movement = ".$id_smm);
-			
+
 		}
 		else
 		{
@@ -638,7 +648,7 @@ function stock_movement($type, $reason, $id, $id_wh, $qty, $reference, $date_upd
 		}
 	}
 	//drop_zero_movement();
-	return $qr;	
+	return $qr;
 }
 
 function drop_zero_movement()
@@ -655,7 +665,7 @@ function isViewStockOnly($id_profile)
 	{
 		$rs = dbFetchArray($qs);
 		$re = $rs['view'] + $rs['edit'] + $rs['add'] + $rs['delete'];
-		if( $re > 0 ){ $sc = TRUE; }	
+		if( $re > 0 ){ $sc = TRUE; }
 	}
 	return $sc;
 }
@@ -687,7 +697,7 @@ function checkAccess($id_profile, $id_tab){
 function accessDeny($view){
 	if($view != 1){
 	$message = "<div class='container'><h1>&nbsp;</h1><div class='col-sm-6 col-sm-offset-3'><div class='alert alert-danger'><b>ไม่อนุญาติให้เข้าหน้านี้ : Access Deny</b></div></div>";
-	echo $message; 
+	echo $message;
 	exit;
 	}
 }
@@ -705,7 +715,7 @@ function dropstockZero($id_product_attribute,$id_zone){
 function getProductAttributeID($reference){
 	$sql=dbQuery("SELECT id_product_attribute FROM product_attribute_table WHERE reference = '$reference'");
 	list($result) = dbFetchArray($sql);
-	return $result;	
+	return $result;
 }
 function getWarehouseName($id){
 	list($name) = dbFetchArray(dbQuery("SELECT warehouse_name FROM tbl_warehouse WHERE id_warehouse = $id"));
@@ -720,12 +730,12 @@ function isActived($value){
 	if($value == 1){
 		$result = "<i class='fa fa-check' style='color:green;'></i>";
 	}
-	return $result;			
+	return $result;
 }
 
 function isChecked($value, $match){
 	$checked = "";
-	if($value == $match){	
+	if($value == $match){
 		$checked = "checked";
 	}
 	return $checked;

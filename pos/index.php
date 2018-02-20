@@ -18,7 +18,7 @@ function check_login()
 	}
 }
 
-if( !getConfig("CLOSED") )
+if( !getConfig('CLOSED') )
 {
 $content = '';
 
@@ -30,13 +30,18 @@ if(isset($_GET['logout'])) {
 
 $page = (isset($_GET['content'])&& $_GET['content'] !='')?$_GET['content']:'';
 switch($page){
-	case "order":
-		$content = "order.php";
-		$pageTitle = "ขายสินค้า";
+	case 'order':
+		$content = 'order.php';
+		$pageTitle = 'ขายสินค้า';
+		break;
+
+	case 'return_order' :
+		$content = 'return_order.php';
+		$pageTitle = 'รับคืนสินค้า';
 		break;
 
 	default:
-		$content = "main.php"; //'home.php';
+		$content = 'main.php'; //'home.php';
 		$pageTitle = COMPANY;
 		break;
 }
