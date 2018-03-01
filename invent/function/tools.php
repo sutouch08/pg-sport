@@ -1,4 +1,13 @@
 <?php
+//----ใช้สำหรับรับค่าจาก searchForm ต่างๆ
+function getFilter($postName, $cookieName, $defaultValue = "")
+{
+	$sc = isset( $_POST[$postName] ) ? trim( $_POST[$postName] ) : ( getCookie($cookieName) ? getCookie($cookieName) : $defaultValue );
+	return $sc;
+}
+
+
+
 function getInvoice($id_order)
 {
 	$sc = "";

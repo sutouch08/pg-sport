@@ -49,6 +49,33 @@ class order_pos
   }
 
 
+  public function getDataByReference($reference)
+  {
+    $qs = dbQuery("SELECT * FROM tbl_order_pos WHERE reference = '".$reference."'");
+    if(dbNumRows($qs) == 1)
+    {
+      $ds = dbFetchArray($qs);
+      foreach($ds as $key => $value)
+      {
+        $this->$key = $value;
+      }
+    }
+  }
+
+
+
+  public function getId($reference)
+  {
+    $sc = FALSE;
+    $qs = dbQuery("SELECT id_order_pos FROM tbl_order_pos WHERE reference = '".$reference."'");
+    if(dbNumRows($qs) == 1)
+    {
+      list($sc) = dbFetchArray($qs);
+    }
+
+    return $sc;
+  }
+
 
 
 
@@ -202,7 +229,7 @@ class order_pos
 
     return $sc;
   }
-
+  
 
 
 

@@ -5,6 +5,12 @@ $dbConn = mysqli_connect ($dbHost, $dbUser, $dbPass, $dbName) or die ('MySQL con
 mysqli_query($dbConn,'SET NAMES utf8');
 date_default_timezone_set('Asia/Bangkok');
 
+function dbError()
+{
+	global $dbConn;
+	return mysqli_error($dbConn);
+}
+
 function dbQuery($sql)
 {
 	global $dbConn;
@@ -15,7 +21,7 @@ function dbQuery($sql)
 function dbAffectedRows()
 {
 	global $dbConn;
-	
+
 	return mysqli_affected_rows($dbConn);
 }
 
@@ -28,7 +34,7 @@ function dbFetchAssoc($result)
 	return mysqli_fetch_assoc($result);
 }
 
-function dbFetchRow($result) 
+function dbFetchRow($result)
 {
 	return mysqli_fetch_row($result);
 }
@@ -40,7 +46,7 @@ function dbFreeResult($result)
 
 function dbFetchObject($result)
 {
-	return mysqli_fetch_object($result);	
+	return mysqli_fetch_object($result);
 }
 
 function dbNumRows($result)
@@ -67,7 +73,7 @@ function startTransection()
 function endTransection()
 {
 	global $dbConn;
-	return mysqli_autocommit($dbConn, TRUE);	
+	return mysqli_autocommit($dbConn, TRUE);
 }
 
 function commitTransection()

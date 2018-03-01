@@ -29,15 +29,20 @@ if(isset($_GET['logout'])) {
 
 
 $page = (isset($_GET['content'])&& $_GET['content'] !='')?$_GET['content']:'';
+$id_tab = 0;
+$id_profile = getCookie('profile_id');
+
 switch($page){
 	case 'order':
 		$content = 'order.php';
 		$pageTitle = 'ขายสินค้า';
+		$id_tab = 14;
 		break;
 
 	case 'return_order' :
 		$content = 'return_order.php';
 		$pageTitle = 'รับคืนสินค้า';
+		$id_tab = 40;
 		break;
 
 	default:

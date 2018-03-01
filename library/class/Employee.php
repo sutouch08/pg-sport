@@ -11,7 +11,7 @@
 		public $date_register;
 		public $active;
 		public $error_message;
-public function __construct($id_employee = ""){ 
+public function __construct($id_employee = ""){
 	if($id_employee ==""){
 			$this->id_employee = "";
 	 }else{
@@ -30,10 +30,22 @@ public function __construct($id_employee = ""){
 	 }
 }
 
+public function getName($id)
+{
+	$sc = '';
+	$qs = dbQuery("SELECT first_name FROM tbl_employee WHERE id_employee = '".$id."'");
+	if(dbNumRows($qs) == 1)
+	{
+		list($sc) = dbFetchArray($qs);
+	}
+
+	return $sc;
+}
+
 
 public function get_id_sale($id_employee){
 	$sql = dbQuery("SELECT id_sale FROM tbl_sale WHERE id_employee=$id_employee");
-	$row = dbNumRows($sql);	
+	$row = dbNumRows($sql);
 	if($row==1){
 			list($id_sale) = dbFetchArray($sql);
 	}else{
@@ -42,7 +54,7 @@ public function get_id_sale($id_employee){
 		return $id_sale;
 }
 
-		
+
 public function addEmployee(array $data){ ////เพิ่มพนักงานใหม่
 	$qs = "INSERT INTO tbl_employee (id_profile, first_name, last_name, email, password, last_login, date_register, s_key, active) ";
 	$qs .= "VALUES (".$data['id_profile'].", '".$data['first_name']."', '".$data['last_name']."', '".$data['email']."', '".$data['password']."', NOW(), NOW(), '".$data['s_key']."', ".$data['active'].")";
@@ -128,7 +140,7 @@ public function check_s_key($s_key, $id_employee = ""){
 	if($id_employee !=""){
 	$row = dbNumRows(dbQuery("SELECT s_key FROM tbl_employee WHERE s_key = '$s_key' AND s_key !='' AND id_employee != $id_employee"));
 	}else{
-	$row = dbNumRows(dbQuery("SELECT s_key FROM tbl_employee WHERE s_key = '$s_key' AND s_key !='' "));	
+	$row = dbNumRows(dbQuery("SELECT s_key FROM tbl_employee WHERE s_key = '$s_key' AND s_key !='' "));
 	}
 	if($row>0){ $rs = false; }else{ $rs = true; }
 	return $rs;
@@ -155,7 +167,7 @@ public function change_status($id_employee, $active){
 		return false;
 	}
 }
-		
+
 }
 
 ?>

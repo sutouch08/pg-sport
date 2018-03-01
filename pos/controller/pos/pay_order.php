@@ -64,6 +64,16 @@ else
           $message = 'ตัดสต็อกไม่สำเร็จ';
         }
 
+        $arr = array(
+          'id_zone' => $id_zone
+        );
+
+        if($order->updateDetail($rs->id_order_pos_detail, $arr) !== TRUE)
+        {
+          $sc = FALSE;
+          $message = 'ปรับปรุง id_zone ในรายการขายไม่สำเร็จ';
+        }
+
         //----- บันทึกขาย
         $cost = $pd->getCost($rs->id_product_attribute);
         $arr = array(

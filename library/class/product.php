@@ -85,6 +85,19 @@ public function addProduct(array $ds)
 }
 
 
+
+public function getDetail($id_pa)
+{
+	$qs = dbQuery("SELECT * FROM tbl_product_attribute WHERE id_product_attribute = '".$id_pa."'");
+	if(dbNumRows($qs) == 1)
+	{
+		return dbFetchObject($qs);
+	}
+
+	return FALSE;
+}
+
+
 private function isExistsProductAttribute($id_pd, $co, $si, $at)
 {
 	$sc = FALSE;

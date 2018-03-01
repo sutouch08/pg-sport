@@ -1,10 +1,10 @@
-tr.col-border-1 > td, th {
+tr.col-border-1 > td, tr.col-border-1 > th {
   vertical-align: middle !important;
   border-right: solid 1px #CCC;
   border-top: 0px !important;
 }
 
-tr.col-border-1 > td:last-child, th:last-child {
+tr.col-border-1 > td:last-child, tr.col-border-1 > th:last-child {
   border-right: 0px;
   border-top: 0px !important;
 }

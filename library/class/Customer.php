@@ -1,9 +1,9 @@
-<?php 
+<?php
 //require SRV_ROOT."library/database.php";
 class customer{
 	public $id_customer;
 	public $customer_code;
-	public $id_default_group;	
+	public $id_default_group;
 	public $id_sale;
 	public $id_gender;
 	public $company ="";
@@ -67,6 +67,18 @@ public function __construct($id_customer = 0)	{
 }
 
 
+public function getName($id)
+{
+	$sc = '';
+	$qs = dbQuery("SELECT first_name FROM tbl_customer WHERE id_customer = '".$id."'");
+	if(dbNumRows($qs) == 1)
+	{
+		list($sc) = dbFetchArray($qs);
+	}
+
+	return $sc;
+}
+
 public function total_bill_discount($id_customer, $from, $to) /// ยอดรวมส่วนลดท้ายบิลแยกตามลูกค้า ในช่วงเวลาที่กำหนด
 {
 	$discount = 0;
@@ -88,20 +100,20 @@ public function total_bill_discount($id_customer, $from, $to) /// ยอดร�
 			$ro = dbFetchArray($qr);
 			$discount += $ro['amount'];
 		}
-	}		
-	return $discount;	
+	}
+	return $discount;
 }
 
-//********************** เพิ่มลูกค้าใหม่ ********************************//	
+//********************** เพิ่มลูกค้าใหม่ ********************************//
 public function add(array $data){
 		list($customer_code, $id_default_group, $id_sale, $id_gender, $company, $first_name, $last_name, $email, $password, $birthday, $credit_amount, $credit_term, $active) = $data;
 		if($password !=""){ $password = md5($password); }
 		if(!$this->check_email($email)){ // เช็คว่าอีเมล์ซ้ำกับคนอื่นหรือเปล่า
 			return false;
-		}else if(!$this->check_customer_code($customer_code)){ // เช็คว่ารหัสลูกค้าซ้ำกับคนอื่นหรือเปล่า	
+		}else if(!$this->check_customer_code($customer_code)){ // เช็คว่ารหัสลูกค้าซ้ำกับคนอื่นหรือเปล่า
 			return false;
 		}else{
-		$sql = dbQuery("INSERT INTO tbl_customer(customer_code, id_default_group, id_sale, id_gender, company, first_name, last_name, email, password, birthday, credit_amount, credit_term, active, date_add, 
+		$sql = dbQuery("INSERT INTO tbl_customer(customer_code, id_default_group, id_sale, id_gender, company, first_name, last_name, email, password, birthday, credit_amount, credit_term, active, date_add,
 		date_upd) VALUES ('$customer_code', $id_default_group, $id_sale, $id_gender, '$company', '$first_name', '$last_name', '$email', '$password', '$birthday', $credit_amount, $credit_term, $active, NOW(), NOW())");
 		}
 		if($sql){
@@ -124,8 +136,8 @@ public function edit(array $data){
 		}else if(!$this->check_customer_code($customer_code, $id_customer)){
 			return false;
 		}else{
-		$sql = dbQuery("UPDATE tbl_customer SET customer_code = '$customer_code', id_default_group = $id_default_group, id_sale = '$id_sale', id_gender = $id_gender, company = '$company', 
-			first_name = '$first_name', last_name = '$last_name', email = '$email' $pass , birthday = '$birthday', credit_amount = $credit_amount, credit_term = $credit_term, active = $active, date_upd = NOW() 
+		$sql = dbQuery("UPDATE tbl_customer SET customer_code = '$customer_code', id_default_group = $id_default_group, id_sale = '$id_sale', id_gender = $id_gender, company = '$company',
+			first_name = '$first_name', last_name = '$last_name', email = '$email' $pass , birthday = '$birthday', credit_amount = $credit_amount, credit_term = $credit_term, active = $active, date_upd = NOW()
 			WHERE id_customer = $id_customer");
 		}
 		if($sql){
@@ -165,11 +177,11 @@ public function check_email($email, $id_customer=""){
 			}else{
 				$rs = dbNumRows(dbQuery("SELECT email FROM tbl_customer WHERE email = '$email' AND email != '' "));
 			}
-			if($rs>0){ 
+			if($rs>0){
 				$this->error_message = "อีเมล์ซ้ำ มีอีเมล์นี้ในระบบแล้ว";
-				return false; 
+				return false;
 			}else{
-				 return true; 
+				 return true;
 			 }
 }
 
@@ -181,12 +193,12 @@ public function check_customer_code($customer_code, $id_customer=""){
 			}else{
 				$rs = dbNumRows(dbQuery("SELECT customer_code FROM tbl_customer WHERE customer_code = '$customer_code' AND customer_code !='' "));
 			}
-			if($rs>0){ 
+			if($rs>0){
 				$this->error_message = "รหัสซ้ำ มีรหัสนี้นี้ในระบบแล้ว";
-				return false; 
-			}else{ 
-				return true; 
-			}	
+				return false;
+			}else{
+				return true;
+			}
 }
 
 //****************************************  เพิ่มลูกค้าเข้ากล่ม  *****************************************//
@@ -198,7 +210,7 @@ public function add_to_group($id_customer, $id_group){
 //******************************************  ลบลูกค้าออกจากกลุ่ม  ***********************************//
 public function drop_group($id_customer, $id_group, $option ="single"){
 			if($option !="all"){
-				$sql = dbQuery("DELETE FROM tbl_customer_group WHERE id_customer = $id_customer AND id_group = $id_group");	
+				$sql = dbQuery("DELETE FROM tbl_customer_group WHERE id_customer = $id_customer AND id_group = $id_group");
 			}else{
 				$sql = dbQuery("DELETE FROM tbl_customer_group WHERE id_customer = $id_customer");
 			}
@@ -235,7 +247,7 @@ public function update_discount($id_customer, $id_category, $discount){
 			}else{
 				$this->error_message = "แก้ไขส่วนลดไม่สำเร็จ";
 				return false;
-			}			
+			}
 }
 
 
@@ -258,7 +270,7 @@ public function drop_discount($id_customer, $id_category, $option = ""){
 public function sponsor_detail(){
 		$id_customer = $this->id_customer;
 		$sqr = dbQuery("SELECT id_sponsor, reference, limit_amount, start, end, remark FROM tbl_sponsor WHERE id_customer = '$id_customer' AND active = 1");
-		list($id_sponsor, $reference, $limit_amount, $start, $end, $remark) = dbFetchArray($sqr);	
+		list($id_sponsor, $reference, $limit_amount, $start, $end, $remark) = dbFetchArray($sqr);
 		$today = date("Y-m-d");
 		if($today >= $start && $today <= $end){ $this->in_period = true; }else{ $this->in_period = false; }
 		$this->sponsor_amount = $limit_amount;
@@ -268,7 +280,7 @@ public function sponsor_detail(){
 }
 
 
-public function group()	{ 
+public function group()	{
 	$result = array();
 	$sql = dbQuery("SELECT id_group FROM tbl_customer_group WHERE id_customer = '".$this->id_customer."'");
 	$row = dbNumRows($sql);
@@ -285,7 +297,7 @@ public function group()	{
 public function getDiscount($id_category)	{
 	$sqr = dbQuery("SELECT discount FROM tbl_customer_discount WHERE id_category = $id_category AND id_customer = '".$this->id_customer."'");
 	if(dbNumRows($sqr) >0){	list($discount) = dbFetchArray($sqr); }else{ $discount = 0 ;}
-	return $discount;	
+	return $discount;
 }
 
 public function check_discount($id_customer, $id_category){ //***** return true ถ้ามีส่วนลดอยู่ใน Database
@@ -329,7 +341,7 @@ public function totalOrder($id_customer, $role)
 	{
 		$sc = dbNumRows($qs);
 	}
-	return $sc;	
+	return $sc;
 }
 
 
@@ -342,14 +354,14 @@ public function customer_stat(){
 		$this->credit_balance 		= $this->credit_amount - $this->credit_used;
 		$this->sponsor_used 		= $this->totalSpent($id_customer, 4);
 		$this->sponsor_balance 	= $this->sponsor_amount - $this->sponsor_used;
-		
+
 }
 	//*********** แสดงยอดซื้อของลูกค้า ตามช่วงที่กำหนด ***********************//
 	public function customer_sale_amount($id_customer="",$from="", $to=""){
 		if($id_customer ==""){ $id_customer = $this->id_customer; }
 		if($from !=="" || $to !==""){
 				$from = dbDate($from)." 00:00:00";
-				$to = dbDate($to)." 23:59:59"; 
+				$to = dbDate($to)." 23:59:59";
 			}else{
 				$rang = getMonth();
 				$to = $rang['to']." 00:00:00";
@@ -364,7 +376,7 @@ public function customer_stat(){
 			}
 		return $total_amount;
 	}
-	
+
 }//end class
 
 
