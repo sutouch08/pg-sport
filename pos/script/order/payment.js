@@ -33,7 +33,9 @@ function payCash(){
 $('#txt-received-money').keyup(function(e){
   if(e.keyCode == 13){
     payOrder();
-    console.log('pay');
+    
+  }else if(e.keyCode == 32){
+    justBalance();
   }else{
     amount = parseFloat($('#sell-amount').val());
     pay = parseFloat($(this).val());

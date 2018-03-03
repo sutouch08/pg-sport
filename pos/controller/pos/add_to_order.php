@@ -5,10 +5,14 @@ $barcode = trim($_POST['barcode']);
 $qty = $_POST['qty'];
 $pdisc = $_POST['pdisc'];
 $adisc = $_POST['adisc'];
+$price = $_POST['price'];
 
 $order = new order_pos();
 $product  = new product();
 $pd = $product->getProductAttributeByBarcode($barcode);
+
+$price = $price != '' ? $price : $pd->price;
+
 if($pd === FALSE)
 {
   $sc = FALSE;
@@ -17,16 +21,16 @@ if($pd === FALSE)
 else
 {
   //--- ถ้ามีอยู่แล้วจะได้ row เป็น object กลับมา หากไม่มี จะได้ FALSE;
-  $ds = $order->getExistsDetail($id_order, $pd->id_product_attribute, $pdisc, $adisc);
-  if($ds === FALSE)
+  $ds = $order->getExistsDetail($id_order, $pd->id_product_attribute, $price, $pdisc, $adisc);
+  if($ds == FALSE)
   {
     //---- ไม่มีรายการอยู่
-    $final_price = $pd->price;
+    $final_price = $price;
 
     //--- เอาส่วนลดเป็นจำนวนเงินมาลบออกก่อน
     if($adisc > 0 && $final_price > 0)
     {
-      $final_price = ($pd->price - $adisc) < 0 ? 0 : $pd->price - $adisc;
+      $final_price = ($price - $adisc) < 0 ? 0 : $price - $adisc;
     }
 
     //----หลังจากนั้นสามารถเป็น % ได้หลังจากหักส่วนลดเป็นจำนวนเงินแล้ว
@@ -46,10 +50,10 @@ else
       'product_name' => $product->getName($pd->id_product),
       'barcode' => $pd->barcode,
       'qty' => $qty,
-      'price' => $pd->price,
+      'price' => $price,
       'pdisc' => $pdisc,
       'adisc' => $adisc,
-      'discount_amount' => ($pd->price - $final_price) * $qty,
+      'discount_amount' => ($price - $final_price) * $qty,
       'final_price' => $final_price,
       'total_amount' => $qty * $final_price
     );

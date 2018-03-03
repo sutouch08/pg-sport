@@ -229,7 +229,7 @@ class order_pos
 
     return $sc;
   }
-  
+
 
 
 
@@ -247,12 +247,13 @@ class order_pos
 
 
 
-  public function getExistsDetail($id_order, $id_pa, $pdisc, $adisc)
+  public function getExistsDetail($id_order, $id_pa, $price, $pdisc, $adisc)
   {
     $sc  = FALSE;
     $qr  = "SELECT * FROM tbl_order_pos_detail ";
     $qr .= "WHERE id_order_pos = '".$id_order."' ";
     $qr .= "AND id_product_attribute = '".$id_pa."' ";
+    $qr .= "AND price = '".$price."' ";
     $qr .= "AND pdisc = '".$pdisc."' AND adisc = '".$adisc."' ";
 
     $qs = dbQuery($qr);

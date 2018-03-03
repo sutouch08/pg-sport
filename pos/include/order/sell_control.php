@@ -7,6 +7,10 @@
       <label>ส่วนลด [%]</label>
       <input type="number" min="0" max="100" class="form-control input-sm text-center control" id="p-disc" value="" />
     </div>
+    <div class="col-sm-1 col-1-harf padding-5">
+      <label>ราคา</label>
+      <input type="number" class="form-control input-sm text-center" min="0" id="price" value="" />
+    </div>
     <div class="col-sm-1 padding-5">
       <label>จำนวน</label>
       <input type="number" min="0" class="form-control input-sm text-center control" id="qty" value="1" />
@@ -27,16 +31,10 @@
       <label>บาร์โค้ด</label>
       <input type="text" class="form-control input-sm control" id="barcode-item" autofocus />
     </div>
-    <div class="col-sm-1 col-1-harf padding-5">
+    <div class="col-sm-1 col-1-harf padding-5 last">
       <label class="display-block not-show">Btn</label>
       <button type="button" class="btn btn-sm btn-primary btn-block control" onclick="addToOrder()">
         <i class="fa fa-bolt"></i> เพิ่มรายการ
-      </button>
-    </div>
-    <div class="col-sm-1 col-1-harf padding-5 last">
-      <label class="display-block not-show">Btn</label>
-      <button type="button" class="btn btn-sm btn-primary btn-block control" onclick="findItems()">
-        <i class="fa fa-search"></i> ค้นหาสินค้า
       </button>
     </div>
     <div class="col-sm-12 text-center" style="padding-top:15px;">

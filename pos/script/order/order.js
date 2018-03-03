@@ -64,6 +64,7 @@ function addToOrder(){
   pdisc = $('#p-disc').val();
   adisc = $('#a-disc').val();
   qty = $('#qty').val();
+  price = $('#price').val();
 
   if(id_order == ''){
     swal('ไม่พบเลขที่ออเดอร์');
@@ -83,6 +84,7 @@ function addToOrder(){
       'barcode' : barcode,
       'pdisc' : pdisc,
       'adisc' : adisc,
+      'price' : price,
       'qty' : qty
     },
     success:function(rs){
@@ -149,6 +151,7 @@ function reCal(){
 function clearField(){
   $('#p-disc').val('');
   $('#a-disc').val('');
+  $('#price').val('');
   $('#qty').val(1);
   $('#barcode-item').val('');
   $('#barcode-item').focus();

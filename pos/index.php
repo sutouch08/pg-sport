@@ -46,8 +46,9 @@ switch($page){
 		break;
 
 	default:
-		$content = 'main.php'; //'home.php';
+		$content = 'main.php';
 		$pageTitle = COMPANY;
+		$id_tab = 1;
 		break;
 }
 

@@ -46,6 +46,7 @@ $total_amount = 0;
   </div>
 </div>
 
+
 <script id="new-row-template" type="text/x-handlebarsTemplatte">
 <tr class="font-size-12 col-border-1 item-row" id="row-{{id}}">
   <td class="text-center no"></td>

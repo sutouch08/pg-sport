@@ -1,4 +1,3 @@
-
 $('#p-disc').keyup(function(e){
   if(e.keyCode == 13){
     $('#barcode-item').focus();
@@ -33,8 +32,6 @@ $('#a-disc').keyup(function(e){
 
 
 
-
-
 $('#a-disc').focusout(function(){
   disc = parseFloat($(this).val());
   disc = isNaN(disc) ? 0 : disc;
@@ -44,6 +41,11 @@ $('#a-disc').focusout(function(){
 });
 
 
+$('#price').keyup(function(e){
+  if(e.keyCode == 13){
+    $('#barcode-item').focus();
+  }
+});
 
 
 function decreaseQty(){

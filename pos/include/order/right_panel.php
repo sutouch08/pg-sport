@@ -17,7 +17,7 @@
 
   <div class="col-sm-12 margin-bottom-20">
     <div class="input-group">
-      <input type="number" class="form-control input-lg no-radius text-center payment" id="txt-received-money" placeholder="รับเงิน (F2)" />
+      <input type="number" class="form-control input-lg no-radius text-center payment" id="txt-received-money" placeholder="รับเงิน (Space)" />
       <span class="input-group-btn">
         <button type="button" class="btn btn-primary btn-lg no-radius payment" onclick="justBalance()">รับพอดี</button>
       </span>
