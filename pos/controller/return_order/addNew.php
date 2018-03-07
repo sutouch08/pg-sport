@@ -15,6 +15,8 @@ $zone = new zone();
 $pd = new product();
 
 $id_order = $order->getId($billCode);
+$order->getData($id_order);
+
 if($id_order == FALSE)
 {
   $sc = FALSE;
@@ -113,7 +115,7 @@ else
           $arr = array(
             'id_order' => 0,
             'reference' => $reference,
-            'id_role' => 8,
+            'id_role' => 12,
             'id_customer' => $id_customer,
             'id_employee' => $id_employee,
             'id_sale' => 0,
@@ -131,7 +133,8 @@ else
             'final_price' => $rs->final_price,
             'total_amount' => ($rs->final_price * $qty) * (-1),
             'cost' => (-1 * $cost),
-            'total_cost' => (-1) * ($qty * $cost)
+            'total_cost' => (-1) * ($qty * $cost),
+            'id_payment' => $order->id_payment
           );
 
           if($order->sold($arr) !== TRUE)

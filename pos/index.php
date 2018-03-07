@@ -45,6 +45,17 @@ switch($page){
 		$id_tab = 40;
 		break;
 
+	//--- รายงาน
+	case 'sale_summary' :
+		$content = 'report/sale_summary.php';
+		$pageTitle = 'รายงานสรุปยอดขาย';
+		break;
+
+	case 'sale_by_item' :
+		$content = 'report/sale_by_item.php';
+		$pageTitle = 'รายงานยอดขายแยกตามสินค้า';
+		break;
+
 	default:
 		$content = 'main.php';
 		$pageTitle = COMPANY;

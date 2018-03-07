@@ -97,7 +97,8 @@ else
           'final_price' => $rs->final_price,
           'total_amount' => $rs->total_amount,
           'cost' => $cost,
-          'total_cost' => $rs->qty * $cost
+          'total_cost' => $rs->qty * $cost,
+          'id_payment' => $id_payment
         );
 
         if($order->sold($arr) !== TRUE)

@@ -20,12 +20,16 @@ function justBalance(){
 
 function payByCard(){
   $('#payment-method').val(2);
+  $('#btn-pay-card').addClass('btn-primary');
+  $('#btn-pay-cash').removeClass('btn-primary');
   justBalance();
 }
 
 
-function payCash(){
+function payByCash(){
   $('#payment-method').val(1);
+  $('#btn-pay-cash').addClass('btn-primary');
+  $('#btn-pay-card').removeClass('btn-primary');
   $('#txt-received-money').focus();
 }
 
@@ -33,7 +37,7 @@ function payCash(){
 $('#txt-received-money').keyup(function(e){
   if(e.keyCode == 13){
     payOrder();
-    
+
   }else if(e.keyCode == 32){
     justBalance();
   }else{

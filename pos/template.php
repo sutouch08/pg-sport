@@ -38,13 +38,6 @@ function row_no()
 	return $no;
 }
 
-
-$pm = checkAccess($id_profile, $id_tab);
-$view = $pm['view'];
-$add = $pm['add'];
-$edit = $pm['edit'];
-$delete = $pm['delete'];
-
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -115,8 +108,17 @@ $delete = $pm['delete'];
 
 <div class="starter-template">
   <?php
-			accessDeny($view);
-			include $content;
+	if($id_tab != 0)
+	{
+		$pm = checkAccess($id_profile, $id_tab);
+		$view = $pm['view'];
+		$add = $pm['add'];
+		$edit = $pm['edit'];
+		$delete = $pm['delete'];
+		accessDeny($view);
+	}
+			
+		include $content;
 		?>
 </div>
 <div class='modal fade' id='xloader' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true' data-backdrop="static">
