@@ -88,6 +88,7 @@ if(isset($_GET['add'])) :
     <input type='hidden' name='id_order' id='id_order' value='<?php echo $id_order; ?>' />
     <input type='hidden' name='id_customer' id='id_customer' value='<?php echo $id_customer; ?>' />
     <input type="hidden" name="role" id="role" value="1" />
+		<input type="hidden" name="isOnline" id="isOnline" value="1" />
 	<div class='col-sm-2'>
     	<label>เลขที่เอกสาร</label>
         <input type='text' id='doc_id' class='form-control input-sm' value='<?php echo $new_ref; ?>' disabled='disabled'/>
@@ -148,7 +149,7 @@ if(isset($_GET['add'])) :
 </div><!---/ row -->
 <hr style='border-color:#CCC; margin-top: 0px; margin-bottom:0px;' />
 <div class='row'>
-	<div class='col-sm-12'>		
+	<div class='col-sm-12'>
 		<div class='tab-content' style="min-height:1px; padding:0px;">
 		<?php echo getCategoryTab(); ?>
 		</div>
@@ -252,6 +253,7 @@ if(isset($_GET['add'])) :
 	$online 			= $order->payment == 'ออนไลน์' ? TRUE : FALSE;
 ?>
 <input type='hidden' name='id_order' id='id_order' value='<?php echo $id_order; ?>' />
+<input type="hidden" id="online" value="1" />
 <div class="row">
 	<div class="col-sm-12">
     	<h5 class="title">
@@ -294,6 +296,7 @@ if(isset($_GET['add'])) :
         	<button type="button" class="btn btn-info btn-sm" onclick="check_order(<?php echo $id_order; ?>)"><i class="fa fa-search"></i>&nbsp; ตรวจสอบรายการ</button>
         <?php endif; ?>
 			<button type="button" class="btn btn-success btn-sm" onclick="print_order(<?php echo $id_order; ?>)"><i class="fa fa-print"></i>&nbsp; พิมพ์</button>
+			<button type="button" class="btn btn-info btn-sm" onClick="printAddress(<?php echo $id_order; ?>, <?php echo $order->id_customer; ?>)"><i class="fa fa-file-text-o"></i> พิมพ์ใบปะหน้า</button>
         </p>
 	</div>
 </div><!-- /row -->
@@ -976,7 +979,7 @@ $('#modal_approve_edit').on('shown.bs.modal', function () {  $('#edit_bill_passw
 <?php			$customer_name = customer_name($order->id_customer); ?>
 <?php			$customer  = $order->payment != 'ออนไลน์' ? $customer_name : ( $online != '' ? $customer_name.' ( '.$online.' )' : $customer_name );	?>
 <?php			$isClosed	= isOrderClosed($id);		?>
-<?php			$orderAmount = orderAmount($id) + getDeliveryFee($id) + getServiceFee($id);	?>
+<?php			$orderAmount = orderAmount($id) - bill_discount($id) + getDeliveryFee($id) + getServiceFee($id);	?>
 <?php			if( $order->valid != 2 ) : ?>
 			<?php	if( !$isClosed ) : ?>
 			<tr style='color:#FFF; background-color:<?php echo state_color($order->current_state); ?>; font-size:12px;'>
@@ -1017,6 +1020,8 @@ $('#modal_approve_edit').on('shown.bs.modal', function () {  $('#edit_bill_passw
 <script>  var x = setTimeout(function () { location.reload(); }, 60 * 5000); </script>
 	</div><!--/ col-sm-12 -->
 </div><!--/ row -->
+
+
 <div class='modal fade' id='order_grid' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
     <div class='modal-dialog' id='modal'>
         <div class='modal-content'>
@@ -1034,6 +1039,23 @@ $('#modal_approve_edit').on('shown.bs.modal', function () {  $('#edit_bill_passw
 </div>
 <?php endif; ?>
 </div><!--/ Container -->
+
+<div class='modal fade' id='infoModal' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
+	<div class='modal-dialog' style="width:500px;">
+		<div class='modal-content'>
+				<div class='modal-header'>
+				<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+									<input type="hidden" id="id_customer"/><input type="hidden" id="id_order" />
+			 </div>
+			 <div class='modal-body' id='info_body'>
+
+							 </div>
+			 <div class='modal-footer'>
+								<button type="button" class="btn btn-primary btn-sm" onClick="printSelectAddress()"><i class="fa fa-print"></i> พิมพ์</button>
+			 </div>
+		</div>
+	</div>
+</div>
 
 <div class='modal fade' id='confirmModal' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
     <div class='modal-dialog' style="width:350px;">
@@ -1194,6 +1216,81 @@ $("#btnAdd").click(function(e) {
 			var reg = new RegExp('(\\s|^)' + className + '(\\s|$)')
 			el.className=el.className.replace(reg, ' ')
   		}
+	}
+
+	function printAddress(id_order, id_customer)
+	{
+		if( $("#online").length ){
+			getOnlineAddress(id_order);
+		}else{
+			getAddressForm(id_order, id_customer);
+		}
+	}
+
+	function getOnlineAddress(id_order)
+	{
+		$.ajax({
+			url:"controller/orderController.php?getOnlineAddress",
+			type:"POST", cache:"false", data:{"id_order" : id_order },
+			success: function(rs){
+				var rs = $.trim(rs);
+				if( rs == 'noaddress' || isNaN( parseInt(rs) ) ){
+					noAddress();
+				}else{
+					printOnlineAddress(id_order, rs);
+				}
+			}
+		});
+	}
+	function getAddressForm(id_order, id_customer)
+	{
+		$.ajax({
+			url:"controller/addressController.php?getAddressForm",
+			type:"POST",cache: "false", data:{ "id_order" : id_order, "id_customer" : id_customer },
+			success: function(rs){
+				var rs = $.trim(rs);
+				if( rs == 'no_address' ){
+					noAddress();
+				}else if( rs == 'no_sender' ){
+					noSender();
+				}else if( rs == 1 ){
+					printPackingSheet(id_order, id_customer);
+				}else{
+					$("#id_customer").val(id_customer);
+					$("#id_order").val(id_order);
+					$("#info_body").html(rs);
+					$("#infoModal").modal("show");
+				}
+			}
+		});
+	}
+
+
+	function printOnlineAddress(id_order, id_address)
+	{
+		var center = ($(document).width() - 800)/2;
+		window.open("controller/addressController.php?printOnlineAddressSheet&id_order="+id_order+"&id_address="+id_address, "_blank", "width=800, height=900. left="+center+", scrollbars=yes");
+	}
+
+	function printSelectAddress()
+	{
+		var id_order = $("#id_order").val();
+		var id_cus = $("#id_customer").val();
+		var id_ad =	$('input[name=id_address]:radio:checked').val();
+		var id_sen	= $('input[name=id_sender]:radio:checked').val();
+		if( isNaN(parseInt(id_ad)) ){ swal("กรุณาเลือกที่อยู่", "", "warning"); return false; }
+		if( isNaN(parseInt(id_sen)) ){ swal("กรุณาเลือกขนส่ง", "", "warning"); return false; }
+		$("#infoModal").modal('hide');
+		var center = ($(document).width() - 800)/2;
+		window.open("controller/addressController.php?printAddressSheet&id_order="+id_order+"&id_customer="+id_cus+"&id_address="+id_ad+"&id_sender="+id_sen, "_blank", "width=800, height=900. left="+center+", scrollbars=yes");
+	}
+	function noAddress()
+	{
+		swal("ข้อผิดพลาด", "ไม่พบที่อยู่ของลูกค้า กรุณาตรวจสอบว่าลูกค้ามีที่อยู่ในระบบแล้วหรือยัง", "warning");
+	}
+	function noSender()
+	{
+		swal("ไม่พบผู้จัดส่ง", "ไม่พบรายชื่อผู้จัดส่ง กรุณาตรวจสอบว่าลูกค้ามีการกำหนดชื่อผู้จัดส่งในระบบแล้วหรือยัง", "warning");
 	}
 </script>
 <script src="script/order_online.js"></script>

@@ -979,6 +979,8 @@ if(isset($_GET['reference'])){
 	echo $product->id_product_attribute.":".$product->product_sell.":".$product->available_qty();
 }
 
+
+
 if(isset($_GET['edit'])&&isset($_GET['state_change'])){
 	$id_order = $_POST['id_order'];
 	$id_employee = $_POST['id_employee'];
@@ -996,6 +998,9 @@ if(isset($_GET['edit'])&&isset($_GET['state_change'])){
 			header("location: ../index.php?content=order&edit=y&id_order=$id_order&view_detail=y&error=$message");
 		}
 }
+
+
+
 if(isset($_GET['edit_order'])&&isset($_POST['new_qty'])&&$_POST['new_qty'] !=""){
 	$id_order = $_POST['id_order'];
 	$id_product_attribute = $_POST['id_product_attribute'];
@@ -1328,9 +1333,11 @@ if( isset( $_GET['print_order']) && isset( $_GET['id_order'] ) )
 	$order 		= new order($id_order);
 	$print 		= new printer();
 	$doc			= doc_type($order->role);
+	$onlineCustomer = getCustomerOnlineReference($id_order);
+	$cusName = $onlineCustomer == '' ? customer_name($order->id_customer) : customer_name($order->id_customer).' ['.$onlineCustomer.']';
 	echo $print->doc_header();
 	$print->add_title($doc['title']);
-	$header		= array("ลูกค้า"=>customer_name($order->id_customer), "วันที่"=>thaiDate($order->date_add), "พนักงานขาย"=>sale_name($order->id_sale), "เลขที่เอกสาร"=>$order->reference);
+	$header		= array("ลูกค้า"=>$cusName, "วันที่"=>thaiDate($order->date_add), "พนักงานขาย"=>sale_name($order->id_sale), "เลขที่เอกสาร"=>$order->reference);
 	$print->add_header($header);
 	$detail 		= dbQuery("SELECT * FROM tbl_order_detail WHERE id_order = ".$id_order);
 	$total_row 	= dbNumRows($detail);

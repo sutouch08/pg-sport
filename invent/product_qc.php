@@ -1,4 +1,4 @@
-<?php 
+<?php
 	$page_menu = "invent_order_qc";
 	$page_name = "ตรวจสินค้า";
 	$id_tab = 18;
@@ -10,6 +10,7 @@
 	$delete = $pm['delete'];
 	accessDeny($view);
 	include 'function/qc_helper.php';
+	include 'function/order_helper.php';
 	$ps = checkAccess($id_profile, 58);
 	$suppervisor = $ps['add'] + $ps['edit'] + $ps['delete'] > 0 ? TRUE : FALSE;
 	   ?>
@@ -21,20 +22,20 @@
        <p class="pull-right top-p">
 	    <?php if( isset( $_GET['id_order'] ) OR isset( $_GET['process'] ) ) : ?>
     			<button type="button" class="btn btn-sm btn-warning" onClick="goBack()"><i class="fa fa-arrow-left"></i> กลับ</button>
-    <?php endif; ?>	     
-           
+    <?php endif; ?>
+
 	<?php if( ! isset( $_GET['id_order'] ) && ! isset( $_GET['process'] ) ) : ?>
     <?php	if( $add ) : ?>
     				<button type="button" class="btn btn-info btn-sm" onClick="orderInProcess()"><i class="fa fa-hourglass-half"></i> รายการกำลังตรวจ</button>
-	<?php	endif; ?>                   
-    <?php endif; ?>	
+	<?php	endif; ?>
+    <?php endif; ?>
        </p>
     </div>
 </div>
 <hr style='border-color:#CCC; margin-top: 5px; margin-bottom:10px;' />
 
 
-<?php if( isset( $_GET['id_order'] ) ) :	
+<?php if( isset( $_GET['id_order'] ) ) :
 	$id_order 	= $_GET['id_order'];
 	$id_user 	= getCookie('user_id');
 	$order 		= new order($id_order);
@@ -44,15 +45,15 @@
 	$id_zone		= isset( $_GET['id_zone'] ) ? $_GET['id_zone'] : '';
 	$id_pa		= isset( $_GET['id_product_attribute'] ) ? $_GET['id_product_attribute'] : '';
 	$zoneName	= $id_zone != '' ? get_zone($id_zone) : '';
-	
+
 	$idc = dbNumRows(dbQuery("SELECT id_order_state_change FROM tbl_order_state_change WHERE id_order = $id_order AND id_order_state = 11 AND id_employee != $id_user"));
 	$ids = dbNumRows(dbQuery("SELECT id_order_state_change FROM tbl_order_state_change WHERE id_order = $id_order AND id_order_state = 11 AND id_employee = $id_user"));
 	?>
 
-<?php if( $suppervisor === FALSE ) : ?> 
+<?php if( $suppervisor === FALSE ) : ?>
 	<?php if($idc > 0 && $ids < 1) : ?>
     <script type="text/javascript">
-		window.location = "index.php?content=qc&error=เออเดอร์นี้มีคนตรวจแล้ว";	
+		window.location = "index.php?content=qc&error=เออเดอร์นี้มีคนตรวจแล้ว";
 	</script>
 	<?php endif; ?>
 <?php endif; ?>
@@ -60,33 +61,33 @@
 	<div class="row">
 		<div class="col-xs-2">เลขที่ : <?php echo $order->reference; ?></div>
         <div class="col-xs-2">ลูกค้า : <?php echo $customer->full_name; ?></div>
-        <div class="col-xs-2">วันที่สั่ง : <?php echo thaiDate($order->date_add); ?></div>	
+        <div class="col-xs-2">วันที่สั่ง : <?php echo thaiDate($order->date_add); ?></div>
 		<div class="col-xs-2">จำนวนรายการ : <?php echo $order->total_product; ?> รายการ </div>
         <div class="col-xs-2">จำนวนตัว : <?php echo $order->total_qty; ?> ตัว </div>
         <div class="col-xs-2">มูลค่า : <?php echo number_format($order->total_amount,2); ?> </div>
 		<div class="col-xs-12">&nbsp;</div>
 		<div class="col-xs-12">หมายเหตุ : <?php echo $order->comment; ?></div>
         <div class="col-xs-12">&nbsp;</div>
-        <div class="col-xs-12">  
+        <div class="col-xs-12">
         <p class="pull-right" id="print_row" >
-<?php $qs = dbQuery("SELECT id_box FROM tbl_box WHERE id_order = ".$id_order); ?>        
+<?php $qs = dbQuery("SELECT id_box FROM tbl_box WHERE id_order = ".$id_order); ?>
 <?php if(dbNumRows($qs) > 0 ) : ?>
 <?php 	$i = 1; ?>
 <?php 	while($ro = dbFetchArray($qs)) : ?>
 <?php 	$qo = dbQuery("SELECT SUM(qty) AS qty FROM tbl_qc WHERE id_order = ".$id_order." AND id_box = ".$ro['id_box']." AND valid = 1"); ?>
 <?php 	$rs = dbFetchArray($qo) ; ?>
 <a href="controller/qcController.php?print_packing_list&id_order=<?php echo $id_order; ?>&id_box=<?php echo $ro['id_box']; ?>&number=<?php echo $i; ?>" target="_blank">
- <button type="button" id="print_<?php echo $ro['id_box']; ?>" class="btn btn-success" ><i class="fa fa-print"></i>&nbsp;กล่องที่<?php echo $i; ?> :  <span id="<?php echo $ro['id_box'];?>"><?php echo $rs['qty']; ?></span> pcs.</button>  
- </a>          
-            <?php $i++; ?>   
+ <button type="button" id="print_<?php echo $ro['id_box']; ?>" class="btn btn-success" ><i class="fa fa-print"></i>&nbsp;กล่องที่<?php echo $i; ?> :  <span id="<?php echo $ro['id_box'];?>"><?php echo $rs['qty']; ?></span> pcs.</button>
+ </a>
+            <?php $i++; ?>
 <?php 	endwhile; ?>
 <?php else : ?>
 			ยังไม่มีการตรวจสินค้า
-<?php endif; ?>    
-			</p>     
+<?php endif; ?>
+			</p>
             </div>
 	</div>
-	
+
 	<hr style="border-color:#CCC; margin-top: 0px; margin-bottom:15px;" />
     <input type="hidden" id="id_user" name="id_user" value="<?php echo $id_user; ?>"/>
     <input type="hidden" id="id_order" name="id_order" value="<?php echo $id_order; ?>" />
@@ -103,7 +104,7 @@
             <div class="input-group">
                 <span class="input-group-addon">บาร์โค้ดสินค้า</span>
                 <input type="text" id="barcode_item" name="barcode_item" class="form-control input-sm" autocomplete="off" <?php echo $id_box != '' ? 'autofocus' : 'disabled'; ?>  />
-            </div> 
+            </div>
         </div>
         <div class="col-xs-2" id="load">
             <button type="button" class="btn btn-default btn-sm" id="add" onclick="qc_process()" >ตกลง</button>
@@ -115,25 +116,25 @@
             <button type="button" class="btn btn-info btn-sm" id="btnPrintAddress" onclick="printAddress(<?php echo $id_order; ?>, <?php echo $order->id_customer; ?>)" ><i class="fa fa-refresh"></i>&nbsp; เปลี่ยนกล่อง</button>
         </div>
 	</div>
-	<hr style="border-color:#CCC; margin-top: 15px; margin-bottom:15px;" />	
-	
-	
+	<hr style="border-color:#CCC; margin-top: 15px; margin-bottom:15px;" />
+
+
 	<div id="value">
 	<table class='table' id='table1'>
 	<thead id='head'>
 		<th style='width:20%; text-align:center;'>บาร์โค้ด</th>
         <th style='width:35%;'>สินค้า</th>
 		<th style='width:10%; text-align:center;'>จำนวนที่สั่ง</th>
-        <th style='width:10%; text-align:center;'>จำนวนที่จัด</th>	
+        <th style='width:10%; text-align:center;'>จำนวนที่จัด</th>
         <th style='width:10%; text-align:center;'>ตรวจแล้ว</th>
         <th style='width:10%; text-align:center;'>จากโซน</th>
 	</thead>
     <?php
 	if($order->current_state == 5)
-	{ 
-		$order->state_change($order->id_order, 11, $id_user); 
+	{
+		$order->state_change($order->id_order, 11, $id_user);
 	}
-	
+
 	$qs = dbQuery("SELECT * FROM tbl_order_detail WHERE id_order = ".$id_order);
 	$row1 = 0;
 	while( $rs = dbFetchObject( $qs ) ) :
@@ -156,7 +157,7 @@
                 	<button type="button" class="btn btn-xs btn-default btn-pop" data-container="body" data-toggle="popover" data-placement="right" data-html="true" data-content="<?php echo product_from_zone($id_order, $rs->id_product_attribute); ?>">
                     	จากโซน
                     </button>
-                <?php endif; ?>	
+                <?php endif; ?>
                 </td>
             </tr>
 <?php	$row1++;				?>
@@ -172,7 +173,7 @@
             		<label style="display:block;"><input type='checkbox' id='checkboxes' onChange="getcondition()" /> สินค้ามีไม่ครบ</label>
             		<button type="button" class="btn btn-sm btn-success" id="btn_close_job" style="display:none;"  onClick="closeJob(<?php echo $id_order; ?>, <?php echo $id_user; ?>)">บังคับจบ</button>
 				</td>
-			</tr>                                   
+			</tr>
 		</table>
 	<hr style='border-color:#CCC; margin-top: 15px; margin-bottom:15px;' />
 	<div class='row'>
@@ -184,12 +185,12 @@
 		<th style='width:20%; text-align:center;'>บาร์โค้ด</th>
         <th style='width:35%;'>สินค้า</th>
 		<th style='width:10%; text-align:center;'>จำนวนที่สั่ง</th>
-        <th style='width:10%; text-align:center;'>จำนวนที่จัด</th>	
+        <th style='width:10%; text-align:center;'>จำนวนที่จัด</th>
         <th style='width:10%; text-align:center;'>ตรวจแล้ว</th>
         <th style='width:10%; text-align:center;'>จากโซน</th>
 	</thead>
-<?php    
-	
+<?php
+
 	$qs = "SELECT SUM(qty) AS qty, tbl_qc.id_product_attribute AS id_pa, product_reference AS reference, product_name, barcode ";
 	$qs .= "FROM tbl_qc ";
 	$qs .= "JOIN tbl_order_detail ON tbl_qc.id_product_attribute = tbl_order_detail.id_product_attribute ";
@@ -197,8 +198,8 @@
 	$qs .= "WHERE tbl_qc.id_order = ".$id_order." AND valid = 1 GROUP BY tbl_qc.id_product_attribute ORDER BY tbl_qc.id_product_attribute ASC";
 	$qs = dbQuery($qs);
 	$n=0;
-	if( dbNumRows($qs) > 0 ) : 
-		while($rs = dbFetchObject( $qs ) ) : 
+	if( dbNumRows($qs) > 0 ) :
+		while($rs = dbFetchObject( $qs ) ) :
 			$id_pa  		= $rs->id_pa;
 			$order_qty 	= sumOrderQty($id_order, $id_pa);
 			$product		= new product();
@@ -220,7 +221,7 @@
                 	<button type="button" class="btn btn-xs btn-default btn-pop" data-container="body" data-toggle="popover" data-placement="right" data-html="true" data-content="<?php echo product_from_zone($id_order, $id_pa); ?>">
                     	จากโซน
                     </button>
-                <?php endif; ?>	
+                <?php endif; ?>
                 </td>
             </tr>
 <?php	elseif( number_format( $order_qty ) == 0 ) :	?>
@@ -235,10 +236,10 @@
                     <input type="hidden" id="must_edit_<?php echo $id_pa; ?>" name="must_edit" value="1" />
                 </td>
             </tr>
-<?php		endif; ?>		
+<?php		endif; ?>
 <?php	endwhile; ?>
 <?php	endif; ?>
-	</table>	
+	</table>
 <div>
 
 <script id="template" type="text/x-handlebars-template">
@@ -247,11 +248,11 @@
 		{{ nocontent }}
 	{{else}}
 		<a href="controller/qcController.php?print_packing_list&id_order=<?php echo $id_order; ?>&id_box={{id_box}}&number={{i}}" target="_blank">
- 		<button type="button" id="print_{{id_box}}" class="btn {{class}}" ><i class="fa fa-print"></i>&nbsp;กล่องที่{{i}} :  <span id="{{id_box}}">{{qty}}</span> pcs.</button>  
- 		</a> 
-		
+ 		<button type="button" id="print_{{id_box}}" class="btn {{class}}" ><i class="fa fa-print"></i>&nbsp;กล่องที่{{i}} :  <span id="{{id_box}}">{{qty}}</span> pcs.</button>
+ 		</a>
+
 	{{/if}}
-	{{/each}}	 
+	{{/each}}
 </script>
 <script id="rowTemplate" type="text/x-handlebars-template">
 <td align="center">{{ barcode }}</td>
@@ -275,25 +276,27 @@
 		<table class="table">
 		<thead>
 			<th style="width: 5%; text-align:center;">ลำดับ</th>
-            <th style="width: 20%; text-align:center;">เลขที่เอกสาร</th>
-			<th style="width: 15%; text-align:center;">ลูกค้า</th>
-            <th style="width: 15%; text-align:center;">รูปแบบ</th>
-            <th style="width: 15%; text-align:center;">วันที่สั่ง</th>
-            <th style="width: 20%; text-align:center;">พนักงานจัด</th>
-            <th style="width: 5%; text-align:center;">&nbsp;</th>
+      <th style="width: 15%; text-align:center;">เลขที่เอกสาร</th>
+			<th style="text-align:center;">ลูกค้า</th>
+      <th style="width: 15%; text-align:center;">รูปแบบ</th>
+      <th style="width: 15%; text-align:center;">วันที่สั่ง</th>
+      <th style="width: 20%; text-align:center;">พนักงานจัด</th>
+      <th style="width: 5%; text-align:center;">&nbsp;</th> 
 		</thead>
-<?php         
+<?php
 		$sql = dbQuery("SELECT tbl_order.id_order, tbl_temp.id_employee FROM tbl_order LEFT JOIN tbl_temp ON tbl_order.id_order = tbl_temp.id_order WHERE current_state = 11  GROUP BY tbl_order.id_order");
 		$n = 1;
 		while($row = dbFetchArray($sql)) :
 			$order = new order($row['id_order']);
-			$customer = new customer($order->id_customer);
+			$customer_name = customer_name($order->id_customer);
+			$online = getCustomerOnlineReference($order->id_order);
+			$customer  = $order->payment != 'ออนไลน์' ? $customer_name : ( $online != '' ? $customer_name.' ( '.$online.' )' : $customer_name );
+			//$customer = new customer($order->id_customer);
 			$employee = new employee($row['id_employee']); ?>
 			<tr>
 				<td align="center"><?php echo $n; ?></td>
 				<td align="center"><?php echo $order->reference; ?></td>
-				<td align="center"><?php echo $customer->full_name; ?></td>
-				<td align="center"><?php echo $order->role_name; ?></td>
+				<td align="center"><?php echo $customer; ?></td>
 				<td align="center"><?php echo thaiDate($order->date_add); ?></td>
 				<td align="center"><?php echo $employee->full_name; ?></td>
 				<td align="center"><a href="index.php?content=qc&process=y&id_order=<?php echo $order->id_order; ?>"><span class="btn btn-default">ตรวจสินค้าต่อ</span></a></td>
@@ -315,26 +318,27 @@ setInterval(function(){ window.location.reload(); }, 60000);
 		<table class="table">
 		<thead>
 			<th style="width: 5%; text-align:center;">ลำดับ</th>
-            <th style="width: 20%; text-align:center;">เลขที่เอกสาร</th>
-			<th style="width: 15%; text-align:center;">ลูกค้า</th>
-            <th style="width: 15%; text-align:center;">รูปแบบ</th>
-            <th style="width: 15%; text-align:center;">วันที่สั่ง</th>
+      <th style="width:15%; text-align:center;">เลขที่เอกสาร</th>
+			<th style="text-align:center;">ลูกค้า</th>
+      <th style="width: 15%; text-align:center;">วันที่สั่ง</th>
 			<th style="width: 15%; text-align:center;">พนักงานจัด</th>
-            <th style="width: 15%; text-align:center;">&nbsp;</th>
+      <th style="width: 15%; text-align:center;">&nbsp;</th>
 		</thead>
-<?php        
+<?php
 		$sql = dbQuery("SELECT id_order FROM tbl_order WHERE current_state = 5");
 		$n = 1;
 		while($row = dbFetchArray($sql)) :
 			$order = new order($row['id_order']);
-			$customer = new customer($order->id_customer);
+		 	$customer_name = customer_name($order->id_customer);
+			$online = getCustomerOnlineReference($order->id_order);
+			$customer  = $order->payment != 'ออนไลน์' ? $customer_name : ( $online != '' ? $customer_name.' ( '.$online.' )' : $customer_name );
+			//$customer = new customer($order->id_customer);
 			list($id_employee) = dbFetchArray(dbQuery("SELECT id_employee FROM tbl_temp WHERE id_order =".$order->id_order." AND status = 1 GROUP BY id_employee"));
 			$employee = new employee($id_employee); ?>
 			<tr>
 				<td align="center"><?php echo $n; ?></td>
 				<td align="center"><?php echo $order->reference; ?></td>
-				<td align="center"><?php echo $customer->full_name; ?></td>
-				<td align="center"><?php echo $order->role_name; ?></td>
+				<td align="center"><?php echo $customer; ?></td>
 				<td align="center"><?php echo thaiDate($order->date_add); ?></td>
 				<td align="center"><?php echo $employee->full_name; ?></td>
 				<td align="center"><a href="index.php?content=qc&process=y&id_order=<?php echo $order->id_order; ?>"><span class='btn btn-default'>ตรวจสินค้า</span></a></td>
@@ -384,7 +388,7 @@ endif;
             </div>
         </div>
     </div>
-    
+
     <div class='modal fade' id='infoModal' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
 		<div class='modal-dialog' style="width:500px;">
 			<div class='modal-content'>
@@ -392,7 +396,7 @@ endif;
 					<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
 				 </div>
 				 <div class='modal-body' id='info_body'>
-                 	
+
                  </div>
 				 <div class='modal-footer'>
                  	<button type="button" class="btn btn-primary btn-sm" onClick="printSelectAddress()"><i class="fa fa-print"></i> พิมพ์</button>
@@ -400,7 +404,7 @@ endif;
 			</div>
 		</div>
 	</div>
-<script>	
+<script>
 //----------------------------------------------  NEW CODE -------------------------------------------//
 
 $(document).ready(function(e) {
@@ -449,10 +453,10 @@ function getItemChecked(id_order, id_pa)
 function confirmEdit()
 {
 	var ci		= $(".edit-qc:checked").length;
-	if( ci == 0 ){ 
+	if( ci == 0 ){
 		$("#edit_qc").modal('hide');
-		swal({ title: "Warning!!", text: "กรุณาเลือกรายการที่ต้องการเอาออก"}, function(){ $("#edit_qc").modal("show"); }); 
-		return false; 
+		swal({ title: "Warning!!", text: "กรุณาเลือกรายการที่ต้องการเอาออก"}, function(){ $("#edit_qc").modal("show"); });
+		return false;
 	}
 	$.ajax({
 		url:"controller/qcController.php?editQc",
@@ -466,7 +470,7 @@ function confirmEdit()
 				updateQcChecked(id_order, id_pa);
 			}
 		}
-	});		
+	});
 }
 
 function updateQcChecked(id_order, id_pa)
@@ -514,16 +518,16 @@ function moveToCancle(id_order, id_pa)
 function orderInProcess()
 {
 	window.location.href = 'index.php?content=qc&process';
-}	
+}
 
 function goBack()
 {
-	window.location.href = 'index.php?content=qc';	
+	window.location.href = 'index.php?content=qc';
 }
 
 function goPrepare(id_order)
 {
-	window.location.href = 'index.php?content=prepare&process&id_order='+id_order;	
+	window.location.href = 'index.php?content=prepare&process&id_order='+id_order;
 }
 
 
@@ -532,7 +536,7 @@ function closeJob(id_order, id_user)
 	var diff = $("#mus_edit").length;
 	if( diff > 0 )
 	{
-		swal("มีข้อผิดพลาด", "มีรายการสินค้าที่ถูกยกเลิก กรุณาแก้ไขรายการก่อนบันทึก", "error");	
+		swal("มีข้อผิดพลาด", "มีรายการสินค้าที่ถูกยกเลิก กรุณาแก้ไขรายการก่อนบันทึก", "error");
 		return false;
 	}
 	load_in();
@@ -569,14 +573,14 @@ function setPopover()
 	});
 	$(".btn-pop").mouseleave(function(e) {
 		$(this).popover("hide");
-	});	
+	});
 }
 
 function getcondition(){
 	if( $("#checkboxes").prop("checked") )
 	{
-		
-		$("#btn_close_job").css("display", "");	
+
+		$("#btn_close_job").css("display", "");
 	}else{
 		$("#btn_close_job").css("display","none");
 	}
@@ -624,11 +628,11 @@ function printSelectAddress()
 }
 function noAddress()
 {
-	swal("ข้อผิดพลาด", "ไม่พบที่อยู่ของลูกค้า กรุณาตรวจสอบว่าลูกค้ามีที่อยู่ในระบบแล้วหรือยัง", "warning");	
+	swal("ข้อผิดพลาด", "ไม่พบที่อยู่ของลูกค้า กรุณาตรวจสอบว่าลูกค้ามีที่อยู่ในระบบแล้วหรือยัง", "warning");
 }
 function noSender()
 {
-	swal("ไม่พบผู้จัดส่ง", "ไม่พบรายชื่อผู้จัดส่ง กรุณาตรวจสอบว่าลูกค้ามีการกำหนดชื่อผู้จัดส่งในระบบแล้วหรือยัง", "warning");	
+	swal("ไม่พบผู้จัดส่ง", "ไม่พบรายชื่อผู้จัดส่ง กรุณาตรวจสอบว่าลูกค้ามีการกำหนดชื่อผู้จัดส่งในระบบแล้วหรือยัง", "warning");
 }
 
 
@@ -639,14 +643,14 @@ $("#barcode_item").keyup(function(e){
     {
         qc_process();
     }
-});		
+});
 
 $("#barcode_box").keyup(function(e){
     if(e.keyCode == 13)
     {
         get_box();
     }
-});	
+});
 
 function change_box(){
 	$("#barcode_item").attr("disabled", "disabled");
@@ -657,7 +661,7 @@ function change_box(){
 	$("#barcode_box").focus();
 }
 
-function get_box(){	
+function get_box(){
     var code = $("#barcode_box").val();
 	if(code ==""){
 		swal("ยังไม่ได้ระบุบาร์โค้ดกล่อง");
@@ -679,7 +683,7 @@ function get_box(){
 					update_box(id_box);
 					$("#box_detect").remove();
 				}else if(status == "closed"){
-					swal("กล่องนี้ถูกบันทึกว่าจัดส่งไปแล้ว");					
+					swal("กล่องนี้ถูกบันทึกว่าจัดส่งไปแล้ว");
 				}else{
 					swal("เพิ่มกล่องเข้าระบบไม่สำเร็จ");
 				}
@@ -702,7 +706,7 @@ function qc_process(){
 		$.ajax({
 		url:"controller/qcController.php?checked=y",
 		data: {"id_order" : id_order, "id_user" : id_user, "barcode_item" : barcode_item, "id_box" : id_box},
-		type:"GET", cache:false, 
+		type:"GET", cache:false,
 		success: function(dataset){
 			dataset = $.trim(dataset);
 			arr = dataset.split(":");
@@ -727,7 +731,7 @@ function qc_process(){
 				error = arr[1];
 				beep();
 				$("#error_label").text(error);
-				$("#qc_error").modal("show");				
+				$("#qc_error").modal("show");
 			}
 			validQc();
 			$("#barcode_item").focus();
@@ -737,16 +741,16 @@ function qc_process(){
 		swal("คุณยังไม่ได้ใส่บาร์โค้ด");
 		$("#barcode_item").focus();
 	}
-	
+
 }
 
 $("#qc_error").on("hidden.bs.modal", function(e){
-	$("#barcode_item").removeAttr("disabled"); 
+	$("#barcode_item").removeAttr("disabled");
 	$("#barcode_item").focus();
 });
 
 $(document).ready(function(e) {
-    if($("input[name='must_edit']").length){ 
+    if($("input[name='must_edit']").length){
 		$("#checkboxes").css("display","none");
 		$("#btn_close_job").css("display", "none");
 		$("#force_close").html("<span style='color:red;'>รายการตรวจสินค้าที่ไม่ถูกต้อง จำเป็นต้องแก้ไขก่อนจึงจะทำงานลำดับต่อไปได้</span>");

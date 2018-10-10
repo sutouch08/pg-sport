@@ -853,7 +853,6 @@ $('#modal_approve_edit').on('shown.bs.modal', function () {  $('#edit_bill_passw
                 <th style='width:5%; text-align:center;'>ID</th>
                 <th style='width:10%;'>เลขที่อ้างอิง</th>
                 <th style='width:20%;'>ลูกค้า</th>
-                <th style="width:10%;">จังหวัด</th>
                 <th style='width:10%;'>พนักงาน</th>
                 <th style='width:10%; text-align:center;'>ยอดเงิน</th>
                 <th style='width:10%; text-align:center;'>การชำระเงิน</th>
@@ -868,16 +867,15 @@ $('#modal_approve_edit').on('shown.bs.modal', function () {  $('#edit_bill_passw
 <?php			$order = new order($id);		?>
 <?php			$online = getCustomerOnlineReference($id); ?>
 <?php			$customer_name = customer_name($order->id_customer); ?>
-<?php			$province = customerProvince($order->id_customer); ?>
 <?php			$customer  = $order->payment != 'ออนไลน์' ? $customer_name : ( $online != '' ? $customer_name.' ( '.$online.' )' : $customer_name );	?>
+<?php 		$orderAmount = orderAmount($id) - bill_discount($id) + getDeliveryFee($id) + getServiceFee($id); ?>
 <?php			if( $order->valid != 2 ) : ?>
 			<tr style='color:#FFF; background-color:<?php echo state_color($order->current_state); ?>; font-size:10px;'>
 				<td align='center' style='cursor:pointer;' onclick="viewOrder(<?php echo $id; ?>)"><?php echo $id; ?></td>
 				<td style='cursor:pointer;' onclick="viewOrder(<?php echo $id; ?>)"><?php echo $order->reference; ?></td>
 				<td style='cursor:pointer;' onclick="viewOrder(<?php echo $id; ?>)"><?php echo $customer; ?></td>
-                <td style="cursor:pointer;" onclick="viewOrder(<?php echo $id; ?>)"><?php echo $province; ?></td>
 				<td style='cursor:pointer;' onclick="viewOrder(<?php echo $id; ?>)"><?php echo employee_name($order->id_employee); ?></td>
-				<td align='center' style='cursor:pointer;' onclick="viewOrder(<?php echo $id; ?>)"><?php echo number_format(orderAmount($id)); ?></td>
+				<td align='center' style='cursor:pointer;' onclick="viewOrder(<?php echo $id; ?>)"><?php echo number_format($orderAmount); ?></td>
 				<td align='center' style='cursor:pointer;' onclick="viewOrder(<?php echo $id; ?>)"><?php echo $order->payment; ?></td>
 				<td align='center' style='cursor:pointer;' onclick="viewOrder(<?php echo $id; ?>)"><?php echo $order->current_state_name; ?></td>
 				<td align='center' style='cursor:pointer;' onclick="viewOrder(<?php echo $id; ?>)"><?php echo thaiDate($order->date_add); ?></td>
@@ -888,9 +886,8 @@ $('#modal_approve_edit').on('shown.bs.modal', function () {  $('#edit_bill_passw
 				<td align='center'><?php echo $id; ?></td>
 				<td><?php echo $order->reference; ?></td>
 				<td><?php echo $customer; ?></td>
-                <td><?php echo $province; ?></td>
 				<td><?php echo employee_name($order->id_employee); ?></td>
-				<td align='center'><?php echo number_format(orderAmount($id)); ?></td>
+				<td align='center'><?php echo number_format($orderAmount); ?></td>
 				<td align='center'><?php echo $order->payment; ?></td>
 				<td align='center'><?php echo $order->current_state_name; ?></td>
 				<td align='center'><?php echo thaiDate($order->date_add); ?></td>

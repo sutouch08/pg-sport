@@ -12,7 +12,8 @@
 	$supervisor = $ps['add'] + $ps['edit'] + $ps['delete'] > 0 ? 1 : 0;
 	require_once 'function/prepare_helper.php';
 	require_once 'function/qc_helper.php';
-        require_once 'function/product_helper.php';
+  require_once 'function/product_helper.php';
+	include 'function/order_helper.php';
 	accessDeny($view);
 	?>
 
@@ -133,7 +134,7 @@ if( isset( $_GET['id_order'] ) ) :
         <?php		$inZone		= $product->stock_in_zone($id_pa);	?>
         <tr style="font-size:12px;">
         	<td align="center"><img src="<?php echo $product->get_product_attribute_image($id_pa, 1); ?>" title="<?php echo $id_pa; ?>" /></td>
-            <td><?php echo $rs['barcode']; ?></td>
+            <td><span onclick="add_barcode('<?php echo $rs['barcode']; ?>')"><?php echo $rs['barcode']; ?></span></td>
             <td><?php echo $rs['product_reference'] .' : '.$rs['product_name']; ?></td>
             <td align="center"><?php echo number_format($orderQty); ?></td>
             <td align="center"><?php echo number_format($prepared); ?></td>
@@ -229,11 +230,14 @@ if( isset( $_GET['id_order'] ) ) :
     <?php	while( $rs = dbFetchArray($qs) ):	?>
     <?php		$id_order 	= $rs['id_order'];	?>
     <?php		$order		= new order($id_order); 	?>
+		<?php 	$customer_name = customer_name($order->id_customer); ?>
+		<?php		$online = getCustomerOnlineReference($id_order); ?>
+		<?php		$customer  = $order->payment != 'ออนไลน์' ? $customer_name : ( $online != '' ? $customer_name.' ( '.$online.' )' : $customer_name );	?>
     <?php		$emp_name	= $rs['id_employee'] == -1 ? 'ไม่มีคนจัด' : employee_name($rs['id_employee']);	?>
     		<tr style="font-size:12px;">
 					<td align='center'><?php echo $n; ?></td>
 					<td align='center'><?php echo $order->reference; ?></td>
-					<td align='center'><?php echo customer_name($order->id_customer); ?></td>
+					<td align='center'><?php echo $customer; ?></td>
 					<td align='center'><?php echo $order->role_name; ?></td>
 					<td align='center'><?php echo thaiDate($order->date_add); ?></td>
 					<td align='center'><?php echo $emp_name; ?></td>
@@ -300,16 +304,19 @@ if( isset( $_GET['id_order'] ) ) :
     <?php	while( $rs = dbFetchArray($qs) ) : ?>
     <?php		$id_order 	= $rs['id_order']; 	?>
     <?php		$order		= new order($id_order);	?>
+		<?php 	$customer_name = customer_name($order->id_customer); ?>
+		<?php		$online = getCustomerOnlineReference($id_order); ?>
+		<?php		$customer  = $order->payment != 'ออนไลน์' ? $customer_name : ( $online != '' ? $customer_name.' ( '.$online.' )' : $customer_name );	?>
     		<tr style="font-size:12px;">
             	<td align="center"><?php echo $n; ?></td>
                 <td align='center'><?php echo $order->reference; ?></td>
-                <td align='center'><?php echo customer_name($order->id_customer); ?></td>
+                <td align='center'><?php echo $customer; ?></td>
                 <td align='center'><?php echo $order->role_name; ?></td>
                 <td align='center'><?php echo thaiDate($order->date_add); ?></td>
                 <td align="right"><button type="button" class="btn btn-sm btn-default" onClick="takeOrder(<?php echo $id_order; ?>)">จัดสินค้า</button></td>
         </tr>
 	<?php 	$n++;	?>
-    <?php 	endwhile; ?>	
+    <?php 	endwhile; ?>
     <?php endif; ?>
         </tbody>
         </table>
@@ -326,7 +333,7 @@ setTimeout(function(){ goBack(); }, 60000 );
 {{#each this}}
     <tr style="font-size:12px;">
         <td align="center"><img src="{{ image }}" title="{{id_pa}}" /></td>
-        <td>{{ barcode }}</td>
+        <td><span onclick="add_barcode('{{barcode}}')">{{ barcode }}</span></td>
         <td>{{ product }}</td>
         <td align="center">{{ orderQty }}</td>
         <td align="center">{{ prepared }}</td>
@@ -661,6 +668,13 @@ $("#qty").focus(function(e) {
 function changeZone()
 {
 	window.location.reload();
+}
+
+
+function add_barcode(barcode)
+{
+	$('#barcode_item').val(barcode);
+	$('#barcode_item').focus();
 }
 
 //------------------------------------------------  END NEW CODE  -----------------------------------------//

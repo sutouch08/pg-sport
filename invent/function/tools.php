@@ -1,4 +1,34 @@
 <?php
+//---- ตรวจสอบรายการจัดส่ินค้าว่าครบตามออเดอร์แล้วหรือยัง
+function isValidDetail($id_order, $id_pa)
+{
+	$qty = check_qty_in_order($id_pa, $id_order);
+	$prepared = get_qty_in_buffer($id_pa, $id_order);
+
+	if($prepared >= $qty)
+	{
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+
+function get_qty_in_buffer($id_pa, $id_order)
+{
+	$qs = dbQuery("SELECT SUM(qty) AS qty FROM tbl_buffer WHERE id_order = ".$id_order." AND id_product_attribute = ".$id_pa);
+	$rs = dbFetchObject($qs);
+	return is_null($rs->qty) ? 0 : $rs->qty;
+}
+
+
+function unValidDetail($id_order, $id_pa)
+{
+	return dbQuery("UPDATE tbl_order_detail SET valid_detail = 0 WHERE id_order = ".$id_order." AND id_product_attribute = ".$id_pa);
+}
+
+
+
 //----ใช้สำหรับรับค่าจาก searchForm ต่างๆ
 function getFilter($postName, $cookieName, $defaultValue = "")
 {
@@ -1946,11 +1976,12 @@ function orderStateList($id_order)
 {
 	$id_tab 	= 14;
 	$id_profile = getCookie('profile_id');
-    $pm 		= checkAccess($id_profile, $id_tab);
+  $pm 		= checkAccess($id_profile, $id_tab);
 	$edit 		= $pm['edit'];
 	$delete 	= $pm['delete'];
 	$sc 		= '<option value="0"> ---- สถานะ ---- </option>';
 	$sc 		.= $edit == 1 ? '<option value="1">รอการชำระเงิน</option>' : '';
+	$sc 		.= $edit == 1 ? '<option value="2">ชำระเงินแล้ว</option>' : '';
 	$sc 		.= $edit == 1 ? '<option value="3">รอจัดสินค้า</option>' : '';
 	$sc 		.= $delete == 1 ? '<option value="8">ยกเลิก</option>' : '';
 
@@ -2063,6 +2094,11 @@ function order_state_change($id_order, $state, $id_emp)
 		{
 			if( ! rollback_order($id_order) ){ $sc = FALSE; }  ///-----  ย้อนกระบวนการ  ----///
 		}
+
+		if($c_state > 3)
+		{
+			updateValidDetail($id_order);
+		}
 	}
 	else if($state == 8 )
 	{
@@ -2102,12 +2138,40 @@ function order_state_change($id_order, $state, $id_emp)
 			drop_order_detail($id_order);
 		}
 	}
-	if( ! dbQuery("UPDATE tbl_order SET current_state = ".$state." WHERE id_order = ".$id_order) ){ $sc = FALSE; };
-	if( ! dbQuery("INSERT INTO tbl_order_state_change ( id_order, id_order_state, id_employee ) VALUES (".$id_order.", ".$state.", ".$id_emp.")") ){ $sc = FALSE; }
+
+	if($state != 2 )
+	{
+		if( ! dbQuery("UPDATE tbl_order SET current_state = ".$state." WHERE id_order = ".$id_order) )
+		{
+			$sc = FALSE;
+		}
+	}
+
+	if( ! dbQuery("INSERT INTO tbl_order_state_change ( id_order, id_order_state, id_employee ) VALUES (".$id_order.", ".$state.", ".$id_emp.")") )
+	{
+		$sc = FALSE;
+	}
 
 	return $sc;
 }
 
+
+
+function updateValidDetail($id_order)
+{
+	$qs = dbQuery("SELECT id_product_attribute, product_qty, valid_detail FROM tbl_order_detail WHERE id_order = ".$id_order." AND valid_detail != 2");
+	if(dbNumRows($qs) > 0)
+	{
+		while($rs = dbFetchObject($qs))
+		{
+			$prepared = get_qty_in_buffer($rs->id_product_attribute, $id_order);
+			if($prepared <= $rs->product_qty && $rs->valid_detail == 1)
+			{
+				unValidDetail($id_order, $rs->id_product_attribute);
+			}
+		}
+	}
+}
 
 
 
@@ -2148,6 +2212,11 @@ function rollback_order($id_order)
 
 						//-----  ลบรายการใน order_detail_sold (ยอดขาย)
 						$rc = delete_detail_sold($id_order, $rs['id_product_attribute']);
+
+						if( ! isValidDetail($id_order, $rs['id_product_attribute']) )
+						{
+							unValidDetail($id_order, $rs['id_product_attribute']);
+						}
 
 						if( ! $ra OR ! $rb OR ! $rc ){ $sc = FALSE; }
 					}

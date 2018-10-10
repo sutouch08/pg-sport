@@ -27,7 +27,7 @@ if( isset( $_GET['insertAddress'] ) && isset( $_POST['id_customer'] ) )
 	$rs = $ad->insertAddress($data);
 	if( $rs )
 	{
-		$sc = 'success';	
+		$sc = 'success';
 	}
 	echo $sc;
 }
@@ -53,7 +53,7 @@ if( isset( $_GET['updateAddress'] ) && isset( $_GET['id_address'] ) )
 	$rs = $ad->updateAddress($id, $data);
 	if( $rs === TRUE )
 	{
-		$sc = 'success';	
+		$sc = 'success';
 	}
 	echo $sc;
 }
@@ -83,7 +83,7 @@ if( isset( $_GET['getAddressInfo'] ) )
 					"phone"		=> $ad->phone,
 					"remark"		=> $ad->remark
 					);
-	echo json_encode($data);					
+	echo json_encode($data);
 }
 
 
@@ -209,7 +209,7 @@ if( isset( $_GET['updateTransportCustomer'] ) && isset( $_GET['id_transport'] ) 
 	else
 	{
 		echo 'fail';
-	}	
+	}
 }
 
 if( isset( $_GET['getSenderInfo'] ) && isset( $_GET['id_sender'] ) )
@@ -221,12 +221,12 @@ if( isset( $_GET['getSenderInfo'] ) && isset( $_GET['id_sender'] ) )
 	{
 		$rs = dbFetchArray($qs);
 		$data = array(
-							"sender_name"	=> $rs['name'], 
-							"address" 		=> $rs['address1'].' '.$rs['address2'], 
-							"phone" 			=> $rs['phone'], 
-							"opentime" 		=> date("H:i", strtotime($rs['open'])).' - '.date("H:i", strtotime($rs['close'])), 
+							"sender_name"	=> $rs['name'],
+							"address" 		=> $rs['address1'].' '.$rs['address2'],
+							"phone" 			=> $rs['phone'],
+							"opentime" 		=> date("H:i", strtotime($rs['open'])).' - '.date("H:i", strtotime($rs['close'])),
 							"type" 			=> $rs['type']
-							);		
+							);
 	}
 	echo json_encode($data);
 }
@@ -236,8 +236,8 @@ if( isset( $_GET['countAddress'] ) )
 	$adds = 0;
 	if( isset( $_POST['id_customer'] ) )
 	{
-		$id_customer = $_POST['id_customer'];	
-		$adds = countAddress($id_customer);	
+		$id_customer = $_POST['id_customer'];
+		$adds = countAddress($id_customer);
 	}
 	echo $adds;
 }
@@ -252,7 +252,7 @@ if( isset( $_GET['getAddressForm'] ) )
 		$sds		= countSender($id_customer); /// จำนวนผู้จัดส่ง
 		if($adds == 1 && $sds == 1 )
 		{
-			$sc = 1;	
+			$sc = 1;
 		}else if( $adds >= 1 && $sds < 1 ){
 			$sc  = 'no_sender';
 		}else{
@@ -274,15 +274,15 @@ if( isset( $_GET['getAddressForm'] ) )
 					}
 				}
 			}
-			
+
 			if( $sds >= 1 )
 			{
-				$dds = '<tr><td colspan="2"><strong>เลือกผู้ให้บริการจัดส่ง</strong></td><tr>';	
+				$dds = '<tr><td colspan="2"><strong>เลือกผู้ให้บริการจัดส่ง</strong></td><tr>';
 				$dd = getAllSender($id_customer);
 				if( $dd !== FALSE )
 				{
 					$dds .= '<tr >';
-					$dds .= '<td colspan="2"><label><input type="radio" name="id_sender" value="'.$dd['main_sender'].'" style="margin-left:15px; margin-right:15px;" checked />'.sender_name($dd['main_sender']).'</label></td><tr>';	
+					$dds .= '<td colspan="2"><label><input type="radio" name="id_sender" value="'.$dd['main_sender'].'" style="margin-left:15px; margin-right:15px;" checked />'.sender_name($dd['main_sender']).'</label></td><tr>';
 					if( $dd['second_sender'] != 0 )
 					{
 						$dds .= '<tr>';
@@ -295,7 +295,7 @@ if( isset( $_GET['getAddressForm'] ) )
 					}
 				}
 			}
-	
+
 			if( $adds >= 1 && $sds >= 1 )
 			{
 				$sc = '<table class="table table-bordered">';
@@ -303,7 +303,7 @@ if( isset( $_GET['getAddressForm'] ) )
 				$sc .= $dds;
 				$sc .= '</table>';
 			}
-		}	
+		}
 	}
 	echo $sc;
 }
@@ -311,7 +311,7 @@ if( isset( $_GET['getAddressForm'] ) )
 if( isset( $_GET['printAddressSheet'] ) && isset( $_GET['id_customer'] ) )
 {
 	$id_customer 	= $_GET['id_customer'];
-	$id_order		= $_GET['id_order'];	
+	$id_order		= $_GET['id_order'];
 	$reference		= get_order_reference($id_order);
 	$id_address	= isset( $_GET['id_address'] ) ? $_GET['id_address'] : getIdAddress($id_customer);
 	$id_sender		= isset( $_GET['id_sender'] )  ? $_GET['id_sender'] : getMainSender($id_customer);
@@ -328,7 +328,7 @@ if( isset( $_GET['printAddressSheet'] ) && isset( $_GET['id_customer'] ) )
 	$sender			.= '<span style="display:block"> โทร. '.$cPhone.'</span>';
 	$sender			.= '</div>';
 	/********* / Sender *************/
-	
+
 	/*********** Receiver  **********/
 	$receiver		= '<div class="col-lg-12" style="font-size:18px; padding-left: 250px; padding-top:15px; padding-bottom:40px;">';
 	$receiver		.= '<span style="display:block; margin-bottom:10px;">'.$cusName.'</span>';
@@ -338,10 +338,11 @@ if( isset( $_GET['printAddressSheet'] ) && isset( $_GET['id_customer'] ) )
 	$receiver		.= $ad['phone'] == '' ? '' : '<span style="display:block;">โทร. '.$ad['phone'].'</span>';
 	$receiver		.= '</div>';
 	/********** / Receiver ***********/
-	
+
 	/********* Transport  ***********/
+
 	$transport = '';
-	if( $sd !== FALSE ) 
+	if( $sd !== FALSE )
 	{
 		$transport	= '<table style="width:100%; border:0px; margin-left: 30px; position: relative; bottom:1px;">';
 		$transport	.= '<tr style="font-18px;"><td>'. $sd['name'] .'</td></tr>';
@@ -349,24 +350,24 @@ if( isset( $_GET['printAddressSheet'] ) && isset( $_GET['id_customer'] ) )
 		$transport	.= '<tr style="font-18px;"><td>โทร. '. $sd['phone'] .' เวลาทำการ : '.date('H:i', strtotime($sd['open'])).' - '.date('H:i', strtotime($sd['close'])).' น. - ( '.$sd['type'].')</td></tr>';
 		$transport 	.= '</table>';
 	}
-		
+
 	/*********** / transport **********/
-	
+
 	$boxes 			= countBoxes($id_order);
 	$total_page		= $boxes <= 1 ? 1 : ($boxes+1)/2;
 	$Page = '';
-	
+
 	$printer = new printer();
 	$config = array("row" => 16, "header_row" => 0, "footer_row" => 0, "sub_total_row" => 0);
 	$printer->config($config);
-	
-	
+
+
 	$Page .= $printer->doc_header();
 	$n = 1;
 	while($total_page > 0 )
 	{
 		$Page .= $printer->page_start();
-		
+
 		if( $n < ($boxes+1) )
 		{
 			$Page .= $printer->content_start();
@@ -389,6 +390,7 @@ if( isset( $_GET['printAddressSheet'] ) && isset( $_GET['id_customer'] ) )
 			$Page .= $printer->content_end();
 			$n++;
 		}
+		/*
 		if( $n > $boxes ){
 			if( $n > $boxes && ($n % 2) == 0 )
 			{
@@ -409,19 +411,20 @@ if( isset( $_GET['printAddressSheet'] ) && isset( $_GET['id_customer'] ) )
 			}
 			$n++;
 		}
+		*/
 		$Page .= $printer->page_end();
-		
-		$total_page--;	
+
+		$total_page--;
 	}
 	$Page .= $printer->doc_footer();
-	echo $Page;	
+	echo $Page;
 }
 
 //----------------  พิมพ์ใบปะหน้ากล่อง ในหน้า QC ---------------------//
 if( isset( $_GET['printAddress'] ) && isset( $_GET['id_customer'] ) )
 {
 	$id_customer 	= $_GET['id_customer'];
-	$id_order		= $_GET['id_order'];	
+	$id_order		= $_GET['id_order'];
 	$reference		= get_order_reference($id_order);
 	$id_address	= isset( $_GET['id_address'] ) ? $_GET['id_address'] : getIdAddress($id_customer);
 	$id_sender		= isset( $_GET['id_sender'] )  ? $_GET['id_sender'] : getMainSender($id_customer);
@@ -438,7 +441,7 @@ if( isset( $_GET['printAddress'] ) && isset( $_GET['id_customer'] ) )
 	$sender			.= '<span style="display:block"> โทร. '.$cPhone.'</span>';
 	$sender			.= '</div>';
 	/********* / Sender *************/
-	
+
 	/*********** Receiver  **********/
 	$receiver		= '<div class="col-lg-12" style="font-size:18px; padding-left: 250px; padding-top:15px; padding-bottom:40px;">';
 	$receiver		.= '<span style="display:block; margin-bottom:10px;">'.$cusName.'</span>';
@@ -448,10 +451,10 @@ if( isset( $_GET['printAddress'] ) && isset( $_GET['id_customer'] ) )
 	$receiver		.= $ad['phone'] == '' ? '' : '<span style="display:block;">โทร. '.$ad['phone'].'</span>';
 	$receiver		.= '</div>';
 	/********** / Receiver ***********/
-	
+
 	/********* Transport  ***********/
 	$transport = '';
-	if( $sd !== FALSE ) 
+	if( $sd !== FALSE )
 	{
 		$transport	= '<table style="width:100%; border:0px; margin-left: 30px; position: relative; bottom:1px;">';
 		$transport	.= '<tr style="font-18px;"><td>'. $sd['name'] .'</td></tr>';
@@ -459,15 +462,15 @@ if( isset( $_GET['printAddress'] ) && isset( $_GET['id_customer'] ) )
 		$transport	.= '<tr style="font-18px;"><td>โทร. '. $sd['phone'] .' เวลาทำการ : '.date('H:i', strtotime($sd['open'])).' - '.date('H:i', strtotime($sd['close'])).' น. - ( '.$sd['type'].')</td></tr>';
 		$transport 	.= '</table>';
 	}
-		
+
 	/*********** / transport **********/
 	$Page = '';
-	
+
 	$printer = new printer();
 	$config = array("row" => 16, "header_row" => 0, "footer_row" => 0, "sub_total_row" => 0);
 	$printer->config($config);
-	
-	
+
+
 	$Page .= $printer->doc_header();
 	$Page .= $printer->page_start();
 	$n	= 1;
@@ -485,14 +488,14 @@ if( isset( $_GET['printAddress'] ) && isset( $_GET['id_customer'] ) )
 	}
 	$Page .= $printer->page_end();
 	$Page .= $printer->doc_footer();
-	echo $Page;	
+	echo $Page;
 }
 
 
 //----------------  พิมพ์ใบปะหน้ากล่อง ขาย Online  ---------------------//
 if( isset( $_GET['printOnlineAddressSheet'] ) && isset( $_GET['id_address'] ) )
 {
-	$id_order		= $_GET['id_order'];	
+	$id_order		= $_GET['id_order'];
 	$id_address	= $_GET['id_address'];   /// id_address FRom tbl_address_online
 	$onlineCode		= getCustomerOnlineReference($id_order);
 	$ad				= dbQuery("SELECT * FROM tbl_address_online WHERE id_address = ".$id_address);
@@ -510,7 +513,7 @@ if( isset( $_GET['printOnlineAddressSheet'] ) && isset( $_GET['id_address'] ) )
 		$cAddress		= getConfig('COMPANY_ADDRESS');
 		$cPhone			= getConfig('COMPANY_PHONE');
 		$cPostCode		= getConfig("COMPANY_POST_CODE");
-		
+
 	}
 	$link = WEB_ROOT.'img/company/logo.png';
 	$file = realpath(DOC_ROOT.$link);
@@ -520,15 +523,16 @@ if( isset( $_GET['printOnlineAddressSheet'] ) && isset( $_GET['id_address'] ) )
 	}
 	$order	= new order($id_order);
 	$paid		= $order->valid == 1 ? 'จ่ายแล้ว' : 'รอชำระเงิน';
-	
+
 	/*********  Sender  ***********/
 	$sender			= '<div class="col-sm-12" style="font-size:14px; font-weight: bold; border:solid 2px #ccc; border-radius:10px; padding:10px;">';
 	$sender			.= '<span style="display:block; font-size: 20px; font-weight:bold; padding-bottom:10px; border-bottom:solid 2px #ccc; margin-bottom:15px;">ผู้ส่ง</span>';
 	$sender			.= '<span style="display:block;">'.$cName.'</span>';
 	$sender			.= '<span style="width:70%; display:block;">'.$cAddress.' '.$cPostCode.'</span>';
+	$sender			.= '<span style="display:block"> โทร. '.$cPhone.'</span>';
 	$sender			.= '</div>';
 	/********* / Sender *************/
-	
+
 	/*********** Receiver  **********/
 	$receiver		= '<div class="col-sm-12" style="font-size:24px; border:solid 2px #ccc; border-radius:10px; padding:10px;">';
 	$receiver		.= '<span style="display:block; font-size: 20px; font-weight:bold; padding-bottom:10px; border-bottom:solid 2px #ccc; margin-bottom:15px;">ผู้รับ &nbsp; |  &nbsp; ';
@@ -540,86 +544,98 @@ if( isset( $_GET['printOnlineAddressSheet'] ) && isset( $_GET['id_address'] ) )
 	$receiver		.= '<span style="display:block; margin-top:15px;">รหัสไปรษณีย์  <span style="font-size:30px;">'.$cusPostCode.'</span></span>';
 	$receiver		.= '</div>';
 	/********** / Receiver ***********/
-	
-	//----------------------------  order detail ---------------------------//
-	//--------- Left column -----------------//
-	$leftCol	= '<div class="row">';
-	$leftCol	.= 		'<div class="col-sm-12">';
-	$leftCol	.= 			$link === FALSE ? '' : '<span style="display:block; margin-bottom:10px;"><img src="'.$link.'" width="50px;" /></span>';
-	$leftCol	.= 			'<span style="font-size:12px; font-weight:bold; display:block;">'.$cName.'</span>';
-	$leftCol	.= 			'<span style="font-size:12px; display:block;">'.$cAddress.' '.$cPostCode.'</span>';
-	$leftCol	.= 		'</div>';
-	$leftCol	.= 		'<div class="col-sm-12" style="margin-top:50px;">';
-	$leftCol	.= 			'<span style="font-size:12px; font-weight:bold; display:block;">ชื่อ - ที่อยู่จัดส่งลูกค้า</span>';
-	$leftCol 	.=			'<span style="font-size:12px; display:block;">'.$cusName.' '.$cusCode.'</span>';
-	$leftCol	.=			'<span style="font-size:12px; display:bolck;">'.$cusAdr1.' '.$cusAdr2.' '.$cusProv.' '.$cusPostCode.'</span>';
-	$leftCol	.= 		'</div>';	
-	$leftCol	.= '</div>';
-	
-	//---------/ Left column --------------//
-	//----------- Right column ------------//
-	$rightCol	=	'<div class="row">';
-	$rightCol	.= 		'<div class="col-sm-12">';
-	$rightCol	.= 			'<p class="pull-right" style="font-size:16px;"><strong>ใบเสร็จ / ใบส่งของ</strong></p>';
-	$rightCol	.=		'</div>';
-	$rightCol	.= 		'<div class="col-sm-12" style="margin-top:30px; font-size:12px;">';
-	$rightCol	.= 			'<p style="float:left; width:20%;">เลขที่บิล</p><p style="float:left; width:35%;">'.$order->reference.'</p>';
-	$rightCol	.= 			'<p style="float:left; width:45%; text-align:right;">สถานะ <span style="padding-left:15px;">'.$paid.'</span></p>';
-	$rightCol	.= 			'<p style="float:left; width:20%;">วันที่สั่งซื้อ</p><p style="float:left; width:35%;">'.thaiTextDateFormat($order->date_add, TRUE).'</p>';
-	$rightCol	.= 			'<p style="float:left; width:45%; text-align:right;">จำนวน<span style="padding-left:10px; padding-right:10px;">'.$order->total_product.'</span>รายการ</p>';
-	$rightCol	.=		'</div>';
-	$rightCol	.= 		'<div class="col-sm-12" style="font-size:12px;">';	
-	$rightCol	.= 		'<table class="table table-bordered">';
-	$rightCol	.= 			'<tr style="font-size:12px">';
-	$rightCol	.=				'<td align="center" width="10%">ลำดับ</td>';
-	$rightCol	.=				'<td width="30%">สินค้า</td>';
-	$rightCol	.=				'<td width="15%" align="center">ราคา</td>';
-	$rightCol	.=				'<td width="15%" align="center">จำนวน</td>';
-	$rightCol	.=				'<td width="20%" align="right">มูลค่า</td>';
-	$rightCol	.=			'</tr>';
-	$qs	= dbQuery("SELECT id_product_attribute, SUM( qty ) as qty FROM tbl_qc WHERE id_order = ".$id_order." AND valid = 1 GROUP BY id_product_attribute");
-	$totalAmount 	= 0;
-	$totalDisc		= 0;
-	$deliFee			= getDeliveryFee($id_order);
-	if( dbNumRows($qs) > 0 )
+
+	$leftCol = '';
+	$rightCol = '';
+	if($order->current_state == 9 )
 	{
-		$n	= 1;
-		while( $rs = dbFetchArray($qs) )
+		//----------------------------  order detail ---------------------------//
+		//--------- Left column -----------------//
+		$leftCol	.= '<div class="row">';
+		$leftCol	.= 		'<div class="col-sm-12">';
+		$leftCol	.= 			$link === FALSE ? '' : '<span style="display:block; margin-bottom:10px;"><img src="'.$link.'" width="50px;" /></span>';
+		$leftCol	.= 			'<span style="font-size:12px; font-weight:bold; display:block;">'.$cName.'</span>';
+		$leftCol	.= 			'<span style="font-size:12px; display:block;">'.$cAddress.' '.$cPostCode.'</span>';
+		$leftCol	.= 		'</div>';
+		$leftCol	.= 		'<div class="col-sm-12" style="margin-top:50px;">';
+		$leftCol	.= 			'<span style="font-size:12px; font-weight:bold; display:block;">ชื่อ - ที่อยู่จัดส่งลูกค้า</span>';
+		$leftCol 	.=			'<span style="font-size:12px; display:block;">'.$cusName.' '.$cusCode.'</span>';
+		$leftCol	.=			'<span style="font-size:12px; display:bolck;">'.$cusAdr1.' '.$cusAdr2.' '.$cusProv.' '.$cusPostCode.'</span>';
+		$leftCol	.= 		'</div>';
+		$leftCol	.= '</div>';
+
+		//---------/ Left column --------------//
+		//----------- Right column ------------//
+		$rightCol	.=	'<div class="row">';
+		$rightCol	.= 		'<div class="col-sm-12">';
+		$rightCol	.= 			'<p class="pull-right" style="font-size:16px;"><strong>ใบเสร็จ / ใบส่งของ</strong></p>';
+		$rightCol	.=		'</div>';
+		$rightCol	.= 		'<div class="col-sm-12" style="margin-top:30px; font-size:12px;">';
+		$rightCol	.= 			'<p style="float:left; width:20%;">เลขที่บิล</p><p style="float:left; width:35%;">'.$order->reference.'</p>';
+		$rightCol	.= 			'<p style="float:left; width:45%; text-align:right;">สถานะ <span style="padding-left:15px;">'.$paid.'</span></p>';
+		$rightCol	.= 			'<p style="float:left; width:20%;">วันที่สั่งซื้อ</p><p style="float:left; width:35%;">'.thaiTextDateFormat($order->date_add, TRUE).'</p>';
+		$rightCol	.= 			'<p style="float:left; width:45%; text-align:right;">จำนวน<span style="padding-left:10px; padding-right:10px;">'.$order->total_product.'</span>รายการ</p>';
+		$rightCol	.=		'</div>';
+		$rightCol	.= 		'<div class="col-sm-12" style="font-size:12px;">';
+		$rightCol	.= 		'<table class="table table-bordered">';
+		$rightCol	.= 			'<tr style="font-size:12px">';
+		$rightCol	.=				'<td align="center" width="10%">ลำดับ</td>';
+		$rightCol	.=				'<td width="30%">สินค้า</td>';
+		$rightCol	.=				'<td width="15%" align="center">ราคา</td>';
+		$rightCol	.=				'<td width="15%" align="center">จำนวน</td>';
+		$rightCol	.=				'<td width="20%" align="right">มูลค่า</td>';
+		$rightCol	.=			'</tr>';
+
+
+		$qr = "SELECT * FROM tbl_order_detail_sold WHERE id_order = ".$id_order;
+		$qs = dbQuery($qr);
+		//$qs	= dbQuery("SELECT id_product_attribute, SUM( qty ) as qty FROM tbl_qc WHERE id_order = ".$id_order." AND valid = 1 GROUP BY id_product_attribute");
+		$totalAmount 	= 0;
+		$totalDisc		= 0;
+		$deliFee			= getDeliveryFee($id_order);
+		if( dbNumRows($qs) > 0 )
 		{
-			$order->order_product_detail($rs['id_product_attribute']);
-			$p_reference	= $order->product_reference;
-			$qty				= $rs['qty'];
-			$price			= $order->product_price;
-			$p_dis			= $order->reduction_percent;
-			$a_dis			= $order->reduction_amount;
-			$disc				= $p_dis > 0 ? $qty * ($price * ($p_dis * 0.01) ) : ( $a_dis > 0 ? $qty * $a_dis : 0 );
-			$amount			= $qty * $price;
-			$rightCol	.= 	'<tr style="font-size:10px;">';
-			$rightCol	.= 		'<td align="center">'.$n.'</td>';
-			$rightCol	.=		'<td>'.$p_reference.'</td>';
-			$rightCol	.=		'<td align="center">'.number_format($price, 2).'</td>';
-			$rightCol	.=		'<td align="center">'.number_format($qty).'</td>';
-			$rightCol	.=		'<td align="right">'.number_format($amount, 2).'</td>';
-			$rightCol	.=	'</tr>';
-			$totalAmount		+= $amount;
-			$totalDisc		+= $disc;
-			$n++;
+			$n	= 1;
+			while( $rs = dbFetchObject($qs) )
+			{
+				//$order->order_product_detail($rs['id_product_attribute']);
+				$p_reference	= $rs->product_reference;
+				$qty				= $rs->sold_qty;
+				$price			= $rs->product_price;
+				$p_dis			= $rs->reduction_percent;
+				$a_dis			= $rs->reduction_amount;
+				$disc				= $rs->discount_amount;
+				$amount			= $qty * $price;
+				$rightCol	.= 	'<tr style="font-size:10px;">';
+				$rightCol	.= 		'<td align="center">'.$n.'</td>';
+				$rightCol	.=		'<td>'.$p_reference.'</td>';
+				$rightCol	.=		'<td align="center">'.number_format($price, 2).'</td>';
+				$rightCol	.=		'<td align="center">'.number_format($qty).'</td>';
+				$rightCol	.=		'<td align="right">'.number_format($amount, 2).'</td>';
+				$rightCol	.=	'</tr>';
+				$totalAmount		+= $amount;
+				$totalDisc		+= $disc;
+				$n++;
+			}
 		}
-	}	
-	$rightCol	.=		'<tr style="font-size:10px;"><td colspan="3" rowspan="4"> หมายเหตุ : '.$order->comment.'</td><td align="right">สินค้า</td><td align="right">'.number_format($totalAmount, 2).'</td></tr>';
-	$rightCol	.=		'<tr style="font-size:10px;"><td align="right">ส่วนลด</td><td align="right">'.number_format($totalDisc, 2).'</td></tr>';
-	$rightCol	.=		'<tr style="font-size:10px;"><td align="right">ค่าจัดส่ง</td><td align="right">'.number_format($deliFee, 2).'</td></tr>';
-	$rightCol	.=		'<tr style="font-size:10px;"><td align="right">รวมสุทธิ</td><td align="right">'.number_format(($totalAmount - $totalDisc) + $deliFee, 2).'</td></tr>';
-	$rightCol	.=		'</table>';
-	$rightCol	.=		'</div>';
-	$rightCol	.=	'</div>';
-	
-	//------------/ Right column ----------------//
-	//------------------------------/ order detail --------------------------//
-	
+
+		$rightCol	.=		'<tr style="font-size:10px;"><td colspan="3" rowspan="4"> หมายเหตุ : '.$order->comment.'</td><td align="right">สินค้า</td><td align="right">'.number_format($totalAmount, 2).'</td></tr>';
+		$rightCol	.=		'<tr style="font-size:10px;"><td align="right">ส่วนลด</td><td align="right">'.number_format($totalDisc, 2).'</td></tr>';
+		$rightCol	.=		'<tr style="font-size:10px;"><td align="right">ค่าจัดส่ง</td><td align="right">'.number_format($deliFee, 2).'</td></tr>';
+		$rightCol	.=		'<tr style="font-size:10px;"><td align="right">รวมสุทธิ</td><td align="right">'.number_format(($totalAmount - $totalDisc) + $deliFee, 2).'</td></tr>';
+		$rightCol	.=		'</table>';
+		$rightCol	.=		'</div>';
+		$rightCol	.=	'</div>';
+
+		//------------/ Right column ----------------//
+		//------------------------------/ order detail --------------------------//
+	}
+
+
+
 
 	$Page = '';
-	
+
 	$printer = new printer();
 	$config = array("row" => 13, "total_row" => 1, "header_row" => 0, "footer_row" => 0, "sub_total_row" => 0, "content_border" => 0);
 	$printer->config($config);
@@ -646,7 +662,7 @@ if( isset( $_GET['printOnlineAddressSheet'] ) && isset( $_GET['id_address'] ) )
 	$Page .= $printer->content_end();
 	$Page .= $printer->page_end();
 	$Page .= $printer->doc_footer();
-	echo $Page;	
+	echo $Page;
 }
 
 

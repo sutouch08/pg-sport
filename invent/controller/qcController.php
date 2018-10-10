@@ -1,4 +1,4 @@
-<?php 
+<?php
 include "../../library/config.php";
 include "../../library/functions.php";
 include "../function/tools.php";
@@ -10,7 +10,7 @@ if( isset( $_GET['editQc'] ) )
 	$id_qc = $_POST['id_qc'];
 	foreach( $id_qc as $id )
 	{
-		dbQuery("DELETE FROM tbl_qc WHERE id_qc = ".$id);	
+		dbQuery("DELETE FROM tbl_qc WHERE id_qc = ".$id);
 	}
 	echo 'done';
 }
@@ -43,7 +43,7 @@ if( isset( $_GET['getRowQcChecked'] ) )
 						"must_edit"	=> $checked > $order_qty ? '1' : '',
 						"content"		=> $checked > $order_qty ? '' : product_from_zone($id_order, $id_pa)
 					);
-		$sc = json_encode($ds);					
+		$sc = json_encode($ds);
 	}
 	echo $sc;
 }
@@ -53,12 +53,12 @@ if( isset( $_GET['getItemChecked'] ) ){
 	$ds 			= '';
 	$id_order	= $_POST['id_order'];
 	$id_pa 		= $_POST['id_product_attribute'];
-	$temp			= tempIn($id_order, $id_pa);		
+	$temp			= tempIn($id_order, $id_pa);
 	$qs 			= dbQuery("SELECT id_qc, id_product_attribute, qty FROM tbl_qc WHERE id_product_attribute = ".$id_pa." AND id_order = ".$id_order." AND valid =1 AND id_temp NOT IN(".$temp.") ");
 	$order_qty 	= sumOrderQty($id_order, $id_pa);
 	$product 	= new product();
 	$product->product_attribute_detail($id_pa);
-	
+
 	if( dbNumRows($qs) > 0 )
 	{
 		$ds	= '<table class="table table-striped">';
@@ -86,16 +86,16 @@ if( isset( $_GET['clearCancleItem'] ) )
 {
 	$sc 			= 'fail';
 	$id_pa 		= $_POST['id_product_attribute'];
-	$id_order 	= $_POST['id_order'];	
+	$id_order 	= $_POST['id_order'];
 	$qs 			= dbQuery("DELETE FROM tbl_qc WHERE id_order = ".$id_order." AND id_product_attribute = ".$id_pa);
 	if( $qs )
 	{
 		$sc = 'success';
 	}
-	echo $sc;		
+	echo $sc;
 }
 
-	 
+
 if( isset( $_GET['save_qc'] ) && isset( $_GET['id_order'] ) )
 {
 	$id_order 		= $_GET['id_order'];
@@ -123,7 +123,7 @@ if( isset( $_GET['save_qc'] ) && isset( $_GET['id_order'] ) )
 			{
 				dbQuery("UPDATE tbl_order_detail SET date_upd = NOW() WHERE id_order = $id_order AND id_product_attribute = $id_product_attribute");
 				dbQuery("UPDATE tbl_temp SET status = 6 WHERE id_temp = $id_temp");
-		
+
 				if(($current_qty+$qty) == $order_qty)
 				{ /// ถ้ายอดตรวจครบตามจำนวนที่จัดมา อัพเดตสถานะใน tbl_temp ให้เป็น QC แล้ว
 					dbQuery("UPDATE tbl_temp SET status = 2 WHERE id_order =$id_order AND id_product_attribute = $id_product_attribute");
@@ -170,18 +170,20 @@ if(isset($_GET['checked'])&&isset($_GET['id_order'])){
 					$id_temp = getIdTemp($id_order, $id_product_attribute);
 					if( $id_temp !== FALSE )
 					{
-						$qc = dbQuery("INSERT INTO tbl_qc (id_employee, id_order, id_product_attribute, qty, date_upd, valid, error_id, id_box, id_temp) VALUES ($id_employee, $id_order, $id_product_attribute, 1, NOW(), 1, 0, $id_box, $id_temp)");	
+						$qc = dbQuery("INSERT INTO tbl_qc (id_employee, id_order, id_product_attribute, qty, date_upd, valid, error_id, id_box, id_temp) VALUES ($id_employee, $id_order, $id_product_attribute, 1, NOW(), 1, 0, $id_box, $id_temp)");
 						dbQuery("UPDATE tbl_order_detail SET date_upd = NOW() WHERE id_order = $id_order AND id_product_attribute = $id_product_attribute");
 						dbQuery("UPDATE tbl_temp SET status = 6 WHERE id_temp = $id_temp");
 						if( $qc ){	$s++;	}
 					}
 					$n++;
 				}/// end while
+
+				
 				if($s == $qty)
 				{
-					commitTransection();	
-					if(($current_qty+$qty) == $order_qty)  
-					{ 
+					commitTransection();
+					if(($current_qty+$qty) == $order_qty)
+					{
 						/// ถ้ายอดตรวจครบตามจำนวนที่จัดมา อัพเดตสถานะใน tbl_temp ให้เป็น QC แล้ว
 						dbQuery("UPDATE tbl_temp SET status = 2 WHERE id_order =$id_order AND id_product_attribute = $id_product_attribute");
 					}
@@ -203,9 +205,9 @@ if(isset($_GET['checked'])&&isset($_GET['id_order'])){
 				{
 					dbQuery("UPDATE tbl_order_detail SET date_upd = NOW() WHERE id_order = $id_order AND id_product_attribute = $id_product_attribute");
 					dbQuery("UPDATE tbl_temp SET status = 6 WHERE id_temp = $id_temp");
-			
+
 					if(($current_qty+$qty) == $order_qty)
-					{ 
+					{
 						/// ถ้ายอดตรวจครบตามจำนวนที่จัดมา อัพเดตสถานะใน tbl_temp ให้เป็น QC แล้ว
 						dbQuery("UPDATE tbl_temp SET status = 2 WHERE id_order =$id_order AND id_product_attribute = $id_product_attribute");
 					}
@@ -237,12 +239,12 @@ if( isset( $_GET['closeQcJob'] ) )
 		$sc = 'state_changed';
 	}
 	else
-	{	
+	{
 		$rs = $order->state_change($id_order, 10, $id_emp);
 		if( $rs )
 		{
 			dbQuery("UPDATE tbl_temp SET status = 3 WHERE id_order = ".$id_order." AND (status = 2 OR status = 6)");
-			$sc = 'success';	
+			$sc = 'success';
 		}
 	}
 	echo $sc;
@@ -258,7 +260,7 @@ if(isset($_GET['close_job2'])&&isset($_GET['id_order'])){
 	if($order->current_state != 11){
 		header("location: ../index.php?content=qc2");
 	}else{
-		dbQuery("UPDATE tbl_temp SET status = 3 WHERE id_order = $id_order AND (status = 2 OR status = 6)");	
+		dbQuery("UPDATE tbl_temp SET status = 3 WHERE id_order = $id_order AND (status = 2 OR status = 6)");
 		if($order->state_change($order->id_order, 10, $id_employee)){
 			header("location: ../index.php?content=qc2");
 		}else{
@@ -294,7 +296,7 @@ if( isset($_GET['add_box']) && isset($_GET['id_order']) && isset($_GET['barcode_
 	$qs = dbQuery("SELECT id_box, valid FROM tbl_box WHERE barcode = '".$barcode."' AND id_order = ".$id_order);
 	if(dbNumRows($qs) > 0){
 		list($id, $valid) = dbFetchArray($qs);
-		$id_box = $id;	
+		$id_box = $id;
 		if($valid == 0 ){
 			echo "success : ".$id_box;
 		}else{
@@ -347,7 +349,7 @@ if(isset($_GET['print_packing_list'])&&isset($_GET['id_order'])){
 					 <link rel='stylesheet' href='../../library/css/jquery-ui-1.10.4.custom.min.css' />
 					 <script src='../../library/js/jquery.min.js'></script>
 					<script src='../../library/js/jquery-ui-1.10.4.custom.min.js'></script>
-					<script src='../../library/js/bootstrap.min.js'></script>  
+					<script src='../../library/js/bootstrap.min.js'></script>
 					<!-- SB Admin CSS - Include with every page -->
 					<link href='../../library/css/sb-admin.css' rel='stylesheet'>
 					<link href='../../library/css/template.css' rel='stylesheet'>
@@ -355,16 +357,16 @@ if(isset($_GET['print_packing_list'])&&isset($_GET['id_order'])){
 				$doc_body_top = "<body style='padding-top:0px; margin-top:-15px;'><div style='width:180mm; margin-right:auto; margin-left:auto; padding:10px; '>
 				<div class='hidden-print' style='margin-bottom:0px; margin-top:10px;'>
 				<button  class='btn btn-primary pull-right' onClick=\"print();\" type='button' />พิมพ์</button></div> ";
-				
+
 	function doc_head($order,$company, $customer, $number, $title, $page, $total_page){
 	$result = "
 	<h4>$title</h4><p class='pull-right'>หน้า ".$page." / ".$total_page."</p>
 	<table align='center' style='width:100%; table-layout:fixed;'>
 		<tr>
 			<td style='width:70%;'>
-			
+
 				<div style='width:99.5%; height:30mm; margin-right:0.5%; border: 1px solid #AAA;'>
-					
+
 					<table width='100%'>
 						<tr style='font-size: 16px;'>
 							<td style='width:50%; padding:10px; height:15mm; vertical-align:text-top;'>เอกสาร : ".$order->reference."</td>
@@ -373,14 +375,14 @@ if(isset($_GET['print_packing_list'])&&isset($_GET['id_order'])){
 						<tr style='font-size: 16px;'>
 							<td colspan='2' style='width:20%; padding:10px; vertical-align:text-top;'>ลูกค้า : ".$customer->full_name."</td>
 						</tr>
-				</table>	
-				
+				</table>
+
 			  </div>
-			  
+
 			</td>
-			
-			
-			
+
+
+
 			<td style='width:30%;'>
 				<div style='width:99.5%; height:30mm; margin-left:0.5%; border: 1px solid #AAA;'>
 					<table width='100%'>
@@ -390,20 +392,20 @@ if(isset($_GET['print_packing_list'])&&isset($_GET['id_order'])){
 						<tr>
 							<td align='center' style='font-size: 48px; font-weight:bold; vertical-align:text-top;'>".$number."</td>
 						</tr>
-				</table>	
+				</table>
 			</div>
 		</td>
 	</tr>
 	</table>
-	
+
 	<table class='table table-striped' align='center' style='width:100%; table-layout:fixed; margin-top:5px; ' id='order_detail'>
 	<tr>
 				<td style='width:10%; text-align:center; border:solid 1px #AAA; padding:10px;'>ลำดับ</td>
 				<td style='width:70%; border:solid 1px #AAA; text-align:center; padding:10px'>สินค้า</td>
-			   <td style='width:20%; text-align:center; border:solid 1px #AAA;  padding:10px'>จำนวน</td> 
+			   <td style='width:20%; text-align:center; border:solid 1px #AAA;  padding:10px'>จำนวน</td>
 	</tr>"; return $result; }
 	function page_summary($employee, $total_qty=""){
-		echo"	
+		echo"
 		<tr style='height:12mm; font-size: 18px;'>
 			<td colspan='3' style='border:solid 1px #AAA;  padding-left:10px; padding-right:10px; vertical-align:text-top; text-align:right;'>รวม $total_qty หน่วย</td>
 		</tr>
@@ -416,7 +418,7 @@ if(isset($_GET['print_packing_list'])&&isset($_GET['id_order'])){
 		</tr>
 		</table>";
 	}
-	
+
 	if($rs>0){
 		echo $html.$doc_body_top.doc_head($order, $company, $customer, $number, $title,$page, $total_page);
 	while($i<$rs){
@@ -433,8 +435,8 @@ if(isset($_GET['print_packing_list'])&&isset($_GET['id_order'])){
 		</tr>";
 				$total_qty += $qty;
 				$i++; $count++;
-				if($n==$rs){ 
-				$ba_row = $row - $count -4; 
+				if($n==$rs){
+				$ba_row = $row - $count -4;
 				$ba = 0;
 				if($ba_row >0){
 					while($ba <= $ba_row){
@@ -452,7 +454,7 @@ if(isset($_GET['print_packing_list'])&&isset($_GET['id_order'])){
 				}else{
 				if($count>$row){  $page++; echo "</table><div style='page-break-after:always;'></div>".doc_head($order, $company, $customer, $number, $title, $page, $total_page); $count = 1;  }
 				}
-				$n++; 
+				$n++;
 	}
 	}else{
 		echo $html.$doc_body_top.doc_head($order, $company, $customer, $number, $title,$page, $total_page);
@@ -465,27 +467,27 @@ if(isset($_GET['update_box']) && isset($_GET['id_order'])  )
 {
 	$id_order = $_GET['id_order'];
 	$id_box 	= $_GET['id_box'];
-	$qs = dbQuery("SELECT id_box FROM tbl_box WHERE id_order = ".$id_order);    
+	$qs = dbQuery("SELECT id_box FROM tbl_box WHERE id_order = ".$id_order);
 	$data = array();
-	if(dbNumRows($qs) > 0 ) : 
-		$i = 1; 
-		while($ro = dbFetchArray($qs)) : 
-			$qo = dbQuery("SELECT SUM(qty) AS qty FROM tbl_qc WHERE id_order = ".$id_order." AND id_box = ".$ro['id_box']." AND valid = 1"); 
-			$rs = dbFetchArray($qo) ; 
+	if(dbNumRows($qs) > 0 ) :
+		$i = 1;
+		while($ro = dbFetchArray($qs)) :
+			$qo = dbQuery("SELECT SUM(qty) AS qty FROM tbl_qc WHERE id_order = ".$id_order." AND id_box = ".$ro['id_box']." AND valid = 1");
+			$rs = dbFetchArray($qo) ;
 			$qty = $rs['qty'];
 			if($qty <1){ $qty = 0 ; }
 			$active = "btn-success";
 			if($id_box == $ro['id_box']){ $active = "btn-danger"; }
 			$arr = array("i"=>$i, "id_box"=>$ro['id_box'], "qty"=>$qty, "class"=>$active);
-			array_push($data, $arr);          
-            $i++;   
- 		endwhile; 
- 	else : 
+			array_push($data, $arr);
+            $i++;
+ 		endwhile;
+ 	else :
 			$arr = array("nocontent"=>"ยังไม่มีการตรวจสินค้า");
- endif; 	
- 
+ endif;
+
  echo json_encode($data);
-	
+
 }
 
 if(isset($_GET['get_total']) &&isset($_GET['id_order'] ))

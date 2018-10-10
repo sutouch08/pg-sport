@@ -468,7 +468,7 @@ function getProduct() {
         data: {
           "product_code": st,
           "id_customer": id_cus,
-          "id_order" : id_order 
+          "id_order" : id_order
         },
         success: function(dataset) {
             load_out();
@@ -665,6 +665,10 @@ function save(id) {
 }
 
 function goBack() {
+  if($('#isOnline').length == 1){
+    window.location.href = 'index.php?content=order_online';
+    return;
+  }
     window.location.href = 'index.php?content=order';
 }
 

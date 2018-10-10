@@ -43,7 +43,7 @@ if( isset( $_GET['get_role_detail'] ) && isset( $_POST['id_po_role'] ) )
 	}
 	else
 	{
-		echo "fail";	
+		echo "fail";
 	}
 }
 
@@ -60,14 +60,14 @@ if( isset( $_GET['set_default_role'] ) && isset( $_POST['id_po_role'] ) )
 	else
 	{
 		dbRollback();
-		echo "fail";	
+		echo "fail";
 	}
 }
 
 if( isset( $_GET['is_default'] ) && isset( $_POST['id_po_role'] ) )
 {
 	$qs = dbQuery("SELECT id_po_role FROM tbl_po_role WHERE id_po_role = ".$_POST['id_po_role']." AND is_default = 1 ");
-	echo dbNumRows($qs);	
+	echo dbNumRows($qs);
 }
 
 if( isset( $_GET['active_po_role'] ) && isset( $_POST['id_po_role'] ) )
@@ -75,14 +75,14 @@ if( isset( $_GET['active_po_role'] ) && isset( $_POST['id_po_role'] ) )
 	$id = $_POST['id_po_role'];
 	$active = $_POST['active'];
 	$qs = dbQuery("UPDATE tbl_po_role SET active = ".$active." WHERE id_po_role = ".$id);
-	if( $qs ){ echo "success"; }else{ echo "fail"; }	
+	if( $qs ){ echo "success"; }else{ echo "fail"; }
 }
 
 if( isset( $_GET['update_po_role'] ) && isset( $_POST['id_po_role'] ) )
 {
 	$id 		= $_POST['id_po_role'];
 	$name 	= $_POST['role_name'];
-	$active	= $_POST['active'];	
+	$active	= $_POST['active'];
 	$qs = dbQuery("UPDATE tbl_po_role SET role_name = '".$name."', active = ".$active." WHERE id_po_role = ".$id);
 	if( $qs )
 	{
@@ -90,7 +90,7 @@ if( isset( $_GET['update_po_role'] ) && isset( $_POST['id_po_role'] ) )
 	}
 	else
 	{
-		echo "fail";	
+		echo "fail";
 	}
 }
 
@@ -110,7 +110,7 @@ if( isset( $_GET['add_po_role'] ) && isset( $_POST['role_name'] ) )
 	}
 	else
 	{
-		echo "fail";	
+		echo "fail";
 	}
 }
 /////////////// check new reference ////////////
@@ -199,7 +199,7 @@ if( isset($_GET['save_edit']) && isset($_GET['id_po']) )
 	$unit			= $_POST['unit'];
 	$po	= new po($id_po);
 	if( $_POST['bill_discount'] > 0 )
-	{ 
+	{
 		$po->update_bill_discount($_GET['id_po'], $_POST['bill_discount']);
 	}
 	$c 	= count($qtys);
@@ -228,10 +228,10 @@ if( isset($_GET['save_edit']) && isset($_GET['id_po']) )
 	if($c == $s)
 	{
 		if($po->status == 0 ){ $po->update_status($id_po, 1); }
-		$de = $po->drop_different($id_po, $qtys);	
+		$de = $po->drop_different($id_po, $qtys);
 		echo $de;
 	}else{
-		echo "fail";	
+		echo "fail";
 	}
 }
 
@@ -248,7 +248,7 @@ if( isset($_GET['save_add']) && isset($_GET['id_po']) )
 	$unit			= $_POST['unit'];
 	$po	= new po();
 	if( $_POST['bill_discount'] > 0 )
-	{ 
+	{
 		$po->update_bill_discount($_GET['id_po'], $_POST['bill_discount']);
 	}
 	/// Insert item to database;
@@ -276,7 +276,7 @@ if( isset($_GET['save_add']) && isset($_GET['id_po']) )
 }
 
 
-if( isset( $_GET['get_product'] ) && isset( $_POST['product_code'] ) ) 
+if( isset( $_GET['get_product'] ) && isset( $_POST['product_code'] ) )
 {
 	$id_product = get_id_product_by_product_code($_POST['product_code']);
 	if( $id_product)
@@ -305,7 +305,7 @@ if( isset( $_GET['get_product'] ) && isset( $_POST['product_code'] ) )
 	echo $dataset;
 }
 
-if( isset($_GET['update_po']) && isset($_POST['id_po']) ) 
+if( isset($_GET['update_po']) && isset($_POST['id_po']) )
 {
 	$data	= array(
 					"reference" 		=> $_POST['reference'],
@@ -336,7 +336,7 @@ if( isset($_GET['add_po']) && isset($_POST['s_id']) )
 					"date_add"		=>dbDate($_POST['date_add'], true),
 					"remark"			=>$_POST['remark'],
 					"role"				=> $_POST['role']
-				);	
+				);
 	$po = new po();
 	$rs = $po->add($data);
 	if($rs)
@@ -396,7 +396,7 @@ if( isset( $_GET['print_po']) && isset( $_GET['id_po'] ) )
 						array("มูลค่า", "width:10%; text-align:center; border-left: solid 1px #ccc; border-top:0px; border-top-right-radius:10px")
 						);
 	$print->add_subheader($thead);
-	
+
 	//***************************** กำหนด css ของ td *****************************//
 	$pattern = array(
 							"text-align: center; border-top:0px;",
@@ -406,17 +406,17 @@ if( isset( $_GET['print_po']) && isset( $_GET['id_po'] ) )
 							"text-align:center; border-left: solid 1px #ccc; border-top:0px;",
 							"text-align:center; border-left: solid 1px #ccc; border-top:0px;",
 							"text-align:right; border-left: solid 1px #ccc; border-top:0px;"
-							);					
-	$print->set_pattern($pattern);	
-	
+							);
+	$print->set_pattern($pattern);
+
 	//*******************************  กำหนดช่องเซ็นของ footer *******************************//
-	$footer	= array( 
-						array("ผู้จัดทำ", "","วันที่............................."), 
+	$footer	= array(
+						array("ผู้จัดทำ", "","วันที่............................."),
 						array("ผู้ตรวจสอบ", "","วันที่............................."),
 						array("ผู้อนุมัติ", "","วันที่.............................")
-						);						
-	$print->set_footer($footer);		
-	
+						);
+	$print->set_footer($footer);
+
 	$n = 1;
 	while($total_page > 0 )
 	{
@@ -426,7 +426,7 @@ if( isset( $_GET['print_po']) && isset( $_GET['id_po'] ) )
 				echo $print->table_start();
 				$i = 0;
 				$product = new product();
-				while($i<$row) : 
+				while($i<$row) :
 					$rs = dbFetchArray($detail);
 					if(count($rs) != 0) :
 						$id_product 		= $product->getProductId($rs['id_product_attribute']);
@@ -443,22 +443,22 @@ if( isset( $_GET['print_po']) && isset( $_GET['id_po'] ) )
 						$data = array("", "", "", "","", "","");
 					endif;
 					echo $print->print_row($data);
-					$n++; $i++;  	
+					$n++; $i++;
 				endwhile;
 				echo $print->table_end();
 				if($print->current_page == $print->total_page)
-				{ 
+				{
 					$qty = number_format($total_qty);
-					$amount = number_format($total_price,2); 
+					$amount = number_format($total_price,2);
 					$total_discount_amount = number_format($total_discount+$bill_discount,2);
 					$net_amount = number_format($total_price - ($total_discount + $bill_discount) ,2);
 					$remark = $po->remark;
-				}else{ 
-					$qty = ""; 
-					$amount = ""; 
+				}else{
+					$qty = "";
+					$amount = "";
 					$total_discount_amount = "";
 					$net_amount = "";
-					$remark = ""; 
+					$remark = "";
 				}
 				$sub_total = array(
 						array("<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-bottom:0px; border-left:0px; width:60%; text-align:center;'>**** ส่วนลดท้ายบิล : ".number_format($bill_discount,2)." ****</td>
@@ -472,7 +472,7 @@ if( isset( $_GET['print_po']) && isset( $_GET['id_po'] ) )
 						array("<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-bottom:0px;'><strong>ยอดเงินสุทธิ</strong></td>
 						<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-right:0px; border-bottom:0px; border-bottom-right-radius:10px; text-align:right;'>".$net_amount."</td>")
 						);
-			echo $print->print_sub_total($sub_total);				
+			echo $print->print_sub_total($sub_total);
 			echo $print->content_end();
 			echo $print->footer;
 		echo $print->page_end();
@@ -488,11 +488,25 @@ if( isset( $_GET['print_barcode']) && isset( $_GET['id_po'] ) )
 	$print 			= new printer();
 	echo $print->doc_header();
 	$print->add_title("PO/ใบสั่งซื้อ (ใช้สำหรับยิงเข้า formula เท่านั้น)");
-	$header			= array("เลขที่เอกสาร"=>$po->reference, "วันที่เอกสาร"=>thaiDate($po->date_add), "ผู้ขาย"=>supplier_code($po->id_supplier)." : ".supplier_name($po->id_supplier), "กำหนดรับ"=>thaiDate($po->due_date));
+
+	$header			= array(
+									"เลขที่เอกสาร"=>$po->reference,
+									"วันที่เอกสาร"=>thaiDate($po->date_add),
+									"ผู้ขาย"=>supplier_code($po->id_supplier)." : ".supplier_name($po->id_supplier),
+									"กำหนดรับ"=>thaiDate($po->due_date)
+								);
+
 	$print->add_header($header);
 	$detail			= $po->get_detail($id_po);
 	$total_row 		= dbNumRows($detail);
-	$config 			= array("total_row"=>$total_row, "font_size"=>10, "sub_total_row"=>4, "footer"=>false);
+	$config 			= array(
+										//"row_height" => 20,
+										//"row" => 20,
+										"total_row"=>$total_row,
+										"font_size"=>10,
+										"sub_total_row"=>4,
+										"footer"=>false
+									);
 	$print->config($config);
 	$row 				= $print->row;
 	$total_page 		= $print->total_page;
@@ -504,37 +518,35 @@ if( isset( $_GET['print_barcode']) && isset( $_GET['id_po'] ) )
 	//**************  กำหนดหัวตาราง  ******************************//
 	$thead	= array(
 						array("ลำดับ", "width:4%; text-align:center; border-top:0px; border-top-left-radius:10px;"),
-						array("บาร์โค้ด", "width:15%; text-align:center;border-left: solid 1px #ccc; border-top:0px;"),
-						array("รหัส", "width:18%; text-align:center;border-left: solid 1px #ccc; border-top:0px;"),
-						array("สินค้า", "width:27%; text-align:center;border-left: solid 1px #ccc; border-top:0px;"),
-						array("จำนวน", "width:8%; text-align:center; border-left: solid 1px #ccc; border-top:0px;"),
-						array("ราคา", "width:8%; text-align:center; border-left: solid 1px #ccc; border-top:0px;"),
+						array("บาร์โค้ด", "width:25%; text-align:center;border-left: solid 1px #ccc; border-top:0px;"),
+						array("รหัส", "text-align:center;border-left: solid 1px #ccc; border-top:0px;"),
+						array("จำนวน", "width:10%; text-align:center; border-left: solid 1px #ccc; border-top:0px;"),
+						array("ราคา", "width:10%; text-align:center; border-left: solid 1px #ccc; border-top:0px;"),
 						array("ส่วนลด", "width:10%; text-align:center; border-left: solid 1px #ccc; border-top:0px;"),
 						array("มูลค่า", "width:10%; text-align:center; border-left: solid 1px #ccc; border-top:0px; border-top-right-radius:10px")
 						);
 	$print->add_subheader($thead);
-	
+
 	//***************************** กำหนด css ของ td *****************************//
 	$pattern = array(
 							"text-align: center; border-top:0px;",
 							"border-left: solid 1px #ccc; border-top:0px; text-align:center;",
 							"border-left: solid 1px #ccc; border-top:0px;",
-							"border-left: solid 1px #ccc; border-top:0px;",
 							"text-align:center; border-left: solid 1px #ccc; border-top:0px;",
 							"text-align:center; border-left: solid 1px #ccc; border-top:0px;",
 							"text-align:center; border-left: solid 1px #ccc; border-top:0px;",
 							"text-align:right; border-left: solid 1px #ccc; border-top:0px;"
-							);					
-	$print->set_pattern($pattern);	
-	
+							);
+	$print->set_pattern($pattern);
+
 	//*******************************  กำหนดช่องเซ็นของ footer *******************************//
-	$footer	= array( 
-						array("ผู้จัดทำ", "","วันที่............................."), 
+	$footer	= array(
+						array("ผู้จัดทำ", "","วันที่............................."),
 						array("ผู้ตรวจสอบ", "","วันที่............................."),
 						array("ผู้อนุมัติ", "","วันที่.............................")
-						);						
-	$print->set_footer($footer);		
-	
+						);
+	$print->set_footer($footer);
+
 	$n = 1;
 	while($total_page > 0 )
 	{
@@ -544,55 +556,55 @@ if( isset( $_GET['print_barcode']) && isset( $_GET['id_po'] ) )
 				echo $print->table_start();
 				$i = 0;
 				$product = new product();
-				while($i<$row) : 
+				while($i<$row) :
 					$rs = dbFetchArray($detail);
 					if(count($rs) != 0) :
 						$product->product_attribute_detail($rs['id_product_attribute']);
 						$id_product 		= $product->id_product; //$product->getProductId($rs['id_product_attribute']);
 						$product_code 	= $product->product_reference($rs['id_product_attribute']);
 						$product_name 	= "<input type='text' style='border:0px; width:100%;' value='".$product->product_name($id_product)."' />";
-						$barcode			= $print->print_barcode($product->barcode, "width:100%; height:21.8px;");
+						$barcode			= $print->print_barcode($product->barcode, "width:100%; max-height:5mm;");
 						$dis					= $po->getDiscount($rs['discount_percent'], $rs['discount_amount']); // หาส่วนลด
 						$discount			= number_format($dis['value'],2)." ".$dis['unit'];
-						$data 				= array($n, $barcode, $product_code, $product_name, number_format($rs['qty']), number_format($rs['price'], 2), $discount, number_format($rs['total_amount'], 2) );
+						$data 				= array($n, $barcode, $product_code, number_format($rs['qty']), number_format($rs['price'], 2), $discount, number_format($rs['total_amount'], 2) );
 						$total_qty 			+= $rs['qty'];
 						$total_price 		+= $rs['qty'] * $rs['price'];
 						$total_amount 		+= $rs['total_amount'];
 						$total_discount 	+= $rs['total_discount'];
 					else :
-						$data = array("", "", "", "","", "","","");
+						$data = array("", "", "","", "","","");
 					endif;
 					echo $print->print_row($data);
-					$n++; $i++;  	
+					$n++; $i++;
 				endwhile;
 				echo $print->table_end();
 				if($print->current_page == $print->total_page)
-				{ 
+				{
 					$qty = number_format($total_qty);
-					$amount = number_format($total_price,2); 
+					$amount = number_format($total_price,2);
 					$total_discount_amount = number_format($total_discount+$bill_discount,2);
 					$net_amount = number_format($total_price - ($total_discount + $bill_discount) ,2);
 					$remark = $po->remark;
-				}else{ 
-					$qty = ""; 
-					$amount = ""; 
+				}else{
+					$qty = "";
+					$amount = "";
 					$total_discount_amount = "";
 					$net_amount = "";
-					$remark = ""; 
+					$remark = "";
 				}
 				$sub_total = array(
-						array("<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-bottom:0px; border-left:0px; width:60%; text-align:center;'>**** ส่วนลดท้ายบิล : ".number_format($bill_discount,2)." ****</td>
-								<td style='width:20%; height:".$print->row_height."mm; border: solid 1px #ccc;'><strong>จำนวนรวม</strong></td>
-								<td style='width:20%; height:".$print->row_height."mm; border: solid 1px #ccc; border-right:0px; text-align:right;'>".$qty."</td>"),
-						array("<td rowspan='3' style='height:".$print->row_height."mm; border-top: solid 1px #ccc; border-bottom-left-radius:10px; width:55%; font-size:10px;'><strong>หมายเหตุ : </strong>".$remark."</td>
-								<td style='width:20%; height:".$print->row_height."mm; border: solid 1px #ccc;'><strong>ราคารวม</strong></td>
-								<td style='width:20%; height:".$print->row_height."mm; border: solid 1px #ccc; border-right:0px; text-align:right;'>".$amount."</td>"),
-						array("<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-bottom:0px;'><strong>ส่วนลดรวม</strong></td>
-						<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-right:0px; border-bottom:0px; border-bottom-right-radius:10px; text-align:right;'>".$total_discount_amount."</td>"),
-						array("<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-bottom:0px;'><strong>ยอดเงินสุทธิ</strong></td>
-						<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-right:0px; border-bottom:0px; border-bottom-right-radius:10px; text-align:right;'>".$net_amount."</td>")
+						array("<td style='height:".$print->sub_total_row_height."mm; border: solid 1px #ccc; border-bottom:0px; border-left:0px; width:60%; text-align:center;'>**** ส่วนลดท้ายบิล : ".number_format($bill_discount,2)." ****</td>
+								<td style='width:20%; height:".$print->sub_total_row_height."mm; border: solid 1px #ccc;'><strong>จำนวนรวม</strong></td>
+								<td style='width:20%; height:".$print->sub_total_row_height."mm; border: solid 1px #ccc; border-right:0px; text-align:right;'>".$qty."</td>"),
+						array("<td rowspan='3' style='height:".$print->sub_total_row_height."mm; border-top: solid 1px #ccc; border-bottom-left-radius:10px; width:55%; font-size:10px;'><strong>หมายเหตุ : </strong>".$remark."</td>
+								<td style='width:20%; height:".$print->sub_total_row_height."mm; border: solid 1px #ccc;'><strong>ราคารวม</strong></td>
+								<td style='width:20%; height:".$print->sub_total_row_height."mm; border: solid 1px #ccc; border-right:0px; text-align:right;'>".$amount."</td>"),
+						array("<td style='height:".$print->sub_total_row_height."mm; border: solid 1px #ccc; border-bottom:0px;'><strong>ส่วนลดรวม</strong></td>
+						<td style='height:".$print->sub_total_row_height."mm; border: solid 1px #ccc; border-right:0px; border-bottom:0px; border-bottom-right-radius:10px; text-align:right;'>".$total_discount_amount."</td>"),
+						array("<td style='height:".$print->sub_total_row_height."mm; border: solid 1px #ccc; border-bottom:0px;'><strong>ยอดเงินสุทธิ</strong></td>
+						<td style='height:".$print->sub_total_row_height."mm; border: solid 1px #ccc; border-right:0px; border-bottom:0px; border-bottom-right-radius:10px; text-align:right;'>".$net_amount."</td>")
 						);
-			echo $print->print_sub_total($sub_total);				
+			echo $print->print_sub_total($sub_total);
 			echo $print->content_end();
 			echo $print->footer;
 		echo $print->page_end();
@@ -613,7 +625,7 @@ if( isset($_GET['get_po_detail']) && isset($_POST['id_po']) )  //// ใช้ก
 							"supplier"		=> supplier_name($po->id_supplier),
 							"due_date"	=> thaiDate($po->due_date)
 							);
-	array_push($data, $arr);							
+	array_push($data, $arr);
 	$qs	= $po->get_detail($id_po);
 	$no	= 1;
 	$total_qty = 0; $total_discount = 0; $total_amount = 0; $total_price = 0;
@@ -725,24 +737,24 @@ if( isset( $_GET['get_product_info'] ) && isset( $_POST['product_code'] ) )
 							"qty"			=> number_format($rs['qty']),
 							"received"	=> number_format($rs['received']),
 							"status"		=> $rs['valid'] == 1 ? "<span style='color:green'>ปิดแล้ว</span>" : "<span style='color:red'>ยังไม่ปิด</span>"
-							);	
-				array_push($data, $arr);		
-				$total_qty += $rs['qty'];		
-				$total_received += $rs['received'];			
+							);
+				array_push($data, $arr);
+				$total_qty += $rs['qty'];
+				$total_received += $rs['received'];
 			}
 			$arr = array("id_po" => "", "date" =>"", "po" =>"", "qty" => number_format($total_qty), "received" => number_format($total_received), "status" =>"");
 			array_push($data, $arr);
 		}
 		else
 		{
-			$arr = array("nocontent" => "ไม่พบรายการใดๆ");	
+			$arr = array("nocontent" => "ไม่พบรายการใดๆ");
 			array_push($data, $arr);
 		}
 	}
 	else
 	{
 		$arr = array("nocontent" => "ไม่มีรหัสสินค้าที่กำหนด กรุณาตรวจสอบ");
-		array_push($data, $arr);	
+		array_push($data, $arr);
 	}
 	echo json_encode($data);
 }
@@ -786,7 +798,7 @@ if( isset( $_GET['get_monthly_amount'] ) )
 	}
 	$data .= '<th style="width:150px; text-align:center;">รวม</th>';
 	$data .= '</thead>';
-	
+
 	while($m > 0 )
 	{
 		if($m < 10){ $n = "0".$m; }else{ $n = $m; }
@@ -825,7 +837,7 @@ if( isset( $_GET['clear_filter'] ) )
 	setcookie("po_search_text", "", time()-3600, "/");
 	setcookie("po_from_date", "", time()-3600, "/");
 	setcookie("po_to_date", "", time()-3600, "/");
-	echo "success";		
+	echo "success";
 }
 
 ?>

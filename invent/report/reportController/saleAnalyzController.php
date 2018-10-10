@@ -9,7 +9,7 @@ if( isset( $_GET['soldProductDeepAnalyz'] ) )
 {
 	ini_set('memory_limit', '1024M');
 	$role	= $_GET['role'];
-	$role_in = $role == 0 ? '1,5' : $role;
+	$role_in = $role == 0 ? '1,5,11' : $role;
 	$roleName = $role == 1 ? 'ขายปกติ' : ( $role == 5 ? 'ฝากขาย' : 'ทั้งหมด' );
 	$from = fromDate($_GET['from']);
 	$to	= toDate($_GET['to']);
@@ -17,7 +17,7 @@ if( isset( $_GET['soldProductDeepAnalyz'] ) )
 	$pred = date("dmY", strtotime($from)) .' - '. date("dmY", strtotime($to));
 	//$pGroup	= getConfig('ITEMS_GROUP');
 	$excel	= new PHPExcel();
-	
+
 	$excel->getProperties()->setCreator("Samart Invent")
 							 ->setLastModifiedBy("Samart Invent")
 							 ->setTitle("Report Sold Deep Analyz")
@@ -27,7 +27,7 @@ if( isset( $_GET['soldProductDeepAnalyz'] ) )
 							 ->setCategory("Sale Report");
 	$excel->setActiveSheetIndex(0);
 	$excel->getActiveSheet()->setTitle('รายงานวิเคราะห์ขายแบบละเอียด');
-	
+
 	//---------  หัวตาราง  ------------//
 	$excel->getActiveSheet()->setCellValue('A1', 'sold_date');
 	$excel->getActiveSheet()->setCellValue('B1', 'product');
@@ -55,10 +55,10 @@ if( isset( $_GET['soldProductDeepAnalyz'] ) )
 	$excel->getActiveSheet()->setCellValue('X1', 'total_cost_inc');
 	$excel->getActiveSheet()->setCellValue('Y1', 'margin_ex');
 	$excel->getActiveSheet()->setCellValue('Z1', 'margin_inc');
-	
-	
+
+
 	$qs = dbQuery("SELECT * FROM tbl_order_detail_sold WHERE id_role IN(".$role_in.") AND date_upd > '".$from."' AND date_upd < '".$to."' ORDER BY id_product ASC");
-	
+
 	if( dbNumRows($qs) > 0 )
 	{
 		$row	= 2;  //------ เริ่มต้นแถวที่ 2
@@ -97,27 +97,27 @@ if( isset( $_GET['soldProductDeepAnalyz'] ) )
 			$excel->getActiveSheet()->setCellValue('X'.$row, addVAT($rs['total_cost'], $vat)); //---- ต้นทุนรวม (รวม VAT)
 			$excel->getActiveSheet()->setCellValue('Y'.$row, removeVAT($rs['total_amount'], $vat) - $rs['total_cost'] ); //---- กำไรขั้นต้น (ไม่รวม VAT)
 			$excel->getActiveSheet()->setCellValue('Z'.$row, $rs['total_amount'] - addVAT($rs['total_cost'], $vat) ); //---- กำไรขั้นต้น (รวม VAT )
-			
-			$row++;			
-			
-		}//----- end while 		
-		
+
+			$row++;
+
+		}//----- end while
+
 		$excel->getActiveSheet()->getStyle('A2:A'.$row)->getNumberFormat()->setFormatCode('dd/mm/yyyy');
 		$excel->getActiveSheet()->getStyle('G2:L'.$row)->getNumberFormat()->setFormatCode('#,##0.00');
 		$excel->getActiveSheet()->getStyle('M2:M'.$row)->getNumberFormat()->setFormatCode('#,##0');
 		$excel->getActiveSheet()->getStyle('N2:P'.$row)->getNumberFormat()->setFormatCode('#,##0.00');
 		$excel->getActiveSheet()->getStyle('W2:Z'.$row)->getNumberFormat()->setFormatCode('#,##0.00');
-		
+
 	}
 
-	
+
 	setToken($_GET['token']);
 	$file_name = "รายงานวิเคราะห์ขายแบบละเอียด".$pred.".xlsx";
 	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); /// form excel 2007 XLSX
 	header('Content-Disposition: attachment;filename="'.$file_name.'"');
 	$writer = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
-	$writer->save('php://output');	
-	
+	$writer->save('php://output');
+
 }
 
 
@@ -144,8 +144,8 @@ if( isset( $_GET['sale_by_attribute'] ) && isset( $_GET['export'] ) )
 	$excel->setActiveSheetIndex(0);
 	$excel->getActiveSheet()->setTitle($code);
 	$excel->getActiveSheet()->setCellValue('A1', $title);
-	
-		
+
+
 	/////////////////  ตรวจสอบ คุณลักษณะ //////////////
 	$q_color = dbQuery("SELECT id_product_attribute, tbl_product_attribute.id_color AS id, color_code AS code  FROM tbl_product_attribute JOIN tbl_color ON tbl_product_attribute.id_color = tbl_color.id_color WHERE id_product = ".$id_product." AND tbl_product_attribute.id_color != 0 ");
 	$q_size 	= dbQuery("SELECT id_product_attribute, tbl_product_attribute.id_size AS id, size_name AS code FROM tbl_product_attribute JOIN tbl_size ON tbl_product_attribute.id_size = tbl_size.id_size WHERE id_product = ".$id_product." AND tbl_product_attribute.id_size != 0");
@@ -236,7 +236,7 @@ if( isset( $_GET['sale_by_attribute'] ) && isset( $_GET['export'] ) )
 			{
 				$excel->getActiveSheet()->setCellValueByColumnAndRow($col, 2, $co_head['color_code']." ".color_name($co_head['id_color']));
 				$col++; $cc++;
-			}			
+			}
 			$excel->getActiveSheet()->setCellValueByColumnAndRow($col, 2, "รวม");
 			$si = dbQuery($attributes);
 			$row = 3; $col = 0; // start at A3
@@ -284,8 +284,8 @@ if( isset( $_GET['sale_by_attribute'] ) && isset( $_GET['export'] ) )
 			{
 				$excel->getActiveSheet()->setCellValueByColumnAndRow($col, 2, $co_head['attribute_name']);
 				$col++; $cc++;
-			}	
-			$excel->getActiveSheet()->setCellValueByColumnAndRow($col, 2, "รวม");		
+			}
+			$excel->getActiveSheet()->setCellValueByColumnAndRow($col, 2, "รวม");
 			$si = dbQuery($sizes);
 			$row = 3; $col = 0;
 			while($rd = dbFetchArray($si) )
@@ -299,7 +299,7 @@ if( isset( $_GET['sale_by_attribute'] ) && isset( $_GET['export'] ) )
 					if(dbNumRows($qx) == 1)
 					{
 						list($id_product_attribute) = dbFetchArray(dbQuery("SELECT id_product_attribute FROM tbl_product_attribute JOIN tbl_attribute ON tbl_product_attribute.id_attribute = tbl_attribute.id_attribute WHERE id_product = ".$id_product." AND id_size =".$rd['id']." AND tbl_product_attribute.id_attribute = ".$rc['id']."  ORDER BY position ASC"));
-						$qty = sum_sold_qty_by_id_product_attribute($id_product_attribute, $from, $to, $option);	
+						$qty = sum_sold_qty_by_id_product_attribute($id_product_attribute, $from, $to, $option);
 					}
 					else
 					{
@@ -329,7 +329,7 @@ if( isset( $_GET['sale_by_attribute'] ) && isset( $_GET['export'] ) )
 	else if($c_count == "111") /// กรณีมี 3 คุณลักษณะ
 	{
 		$co = dbQuery("SELECT tbl_product_attribute.id_attribute, attribute_name FROM tbl_product_attribute JOIN tbl_attribute ON tbl_product_attribute.id_attribute = tbl_attribute.id_attribute WHERE id_product = ".$id_product." AND tbl_product_attribute.id_attribute != 0 GROUP BY tbl_product_attribute.id_attribute ORDER BY position ASC" );
-		$a_col = 1; 
+		$a_col = 1;
 		$cc = dbNumRows(dbQuery("SELECT id_color FROM tbl_product_attribute WHERE id_product = ".$id_product." AND id_color != 0 GROUP BY id_color"));
 		while($cs = dbFetchArray($co) ) ///Attribute วน สร้างที่ละช่อง     w1
 		{
@@ -345,7 +345,7 @@ if( isset( $_GET['sale_by_attribute'] ) && isset( $_GET['export'] ) )
 				$col++;
 			} // while 2
 			$excel->getActiveSheet()->setCellValueByColumnAndRow($col, 3, "รวม");
-			
+
 			$row = 4; $col = $a_col -1;
 			$sizes = $size;
 			$si = dbQuery($sizes);
@@ -373,7 +373,7 @@ if( isset( $_GET['sale_by_attribute'] ) && isset( $_GET['export'] ) )
 				$excel->getActiveSheet()->setCellValueByColumnAndRow($col, $row, "=SUM(".PHPExcel_Cell::stringFromColumnIndex($a_col).$row.":".PHPExcel_Cell::stringFromColumnIndex($col-1).$row.")");
 				$excel->getActiveSheet()->getStyle(PHPExcel_Cell::stringFromColumnIndex($col).$row)->getFont()->setBold(true);
 				$col = $a_col-1; $row++;
-			}//end while 3 
+			}//end while 3
 			$excel->getActiveSheet()->setCellValueByColumnAndRow($col, $row, "รวม");
 			$col++;
 			while($col <= ($a_col-1 +$cc))
@@ -385,26 +385,26 @@ if( isset( $_GET['sale_by_attribute'] ) && isset( $_GET['export'] ) )
 			$excel->getActiveSheet()->getStyle(PHPExcel_Cell::stringFromColumnIndex($a_col).$row.':'.PHPExcel_Cell::stringFromColumnIndex($a_col+$cc).$row)->getFont()->setBold(true);
 			$range = PHPExcel_Cell::stringFromColumnIndex($a_col-1).'2:'.PHPExcel_Cell::stringFromColumnIndex($a_col+$cc).$row;
 			$excel->getActiveSheet()->getStyle($range)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-			
+
 			//$excel->getActiveSheet()->getStyle(PHPExcel_Cell::stringFromColumnIndex($a_col-1).'2:'.PHPExcel_Cell::stringFromColumnIndex(($a_col-1)+$cc).($row - 1))->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 			$a_col += $cc + 3;
-			
+
 		}// end while 1
-		
+
 	} /// จบ เงื่อนไขนับคุณลักษณะ
-	
+
 	/*echo "<pre>";
 	print_r($excel);
 	echo "</pre>";*/
-	
-	
+
+
 	setToken($_GET['token']);
 	$file_name = "attribute_analyz.xlsx";
 	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); /// form excel 2007 XLSX
 	header('Content-Disposition: attachment;filename="'.$file_name.'"');
 	$writer = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
 	$writer->save('php://output');
-	
+
 }
 
 function sold_attribute_grid($id_product, $from, $to, $option)
@@ -424,7 +424,7 @@ function sold_attribute_grid($id_product, $from, $to, $option)
 	if($rc >0){ $c_count .= "1"; }else{ $c_count .= "0"; } ///// ถ้ามีแถวให้นำ 1 มาต่อกันถ้าไม่มีนำ 0 มาต่อ เพื่อใช้ตรวจสอบเงื่อนไข /////
 	if($rs >0){ $c_count .= "1"; }else{ $c_count .= "0"; } ///// ถ้ามีแถวให้นำ 1 มาต่อกันถ้าไม่มีนำ 0 มาต่อ เพื่อใช้ตรวจสอบเงื่อนไข /////
 	if($ra >0){ $c_count .= "1"; }else{ $c_count .= "0"; } ///// ถ้ามีแถวให้นำ 1 มาต่อกันถ้าไม่มีนำ 0 มาต่อ เพื่อใช้ตรวจสอบเงื่อนไข /////
-	
+
 	if($c_count == "100" || $c_count == "010" || $c_count == "001") /// กรณีมี คุณลักษณะเดียว
 	{
 		if($rc > 0){ $data = $q_color; }else if($rs > 0 ){ $data = $q_size; }else{ $data = $q_attribute; }
@@ -438,13 +438,13 @@ function sold_attribute_grid($id_product, $from, $to, $option)
 			$result .="<td style='vertical-align:middle;'>".$rd['code']."</td><td style='width:100px; padding-right:10px; vertical-align:middle; text-align:center;'>".number_format($qty)."</td>";
 			$total_qty += $qty;
 			$i++;
-			$result .= "</tr>"; 
+			$result .= "</tr>";
 		}// end while
 		$result .= "<tr>";
 		$result .= "<td style='vertical-align:middle;'><center><strong>รวม</strong></center></td><td style='width:100px; padding-right:10px; vertical-align:middle; text-align:center;'>".number_format($total_qty)."</td>";
 		$result .= "</tr>";
 		$result .= "</table>";
-		
+
 	}
 	else if($c_count == "110" || $c_count == "101" || $c_count == "011") /// กรณีมี 2 คุณลักษณะ
 	{
@@ -462,7 +462,7 @@ function sold_attribute_grid($id_product, $from, $to, $option)
 			$result .= "<td align='center' style='vertical-align:middle'><strong>รวม</td>";
 			$result .= "</tr>";
 			$si = dbQuery($sizes);
-			
+
 			while($rd = dbFetchArray($si) )
 			{
 				$result .= "<tr><td align='center' style='vertical-align:middle; width:70px;'><strong>".get_size_name($rd['id'])."</strong></td>";
@@ -535,12 +535,12 @@ function sold_attribute_grid($id_product, $from, $to, $option)
 			$all_qty = 0;
 			foreach($total_c as $total_c_qty)
 			{
-				$result .= "<td align='center' style='width:70px; vertical-align:middle; padding:5px;'><center><strong>".number_format($total_c_qty)."</strong></center></td>";	
+				$result .= "<td align='center' style='width:70px; vertical-align:middle; padding:5px;'><center><strong>".number_format($total_c_qty)."</strong></center></td>";
 				$all_qty += $total_c_qty;
 			}
 			$result .= "<td align='center' style='width:70px; vertical-align:middle; padding:5px;'><center><strong>".number_format($all_qty)."</strong></center></td>";
 			$result .= "</tr>";
-			
+
 		}else if(isset($attributes) && isset($sizes) ){
 			$co = dbQuery("SELECT tbl_product_attribute.id_attribute, attribute_name FROM tbl_product_attribute JOIN tbl_attribute ON tbl_product_attribute.id_attribute = tbl_attribute.id_attribute WHERE id_product = ".$id_product." AND tbl_product_attribute.id_attribute != 0 GROUP BY tbl_product_attribute.id_attribute ORDER BY position ASC" );
 			$result .= "<tr><td>&nbsp;</td>";
@@ -564,8 +564,8 @@ function sold_attribute_grid($id_product, $from, $to, $option)
 					if(dbNumRows($qx) == 1 )
 					{
 						list($id_product_attribute) = dbFetchArray(dbQuery("SELECT id_product_attribute FROM tbl_product_attribute JOIN tbl_attribute ON tbl_product_attribute.id_attribute = tbl_attribute.id_attribute WHERE id_product = ".$id_product." AND id_size =".$rd['id']." AND tbl_product_attribute.id_attribute = ".$rc['id']."  ORDER BY position ASC"));
-						$qty = sum_sold_qty_by_id_product_attribute($id_product_attribute, $from, $to, $option);	
-						$total_a[$rc['id']] += $qty;  $total_s += $qty;	
+						$qty = sum_sold_qty_by_id_product_attribute($id_product_attribute, $from, $to, $option);
+						$total_a[$rc['id']] += $qty;  $total_s += $qty;
 					}
 					else
 					{
@@ -580,7 +580,7 @@ function sold_attribute_grid($id_product, $from, $to, $option)
 			$all_qty = 0;
 			foreach($total_a as $total_a_qty)
 			{
-				$result .= "<td align='center' style='width:70px; vertical-align:middle; padding:5px;'><center><strong>".number_format($total_a_qty)."</strong></center></td>";	
+				$result .= "<td align='center' style='width:70px; vertical-align:middle; padding:5px;'><center><strong>".number_format($total_a_qty)."</strong></center></td>";
 				$all_qty += $total_a_qty;
 			}
 			$result .= "<td align='center' style='width:70px; vertical-align:middle; padding:5px;'><center><strong>".number_format($all_qty)."</strong></center></td>";
@@ -651,13 +651,13 @@ function sold_attribute_grid($id_product, $from, $to, $option)
 			$result .= "<td align='center' style='width:70px; vertical-align:middle; padding:5px;'><center><strong>".number_format($all_qty)."</strong></center></td>";
 			$result .= "</tr>";
 			$result .= "</table>";
-			
+
 			$result .= "</div>";
 			$n++;
 		}// end while
-		
+
 		$result .= "</div><! ---- end tab-content ----->";
-		
+
 	} /// จบ เงื่อนไขนับคุณลักษณะ
 	return $result;
 }// end function

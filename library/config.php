@@ -12,7 +12,7 @@ error_reporting(E_ALL);
 $dbHost = 'localhost';
 $dbUser = 'root';
 $dbPass = 'warrix';
-$dbName = 'pg_sport';
+$dbName = 'programs_invent';
 
 // setting up the web root, server root and company's name
 

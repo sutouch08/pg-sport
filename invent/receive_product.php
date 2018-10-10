@@ -58,9 +58,9 @@
 <!-- End page place holder -->
 <?php	if( isset($_GET['add'] ) ) : ?>
 <!--------------------------------------------------------------------------  ADD ---------------------------------------------------------------------->
-	<?php 
-			if( isset( $_GET['id_receive_product'] ) ) : 
- 				$id_rt					= $_GET['id_receive_product']; 
+	<?php
+			if( isset( $_GET['id_receive_product'] ) ) :
+ 				$id_rt					= $_GET['id_receive_product'];
 				$rt						= new receive_product($id_rt);
 				$reference 			= $rt->reference;
 				$inv					= $rt->invoice;
@@ -81,7 +81,7 @@
 				$date_add			= date("d-m-Y");
 				$remark				= "";
 				$disabled			= "";
-				
+
     		endif;
  	?>
 <div class="row">
@@ -141,11 +141,15 @@
     	<label style="visibility:hidden;">ตกลง</label>
         <button type="button" class="btn btn-primary btn-sm btn-block" id="btn_add_item" onClick="check_item()" disabled ><i class="fa fa-check"></i>&nbsp; ตกลง</button>
     </div>
-    <div class="col-lg-2 col-lg-offset-1">
+		<div class="col-lg-1">
+			<label class="not-show">PO</label>
+			<button type="button" class="btn btn-sm btn-primary btn-block" onclick="getPo()">ดึง PO</button>
+		</div>
+    <div class="col-lg-2">
     	<label style="visibility:hidden;">ตกลง</label>
         <button type="button" class="btn btn-info btn-sm btn-block" onClick="change_zone()"><i class="fa fa-retweet"></i>&nbsp; เปลี่ยนโซน</button>
     </div>
-</div>   
+</div>
 <hr style='border-color:#CCC; margin-top: 10px; margin-bottom:10px;' />
 <div class="row">
 	<div class="col-lg-4"><i class="fa fa-check" style="color:green;"></i>&nbsp; = &nbsp; บันทึกแล้ว &nbsp;&nbsp; <i class="fa fa-remove" style="color:red;"></i>&nbsp; = &nbsp; ยังไม่บันทึก </div>
@@ -183,11 +187,11 @@
                     <td align="center"><?php echo isActived($rs['status']); ?></td>
                     <td align="right">
                     	<button type="button" class="btn btn-danger btn-sm" onClick="delete_row(<?php echo $id; ?>, '<?php echo $pro_code; ?>')"><i class="fa fa-trash"></i></button>
-                    </td>
-			<?php	$n++; ?>             
-			<?php 	endwhile; ?>                	
+                  </td>
+			<?php	$n++; ?>
+			<?php 	endwhile; ?>
                 </tr>
-			<?php endif; ?> 
+			<?php endif; ?>
             </tbody>
 		</table>
     </div>
@@ -196,9 +200,9 @@
 <!--------------------------------------------------------------------------  ADD ---------------------------------------------------------------------->
 <?php  	elseif( isset( $_GET['edit'] ) && isset( $_GET['id_receive_product'] ) ) : ?>
 <!--------------------------------------------------------------------------  EDIT ---------------------------------------------------------------------->
-	<?php 
-				$id_r = $_GET['id_receive_product']; 
-				$rd = new receive_product($id_r); 
+	<?php
+				$id_r = $_GET['id_receive_product'];
+				$rd = new receive_product($id_r);
 	?>
 <div class="row">
 	<div class="col-lg-2">
@@ -259,7 +263,7 @@
     	<label style="visibility:hidden;">ตกลง</label>
         <button type="button" class="btn btn-info btn-sm btn-block" onClick="change_zone()"><i class="fa fa-retweet"></i>&nbsp; เปลี่ยนโซน</button>
     </div>
-</div>   
+</div>
 <hr style='border-color:#CCC; margin-top: 10px; margin-bottom:10px;' />
 <div class="row">
 	<div class="col-lg-4"><i class="fa fa-check" style="color:green;"></i>&nbsp; = &nbsp; บันทึกแล้ว &nbsp;&nbsp; <i class="fa fa-remove" style="color:red;"></i>&nbsp; = &nbsp; ยังไม่บันทึก </div>
@@ -298,10 +302,10 @@
                     <td align="right">
                     	<button type="button" class="btn btn-danger btn-sm" onClick="delete_row(<?php echo $id; ?>, '<?php echo $pro_code; ?>')"><i class="fa fa-trash"></i></button>
                     </td>
-			<?php	$n++; ?>             
-			<?php 	endwhile; ?>                	
+			<?php	$n++; ?>
+			<?php 	endwhile; ?>
                 </tr>
-			<?php endif; ?> 
+			<?php endif; ?>
             </tbody>
 		</table>
     </div>
@@ -309,9 +313,9 @@
 <!--------------------------------------------------------------------------  EDIT ---------------------------------------------------------------------->
 <?php 	elseif( isset( $_GET['view_detail'] ) && isset( $_GET['id_receive_product'] ) ) : ?>
 <!--------------------------------------------------------------------------  Detail ---------------------------------------------------------------------->
-	<?php 
-				$id_r = $_GET['id_receive_product']; 
-				$rd = new receive_product($id_r); 
+	<?php
+				$id_r = $_GET['id_receive_product'];
+				$rd = new receive_product($id_r);
 	?>
 <div class="row">
 	<div class="col-lg-2">
@@ -374,15 +378,15 @@
                     <td align="center"><?php echo get_zone($rs['id_zone']); ?></td>
                     <td align="center"><span class="qty"><?php echo number_format($rs['qty'],2); ?></span></td>
                     <td align="center"><?php echo isActived($rs['status']); ?></td>
-			<?php	$n++; $total_qty += $rs['qty']; ?>             
-			<?php 	endwhile; ?>                	
+			<?php	$n++; $total_qty += $rs['qty']; ?>
+			<?php 	endwhile; ?>
                 </tr>
             	<tr>
                 	<td colspan="4" align="right"><h4>รวม</h4></td>
                     <td align="center"><h4><?php echo number_format($total_qty); ?></h4></td>
                     <td align="right"><h4>ชิ้น</h4></td>
                 </tr>
-			<?php endif; ?> 
+			<?php endif; ?>
             </tbody>
 		</table>
     </div>
@@ -468,11 +472,11 @@
                 <td align="center"><?php echo number_format($qty); ?></td>
                 <td align="center"><?php echo number_format($qty + $rs['received']); ?></td>
                 <td align="center" <?php if($miss != 0){ echo "style='color:red;'"; } ?>><?php echo number_format($miss); ?></td>
-                <td align="center" <?php if($over != 0){ echo "style='color:red;'"; } ?>><?php echo number_format($over); ?><input type="hidden" class="over_po" value="<?php echo $over; ?>" /></td>       
+                <td align="center" <?php if($over != 0){ echo "style='color:red;'"; } ?>><?php echo number_format($over); ?><input type="hidden" class="over_po" value="<?php echo $over; ?>" /></td>
             </tr>
             <?php			$n++;										?>
             <?php		endwhile;										?>
-            
+
             <?php	endif; ?>
             </tbody>
         </table>
@@ -503,7 +507,7 @@
 	if( isset($_POST['from_date']) && $_POST['from_date'] !=""){ setcookie("receive_from_date", date("Y-m-d", strtotime($_POST['from_date'])), time() + 3600, "/"); }
 	if( isset($_POST['to_date']) && $_POST['to_date'] != ""){ setcookie("receive_to_date",  date("Y-m-d", strtotime($_POST['to_date'])), time() + 3600, "/"); }
 	$paginator = new paginator();
-?>	
+?>
 <form  method='post' id='form'>
 <div class='row'>
 	<div class='col-lg-2 col-md-2 col-sm-3 col-sx-3'>
@@ -513,48 +517,48 @@
 				<option value='po_reference' <?php if( isset($_POST['filter']) && $_POST['filter'] =="po_reference"){ echo "selected"; }else if( isset($_COOKIE['receive_filter']) && $_COOKIE['receive_filter'] == "po_reference"){ echo "selected"; } ?>>ใบสั่งซื้อ</option>
                 <option value='invoice' <?php if( isset($_POST['filter']) && $_POST['filter'] =="invoice"){ echo "selected"; }else if( isset($_COOKIE['receive_filter']) && $_COOKIE['receive_filter'] == "invoice"){ echo "selected"; } ?>>ใบส่งสินค้า</option>
 			</select>
-		
-	</div>	
+
+	</div>
 	<div class='col-lg-3 col-md-3 col-sm-3 col-sx-3'>
     	<label>คำค้น</label>
-        <?php 
-			$value = '' ; 
-			if(isset($_POST['search_text'])) : 
-				$value = $_POST['search_text']; 
-			elseif(isset($_COOKIE['receive_search_text'])) : 
-				$value = $_COOKIE['receive_search_text']; 
-			endif; 
+        <?php
+			$value = '' ;
+			if(isset($_POST['search_text'])) :
+				$value = $_POST['search_text'];
+			elseif(isset($_COOKIE['receive_search_text'])) :
+				$value = $_COOKIE['receive_search_text'];
+			endif;
 		?>
-		<input class='form-control' type='text' name='search_text' id='search_text' placeholder="ระบุคำที่ต้องการค้นหา" value='<?php echo $value; ?>' />	
-	</div>	
+		<input class='form-control' type='text' name='search_text' id='search_text' placeholder="ระบุคำที่ต้องการค้นหา" value='<?php echo $value; ?>' />
+	</div>
 	<div class='col-lg-2 col-md-2 col-sm-2 col-sx-2'>
 		<label>จากวันที่</label>
-            <?php 
-				$value = ""; 
-				if(isset($_POST['from_date']) && $_POST['from_date'] != "") : 
-					$value = date("d-m-Y", strtotime($_POST['from_date'])); 
-				elseif( isset($_COOKIE['receive_from_date'])) : 
-					$value = date("d-m-Y", strtotime($_COOKIE['receive_from_date'])); 
-				endif; 
+            <?php
+				$value = "";
+				if(isset($_POST['from_date']) && $_POST['from_date'] != "") :
+					$value = date("d-m-Y", strtotime($_POST['from_date']));
+				elseif( isset($_COOKIE['receive_from_date'])) :
+					$value = date("d-m-Y", strtotime($_COOKIE['receive_from_date']));
+				endif;
 				?>
 			<input type='text' class='form-control' name='from_date' id='from_date' placeholder="ระบุวันที่" style="text-align:center;"  value='<?php echo $value; ?>'/>
-	</div>	
+	</div>
 	<div class='col-lg-2 col-md-2 col-sm-2 col-sx-2'>
 		<label>ถึงวันที่</label>
             <?php
 				$value = "";
 				if( isset($_POST['to_date']) && $_POST['to_date'] != "" ) :
-				 	$value = date("d-m-Y", strtotime($_POST['to_date'])); 
+				 	$value = date("d-m-Y", strtotime($_POST['to_date']));
 				 elseif( isset($_COOKIE['receive_to_date']) ) :
 					$value = date("d-m-Y", strtotime($_COOKIE['receive_to_date']));
 				 endif;
-			?>  
+			?>
 			<input type='test' class='form-control'  name='to_date' id='to_date' placeholder="ระบุวันที่" style="text-align:center" value='<?php echo $value; ?>' />
 	</div>
 	<div class='col-lg-2 col-md-2 col-sm-2 col-sx-2'>
     	<label style="visibility:hidden">show</label>
 		<button class='btn btn-primary btn-block' id='search-btn' type='submit' ><i class="fa fa-search"></i>&nbsp;ค้นหา</button>
-	</div>	
+	</div>
 	<div class='col-lg-1 col-md-1 col-sm-1 col-sx-1'>
     	<label style="visibility:hidden">show</label>
 		<button type='button' class='btn btn-danger' onclick="clear_filter()"><i class='fa fa-refresh'></i>&nbsp;reset</button>
@@ -564,10 +568,10 @@
 <hr style='border-color:#CCC; margin-top: 15px; margin-bottom:0px;' />
 <?php
 
-		if(isset($_POST['from_date']) && $_POST['from_date'] != ""){$from = date('Y-m-d',strtotime($_POST['from_date'])); }else if( isset($_COOKIE['receive_from_date'])){ $from = date('Y-m-d',strtotime($_COOKIE['receive_from_date'])); }else{ $from = "";} 
+		if(isset($_POST['from_date']) && $_POST['from_date'] != ""){$from = date('Y-m-d',strtotime($_POST['from_date'])); }else if( isset($_COOKIE['receive_from_date'])){ $from = date('Y-m-d',strtotime($_COOKIE['receive_from_date'])); }else{ $from = "";}
 		if(isset($_POST['to_date']) && $_POST['to_date'] != ""){ $to =date('Y-m-d',strtotime($_POST['to_date']));  }else if(  isset($_COOKIE['receive_to_date'])){  $to =date('Y-m-d',strtotime($_COOKIE['receive_to_date'])); }else{ $to = "";}
 		if(isset($_POST['get_rows'])){$get_rows = $_POST['get_rows'];$paginator->setcookie_rows($get_rows);}else if(isset($_COOKIE['get_rows'])){$get_rows = $_COOKIE['get_rows'];}else{$get_rows = 50;}
-		
+
 		/****  เงื่อนไขการแสดงผล *****/
 		if(isset($_POST['search_text'])/* && $_POST['search_text'] !="" */) :
 			$text = $_POST['search_text'];
@@ -577,16 +581,16 @@
 		elseif(isset($_COOKIE['receive_search_text']) && isset($_COOKIE['receive_filter'])) :
 			$text = $_COOKIE['receive_search_text'];
 			$filter = $_COOKIE['receive_filter'];
-		else : 
+		else :
 			$text	= "";
 			$filter	= "";
 		endif;
 		$where = "WHERE id_receive_product != 0 ";
 		if( $text != "" ) :
-			switch( $filter) :		
+			switch( $filter) :
 				case "invoice" :
 					$where .= "AND invoice LIKE '%$text%'";
-				break;		
+				break;
 				case "po_reference" :
 					$where .= "AND po_reference LIKE'%$text%'";
 				break;
@@ -594,17 +598,17 @@
 				$where .= "AND reference LIKE'%$text%'";
 				break;
 			endswitch;
-			if($from != "" && $to != "" ) : 
-				$where .= " AND (date_add BETWEEN '".$from."' AND '".$to."')";  
+			if($from != "" && $to != "" ) :
+				$where .= " AND (date_add BETWEEN '".$from."' AND '".$to."')";
 			endif;
 		else :
-			if($from != "" && $to != "" ) : 
-				$where .= "AND (date_add BETWEEN '".$from."' AND '".$to."')";  
-			endif;	
+			if($from != "" && $to != "" ) :
+				$where .= "AND (date_add BETWEEN '".$from."' AND '".$to."')";
+			endif;
 		endif;
 		$where .= " ORDER BY date_add DESC";
-		
-?>		
+
+?>
 
 <?php
 $paginator = new paginator();
@@ -613,9 +617,9 @@ if(isset($_POST['get_rows'])){$get_rows = $_POST['get_rows'];$paginator->setcook
 		$paginator->display($get_rows,"index.php?content=receive_product");
 		$Page_Start = $paginator->Page_Start;
 		$Per_Page = $paginator->Per_Page;
-?>	
+?>
 <style>
-	.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td 
+	.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td
 	{
 		vertical-align:middle;
 	}
@@ -631,7 +635,7 @@ if(isset($_POST['get_rows'])){$get_rows = $_POST['get_rows'];$paginator->setcook
         <th style="width:15%;">ใบสั่งซื้อ</th>
         <th style="width:10%; text-align:center">จำนวน</th>
         <th style="width:15%; text-align:center;">สถานะ</th>
-        <th style="text-align:right">การกระทำ</th> 
+        <th style="text-align:right">การกระทำ</th>
     </thead>
     <tbody>
 	<?php $qs = dbQuery("SELECT * FROM tbl_receive_product ".$where." LIMIT ".$Page_Start.", ".$Per_Page); ?>
@@ -660,16 +664,16 @@ if(isset($_POST['get_rows'])){$get_rows = $_POST['get_rows'];$paginator->setcook
             	<a href="index.php?content=receive_product&view_detail&id_receive_product=<?php echo $id; ?>"><button type="button" class="btn btn-info btn-sm"><i class="fa fa-eye"></i></button></a>
             <?php if($edit) : ?>
                 <a href='index.php?content=receive_product&edit=y&id_receive_product=<?php echo $id; ?>'><button type='button' class='btn btn-warning btn-sm'><i class='fa fa-pencil'></i></button></a>
-			<?php endif; ?>                    
+			<?php endif; ?>
             <?php if($delete) : ?>
                 <button type="button" class="btn btn-danger btn-sm" onclick="delete_doc(<?php echo $id; ?>, '<?php echo $rs['reference']; ?>')"><i class="fa fa-trash"></i></button>
             <?php endif;?>
         </tr>
         <?php $n++; ?>
     	<?php endwhile; ?>
-    <?php else : ?>    
+    <?php else : ?>
     	<tr><td colspan="8" ><center><h4>---------- ไม่มีรายการ  ----------</h4></center></td></tr>
-    <?php endif; ?>   
+    <?php endif; ?>
     </tbody>
     </table>
     </div>
@@ -737,7 +741,7 @@ function check_password()
 	if(password ==""){ return false; }
 	$("#approve_modal").modal("hide");
 	load_in();
-	
+
 	$.ajax({
 		url:"controller/receiveProductController.php?check_approve"	,
 		type: "POST", cache: "false", data: { "password" : password },
@@ -752,12 +756,12 @@ function check_password()
 				swal("การอนุมัติล้มเหลว", "รหัสไม่ถูกต้องหรือคุณไม่มีอำนาจในการอนุมัตินี้ กรุณาตรวจสอบ", "error");
 			}
 		}
-	});				
+	});
 }
 
 function valid_qty()
 {
-	var limit	= parseInt($("#limit").val());	
+	var limit	= parseInt($("#limit").val());
 	var q		= 0;
 	$(".over_po").each(function(index, element) {
         var qty = parseInt($(this).val());
@@ -765,15 +769,15 @@ function valid_qty()
     });
 	if(q <= limit)
 	{
-		save_add();	
+		save_add();
 	}else{
-		get_approve();	
+		get_approve();
 	}
 }
 
 function get_approve()
 {
-	$("#approve_modal").modal('show');	
+	$("#approve_modal").modal('show');
 }
 
 function save_add()
@@ -836,7 +840,7 @@ function delete_doc(id, reference)
 					}
 				});
 			}
-	});		
+	});
 }
 
 
@@ -850,7 +854,7 @@ function delete_row(id, product)
 		  	confirmButtonColor: "#DD6B55",
 		  	confirmButtonText: "ใช่ ฉันต้องการลบ",
 		  	cancelButtonText: "ยกเลิก",
-		  	closeOnConfirm: true 
+		  	closeOnConfirm: true
 			},
 		  	function(isConfirm){
 				if(isConfirm) {
@@ -875,7 +879,7 @@ function delete_row(id, product)
 						}
 					});
 				}
-		});	
+		});
 }
 
 function check_item()
@@ -901,7 +905,7 @@ function add_item(id_zone, barcode, qty, id, id_po)
 {
 	$.ajax({
 		url:"controller/receiveProductController.php?add_item",
-		type:"POST", cache:false, 
+		type:"POST", cache:false,
 		data:{ "id_receive_product" : id, "id_zone" : id_zone, "barcode" : barcode, "qty" : qty, "id_po" : id_po },
 		success: function(rs)
 		{
@@ -918,12 +922,12 @@ function add_item(id_zone, barcode, qty, id, id_po)
 				add_qty(-1*qty);
 				swal("ไม่มีสินค้านี้ใน ใบสั่งซื้อ","","error");
 				beep();
-				return false;	
+				return false;
 			}else if( rs == "barcode_fail" ){
 				add_qty(-1*qty);
 				swal("Error!!","บาร์โค้ดไม่ถูกต้อง หรือ ไม่มีข้อมูลสินค้าในระบบ กรุณาตรวจสอบ","error");
 				beep();
-				return false;	
+				return false;
 			}else{
 				add_qty(-1 * qty);
 				swal("Error !!", "เพิ่มรายการไม่สำเร็จ ลองใหม่อีกครั้ง", "error");
@@ -939,7 +943,7 @@ function sum_row()
 	$(".qty").each(function(index, element) {
         var q = parseInt($(this).html());
 		qty += q;
-    });	
+    });
 	$("#total_qty").html(qty);
 	$("#count_qty").html(qty);
 }
@@ -948,14 +952,14 @@ function add_qty(qty)
 {
 	var q = parseInt($("#total_qty").html());
 	q += qty;
-	$("#total_qty").html(q);	
+	$("#total_qty").html(q);
 }
 
 function count_qty(qty)
 {
 	var q = parseInt($("#count_qty").html());
 	q += qty;
-	$("#count_qty").html(q);	
+	$("#count_qty").html(q);
 }
 
 function update_no()
@@ -964,7 +968,7 @@ function update_no()
 	$(".no").each(function(index, element) {
         $(this).html(i);
 		i++;
-    });	
+    });
 }
 function sum_item()
 {
@@ -1014,7 +1018,7 @@ function add_new()
 		load_in();
 		$.ajax({
 			url:"controller/receiveProductController.php?add_new",
-			type:"POST", cache:false, 
+			type:"POST", cache:false,
 			data:{ "invoice" : invoice, "po_reference" : po_reference, "id_po" : id_po, "id_employee" : id_employee, "date_add" : date_add, "remark" : remark },
 			success: function(rs)
 			{
@@ -1028,7 +1032,7 @@ function add_new()
 				}
 			}
 		});
-	}		
+	}
 }
 
 function edit()
@@ -1038,7 +1042,7 @@ function edit()
 	$("#po_reference").removeAttr("disabled");
 	$("#remark").removeAttr("disabled");
 	$("#btn_edit").css("display", "none");
-	$("#btn_update").css("display","");	
+	$("#btn_update").css("display","");
 }
 function updated()
 {
@@ -1047,7 +1051,7 @@ function updated()
 	$("#po_reference").attr("disabled", "disabled");
 	$("#remark").attr("disabled", "disabled");
 	$("#btn_edit").css("display", "");
-	$("#btn_update").css("display","none");	
+	$("#btn_update").css("display","none");
 }
 
 function update()
@@ -1075,7 +1079,7 @@ function update()
 			load_in();
 			$.ajax({
 				url:"controller/receiveProductController.php?update&id_receive_product="+id,
-				type:"POST", cache:false, 
+				type:"POST", cache:false,
 				data:{ "invoice" : invoice, "po_reference" : po_reference, "id_po" : id_po, "id_employee" : id_employee, "date_add" : date_add, "remark" : remark },
 				success: function(rs)
 				{
@@ -1083,16 +1087,16 @@ function update()
 					if(rs == "success" )
 					{
 						updated();
-						load_out();					
+						load_out();
 					}else{
 						load_out();
 						swal("Error!!", "ไม่สามารถแก้ไขเอกสารได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง", "error");
 					}
 				}
 			});
-		}	
+		}
 	}else{
-		swal("Error !!", "ไม่พบ ID เอกสาร กรุณาออกจากหน้านี้แล้วเข้าใหม่ หากยังพบปัญหานี้อีก ติดต่อผู้ดูแลระบบ", "error");	
+		swal("Error !!", "ไม่พบ ID เอกสาร กรุณาออกจากหน้านี้แล้วเข้าใหม่ หากยังพบปัญหานี้อีก ติดต่อผู้ดูแลระบบ", "error");
 	}
 }
 
@@ -1102,7 +1106,7 @@ function change_zone()
 	$("#barcode_zone").val('');
 	$("#zone_name").val('');
 	$("#qty").val(1);
-	$("#qty").attr("disabled","disabled");	
+	$("#qty").attr("disabled","disabled");
 	$("#barcode_item").attr("disabled","disabled");
 	$("#btn_add_item").attr("disabled","disabled");
 	$("#barcode_zone").removeAttr("disabled");
@@ -1130,7 +1134,7 @@ function get_zone(barcode)
 				$("#barcode_item").removeAttr("disabled");
 				$("#btn_add_item").removeAttr("disabled");
 				$("#barcode_item").focus();
-				
+
 			}else{
 				load_out();
 				swal("ไม่พบโซนที่ระบุ", "โปรดตรวจสอบความถูกต้องของบาร์โค้ด หรือ ภาษาที่ใช้เป็นภาษาอังกฤษ", "error");
@@ -1142,33 +1146,33 @@ function get_zone(barcode)
 function go_add()
 {
 	load_in();
-	window.location.href="index.php?content=receive_product&add=y";	
+	window.location.href="index.php?content=receive_product&add=y";
 }
 
 function go_edit(id)
 {
 	load_in();
-	window.location.href="index.php?content=receive_product&edit=y&id_receive_product="+id;	
+	window.location.href="index.php?content=receive_product&edit=y&id_receive_product="+id;
 }
 
 function go_back()
 {
 	load_in();
-	window.location.href="index.php?content=receive_product";	
+	window.location.href="index.php?content=receive_product";
 }
 
 function summary()
 {
 	load_in();
 	var id		= $("#id_receive_product").val();
-	window.location.href="index.php?content=receive_product&check_po=y&id_receive_product="+id;	
+	window.location.href="index.php?content=receive_product&check_po=y&id_receive_product="+id;
 }
 
 function print_doc()
 {
 	var id		= $("#id_receive_product").val();
 	var Link = "controller/receiveProductController.php?print&id_receive_product="+id;
-	window.open(Link, '_blank');	
+	window.open(Link, '_blank');
 }
 $("#date_add").datepicker({	dateFormat: "dd-mm-yy" });
 $(function() {
@@ -1202,7 +1206,7 @@ $("#barcode_item").keyup(function(e){
 		var barcode = $(this).val();
 		if(	barcode != "" )
 		{
-			$("#btn_add_item").click();	
+			$("#btn_add_item").click();
 		}
 	}
 });

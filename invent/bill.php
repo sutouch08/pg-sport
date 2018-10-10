@@ -203,43 +203,47 @@ echo"
 <div class='row'>
 <div class='col-sm-12'>
 	<table class='table table-striped'>
-    	<thead style='color:#FFF; background-color:#48CFAD;'>
-        	<th style='width:5%; text-align:center;'>ลำดับ</th>
-			<th style='width:10%;'>เลขที่อ้างอิง</th><th style='width:20%;'>ลูกค้า</th>
-            <th style='width:10%; text-align:center;'>ยอดเงิน</th>
-			<th style='width:15%; text-align:center;'>เงื่อนไข</th>
+    <thead style='color:#FFF; background-color:#48CFAD;'>
+      <th style='width:5%; text-align:center;'>ลำดับ</th>
+			<th style='width:10%;'>เลขที่อ้างอิง</th>
+			<th>ลูกค้า</th>
+      <th style='width:10%; text-align:center;'>ยอดเงิน</th>
 			<th style='width:10%; text-align:center;'>สถานะ</th>
 			<th style='width:10%;'>พนักงาน</th>
 			<th style='width:10%; text-align:center;'>วันที่เพิ่ม</th>
 			<th style='width:10%; text-align:center;'>วันที่ปรับปรุง</th>
-        </thead>";
-		$result = dbQuery("SELECT id_order,reference,date_add,date_upd,payment,id_customer,id_employee,current_state FROM tbl_order WHERE current_state = 10  ORDER BY id_order DESC ");
-		$i=0;
+    </thead>";
+		//$result = dbQuery("SELECT id_order,reference,date_add,date_upd,payment,id_customer,id_employee,current_state FROM tbl_order WHERE current_state = 10  ORDER BY id_order DESC ");
+		$qs = dbQuery("SELECT * FROM tbl_order WHERE current_state = 10 ORDER BY id_order DESC");
 		$n = 1;
-		$row = dbNumRows($result);
-		if($row>0){
-		while($i<$row){
-			list($id_order,$reference,$date_add,$date_upd,$payment,$id_customer,$id_employee,$current_state) = dbFetchArray($result);
-			list($amount) = dbFetchArray(dbQuery("SELECT SUM(total_amount) FROM tbl_order_detail WHERE id_order = '$id_order'"));
-			list($cus_first_name,$cus_last_name) = dbFetchArray(dbQuery("SELECT first_name,last_name FROM tbl_customer WHERE id_customer = '$id_customer'"));
-			list($em_first_name,$em_last_name) = dbFetchArray(dbQuery("SELECT first_name,last_name FROM tbl_employee WHERE id_employee = '$id_employee'"));
-			list($status) = dbFetchArray(dbQuery("SELECT state_name FROM tbl_order_state WHERE id_order_state = '$current_state'"));
-			$customer_name = "$cus_first_name $cus_last_name";
-			$employee_name = "$em_first_name $em_last_name";
-	echo"<tr style='font-size:12px;'>
-				<td align='center' style='cursor:pointer;' onclick=\"document.location='index.php?content=bill&id_order=$id_order&view_detail=y'\">$n</td>
-				<td style='cursor:pointer;' onclick=\"document.location='index.php?content=bill&id_order=$id_order&view_detail=y'\">$reference</td>
-				<td style='cursor:pointer;' onclick=\"document.location='index.php?content=bill&id_order=$id_order&view_detail=y'\">$customer_name</td>
-				<td align='center' style='cursor:pointer;' onclick=\"document.location='index.php?content=bill&id_order=$id_order&view_detail=y'\">"; echo number_format($amount)."</td>
-				<td align='center' style='cursor:pointer;' onclick=\"document.location='index.php?content=bill&id_order=$id_order&view_detail=y'\">$payment</td>
-				<td align='center' style='cursor:pointer;' onclick=\"document.location='index.php?content=bill&id_order=$id_order&view_detail=y'\">$status</td>
-				<td style='cursor:pointer;' onclick=\"document.location='index.php?content=bill&id_order=$id_order&view_detail=y'\">$employee_name</td>
-				<td align='center' style='cursor:pointer;' onclick=\"document.location='index.php?content=bill&id_order=$id_order&view_detail=y'\">"; echo thaiDate($date_add)."</td>
-				<td align='center' style='cursor:pointer;' onclick=\"document.location='index.php?content=bill&id_order=$id_order&view_detail=y'\">"; echo thaiDate($date_upd)."</td>
-			</tr>";
-			$i++; $n++;
+		if(dbNumRows($qs) > 0)
+		{
+			while($rs = dbFetchObject($qs))
+			{
+				$order = new order($rs->id_order);
+				$amount = $order->total_amount;
+				$customer_name = customer_name($order->id_customer);
+				$online = getCustomerOnlineReference($order->id_order);
+				$customer  = $order->payment != 'ออนไลน์' ? $customer_name : ( $online != '' ? $customer_name.' ( '.$online.' )' : $customer_name );
+				$emp = new employee($order->id_employee);
+				$link = "style='cursor:pointer;' onclick=\"document.location='index.php?content=bill&id_order=".$order->id_order."&view_detail=y'\"";
+
+		echo "<tr style='font-size:12px;'>
+						<td align='center' ".$link.">".$n."</td>
+						<td ".$link.">".$order->reference."</td>
+						<td ".$link.">".$customer."</td>
+						<td align='center' ".$link.">".number_format($amount,2)."</td>
+						<td align='center' ".$link.">".$order->current_state_name."</td>
+						<td ".$link.">".$emp->full_name."</td>
+						<td align='center' ".$link.">".thaiDate($order->date_add)."</td>
+						<td align='center' ".$link.">".thaiDate($order->date_upd)."</td>
+					</tr>";
+				 $n++;
+			}
+
 		}
-		}else if($row==0){
+		else if($row==0)
+		{
 			echo"<tr><td colspan='9' align='center'><h3><span class='glyphicon glyphicon-exclamation-sign'></span>&nbsp;ไม่มีรายการในช่วงนี้</h3></td></tr>";
 		}
 		echo"</table>";

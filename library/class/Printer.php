@@ -1,7 +1,7 @@
 <?php
 class printer
 {
-public $page;	
+public $page;
 public $total_page		= 1;
 public $current_page	= 1;
 public $page_width 	= 200;
@@ -13,7 +13,14 @@ public $sub_total_row	= 2;
 public $footer_row		= 4;
 public $ex_row			= 0;
 public $total_row		= 16;
+
 public $row_height 	= 10;
+public $sub_total_row_height = 10;
+public $top_row_height = 10;
+public $header_row_height = 10;
+public $footer_row_height = 10;
+
+
 public $font_size 		= 14;
 public $title				= "";
 public $title_size 		= "h4";
@@ -24,8 +31,8 @@ public $footer			= true;
 public $header_row	= array();
 
 public $sub_header	= "";
-private $loader = "<script>	
-						var load_time;  function load_in(){ $('#xloader').modal('show'); console.log('load_in'); var time = 0; 
+private $loader = "<script>
+						var load_time;  function load_in(){ $('#xloader').modal('show'); console.log('load_in'); var time = 0;
 						load_time = window.setInterval(function(){ if(time < 90){ time++; }else{ time += 0.01; } $('#preloader').css('width', time+'%');}, 1000); }
 						function load_out(){ $('#xloader').modal('hide'); window.clearInterval(load_time); $('#preloader').css('width', '0%'); console.log('load_out'); }
 						</script>";
@@ -39,12 +46,12 @@ public function config(array $data)
 {
 	foreach($data as $key=>$val)
 	{
-		$this->$key = $val;	
+		$this->$key = $val;
 	}
 	if(!$this->footer)
 	{
 		$this->row += $this->footer_row;
-		$this->footer_row = 0;	
+		$this->footer_row = 0;
 	}
 	$this->row -= ($this->sub_total_row + $this->ex_row + $this->header_rows);
 	$this->total_page = ceil($this->total_row/$this->row);
@@ -85,7 +92,7 @@ public function doc_header($pageTitle = 'print pages')
 	$header .= "	<script> load_in(); </script>";
 	$header .= "	<div class='hidden-print' style='margin-top:10px; padding-bottom:10px; padding-right:5mm; width:200mm; margin-left:auto; margin-right:auto; text-align:right'>";
 	$header .= "	<button class='btn btn-primary' onclick='print()'><i class='fa fa-print'></i>&nbspพิมพ์</button>";
-	$header .= "	</div><div style='width:100%'>";	
+	$header .= "	</div><div style='width:100%'>";
 	return $header;
 }
 
@@ -94,22 +101,22 @@ public function add_title($title)
 	$this->title = $title;
 }
 
-public function set_pattern($pattern) //// กำหนดรูปแบบ CSS ให้กับ td 
+public function set_pattern($pattern) //// กำหนดรูปแบบ CSS ให้กับ td
 {
-	$this->pattern = $pattern;	
+	$this->pattern = $pattern;
 }
 
 public function print_sub_total(array $data)
 {
 	$rs = "<table class='table' style='margin-bottom:0px;'>";
 	foreach($data as $value)
-	{	
+	{
 		foreach($value as $val)
 		{
-			$rs .= "<tr style='height:".$this->row_height."mm; line-height:".$this->row_height."mm;'>";
+			$rs .= "<tr style='height:".$this->sub_total_row_height."mm; line-height:".$this->sub_total_row_height."mm;'>";
 			$rs .= $val;
 			$rs .= "</tr>";
-		}	
+		}
 	}
 	$rs .= "</table>";
 	return $rs;
@@ -122,9 +129,9 @@ public function add_subheader($sub_header)
 
 public function thead(array $dataset)
 {
-	$thead	= "<table class='table' style='margin-bottom:-2px;'>"; 
+	$thead	= "<table class='table' style='margin-bottom:-2px;'>";
 	$thead 	.= "<thead>";
-	$thead	.= "<tr style='height:".$this->row_height."mm; line-height:".$this->row_height."mm; font-size:10px;'>";
+	$thead	.= "<tr style='height:".$this->header_row_height."mm; line-height:".$this->header_row_height."mm; font-size:10px;'>";
 	foreach($dataset as $data)
 	{
 		$value 	= $data[0];
@@ -145,7 +152,7 @@ public function add_header(array $data)
 {
 	$i = 0;
 	foreach($data as $label => $value)
-	{	
+	{
 		$this->header_row[$i] = array($label => $value);
 		$i++;
 	}
@@ -156,7 +163,7 @@ public function print_header()
 {
 	$rd = $this->header_row;
 	$r = count($rd);
-	$height = ($this->header_rows * $this->row_height) +1;
+	$height = ($this->header_rows * $this->header_row_height) +1;
 	$i	= 0;
 	$header = "<div style='width:".$this->content_width."mm; min-height:".$height."mm; margin:auto; margin-bottom:2mm; border:solid 2px #ccc; border-radius: 10px;' >";
 	while(	$i<$r)
@@ -184,21 +191,21 @@ public function page_start()
 	$page_break = "page-break-after:always;";
 	if($this->current_page == $this->total_page)
 	{
-		$page_break = ""; 
+		$page_break = "";
 	}
 	return "<div class='page_layout' style='width:".$this->page_width."mm; padding-top:5mm; height:".$this->page_height."mm; margin:auto; ".$page_break."'>"; //// page start
 }
 public function page_end()
 {
-	return "</div><div class='hidden-print' style='height: 5mm; width:".$this->page_width."'></div>";	
+	return "</div><div class='hidden-print' style='height: 5mm; width:".$this->page_width."'></div>";
 }
 
 public function top_page()
 {
 	$top = "";
-	$top .= "<div style='width:".$this->content_width."mm; height:".$this->row_height."mm; margin:auto; margin-bottom:2mm;'>"; //// top start
-	$top .= "<div style='width:80%; line-height:".$this->row_height."mm; float:left'><".$this->title_size." style='margin:0px;'>".$this->title."</".$this->title_size."></div>";
-	$top .= "<div style='width:20%; line-height:".$this->row_height."mm; float:left; text-align:right;'><span style='position:relative; bottom: 0mm;'>หน้า ".$this->current_page."/".$this->total_page."</span></div>";
+	$top .= "<div style='width:".$this->content_width."mm; height:".$this->top_row_height."mm; margin:auto; margin-bottom:2mm;'>"; //// top start
+	$top .= "<div style='width:80%; line-height:".$this->top_row_height."mm; float:left'><".$this->title_size." style='margin:0px;'>".$this->title."</".$this->title_size."></div>";
+	$top .= "<div style='width:20%; line-height:".$this->top_row_height."mm; float:left; text-align:right;'><span style='position:relative; bottom: 0mm;'>หน้า ".$this->current_page."/".$this->total_page."</span></div>";
 	$top .= "</div>"; /// top end;
 	if( $this->header_rows )
 	{
@@ -209,14 +216,15 @@ public function top_page()
 
 public function content_start()
 {
-	$height = ($this->row + $this->sub_total_row+1) * $this->row_height+2;
+	$height = ($this->row * $this->row_height) + (($this->sub_total_row + 1) * $this->sub_total_row_height) +2;
+	//$height = ($this->row + $this->sub_total_row+1) * $this->row_height+2;
 	$border = $this->content_border == 0 ? '' : "border:solid 2px #ccc;";
 	return  "<div style='width:".$this->content_width."mm; height:".$height."mm; margin:auto; margin-bottom:2mm; ".$border." border-radius: 10px;'>";
 }
 
 public function content_end()
 {
-	return "</div>";	
+	return "</div>";
 }
 
 public function print_row($data)
@@ -241,12 +249,12 @@ public function print_row($data)
 }
 public function table_start()
 {
-	return $this->sub_header;	
+	return $this->sub_header;
 }
 
 public function table_end()
 {
-	return "</table>";	
+	return "</table>";
 }
 
 
@@ -257,9 +265,9 @@ public function set_footer(array $data)
 		return false;
 	}else{
 		$c = count($data);
-		$box_width = 100/$c;	
-		$height = $this->footer_row * $this->row_height;
-		$row1 = $this->row_height;
+		$box_width = 100/$c;
+		$height = $this->footer_row * $this->footer_row_height;
+		$row1 = $this->footer_row_height;
 		$row2 = 5;
 		$row4 = 8;
 		$row3 = $height - ($row1+$row2+$row4) - 2;
@@ -268,7 +276,7 @@ public function set_footer(array $data)
 		{
 			$footer .="<div style='width:".$box_width."%; height:".$height."mm; text-align:center; float:left;'>";
 			$footer .="<span style='width:100%; height:".$row1."mm; text-align:center;'>".$value[0]."</span>";
-			$footer .="<div style='width:100%; height:".($this->footer_row - 1)* $this->row_height."mm; text-align:center; border: solid 2px #ccc; padding-left:10px; padding-right:10px; border-radius:10px;'>";
+			$footer .="<div style='width:100%; height:".($this->footer_row - 1)* $this->footer_row_height."mm; text-align:center; border: solid 2px #ccc; padding-left:10px; padding-right:10px; border-radius:10px;'>";
 			$footer .="<span style='width:100%; height: ".$row2."mm; text-align:center;font-size:8px; float:left;'>".$value[1]."</span>";
 			$footer .="<span style='width:100%; height: ".$row3."mm; text-align:center; padding-left:5px; padding-right:5px; border-bottom:dotted 1px #ccc; float:left; padding:10px;'></span>";
 			$footer .="<span style='width:100%; height: ".$row4."mm; text-align:center; float:left; padding-top: 10px;'>".$value[2]."</span>";
