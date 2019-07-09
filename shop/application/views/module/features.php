@@ -9,7 +9,7 @@
             <?php 	$link	= 'main/productDetail/'.$item->id_product; ?>
                 <div class="item col-lg-3 col-md-3 col-sm-4 col-xs-6 features">
                     <div class="product">
-                    	<!-- 
+                    	<!--
                         <a class="add-fav tooltipHere" data-toggle="tooltip" data-original-title="Add to Wishlist"
                            data-placement="left">
                             <i class="glyphicon glyphicon-heart"></i>
@@ -25,7 +25,7 @@
 							<?php if( $item->discount != 0 OR is_new_product($item->id_product)) : ?>
                             <div class="promotion">
                             	<?php if( is_new_product($item->id_product) ) : ?>
-                            		<span class="new-product"> NEW</span> 
+                            		<span class="new-product"> NEW</span>
                                 <?php endif; ?>
                                 <?php if( $item->discount != 0 ) : ?>
                                 	<span class="discount"><?php echo discount_label($item->discount, $item->discount_type); ?> OFF</span>
@@ -38,7 +38,7 @@
                             <p><?php echo $item->product_name; ?></p>
                          </div>
                         <div class="price">
-                        	<span><?php echo sell_price($item->product_price, $item->discount, $item->discount_type); ?>  <?php echo getCurrency(); ?></span> 
+                        	<span><?php echo sell_price($item->product_price, $item->discount, $item->discount_type); ?>  <?php echo getCurrency(); ?></span>
                             <?php if( $item->discount != 0 ) : ?>
                         	<span class="old-price"><?php echo $item->product_price; ?>  <?php echo getCurrency(); ?></span>
                             <?php endif; ?>
@@ -48,12 +48,12 @@
                     </div>
                 </div>
                 <!--/.item-->
-			<?php endforeach; ?>               
+			<?php endforeach; ?>
             </div>
             <!-- /.row -->
             <div class="row">
                 <div class="load-more-block text-center">
-                	<a class="btn btn-thin" href="javascript:void(0)" onClick="loadMoreFeatures()"> 
+                	<a class="btn btn-thin" href="javascript:void(0)" onClick="loadMoreFeatures()">
                     	<i class="fa fa-plus-sign">+</i> load more products
                     </a>
                </div>
@@ -62,7 +62,7 @@
         <!--/.container-->
     </div>
     <!--/.featuredPostContainer-->
-</div>   
+</div>
 
 <script id="item_template" type="text/x-handlebars-template">
 {{#each this}}
@@ -73,7 +73,7 @@
 			{{#if promotion}}
 				<div class="promotion">
 				{{#if new_product}}
-					<span class="new-product"> NEW</span> 
+					<span class="new-product"> NEW</span>
 				{{/if}}
 				{{#if discount}}
 					<span class="discount">{{ discount_label }} OFF</span>
@@ -86,7 +86,7 @@
 			<p>{{ product_name }}</p>
 		</div>
 		<div class="price">
-			<span>{{ sell_price }}</span> 
+			<span>{{ sell_price }}</span>
 			{{#if discount}}
 			<span class="old-price">{{ price }}</span>
 			{{/if}}
@@ -94,7 +94,7 @@
 		<div class="action-control"><a class="btn btn-primary"> <span class="add2cart"><i class="glyphicon glyphicon-shopping-cart"> </i> Add to cart </span> </a></div>
 	</div>
 </div>
-<!--/.item--> 
+<!--/.item-->
 {{/each}}
 </script>
 <script>
@@ -117,10 +117,9 @@ function loadMoreFeatures()
 				render_append(source, data, output);
 			}
 		}
-	});	
+	});
 	}, 1000);
 }
 </script>
 
 <?php endif; ?>
-

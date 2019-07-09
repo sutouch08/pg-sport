@@ -9,18 +9,18 @@ if( isset( $_GET['get_order_reference'] ) && isset( $_REQUEST['term'] ) && isset
 	$txt = $_REQUEST['term'];
 	if( $txt == "*" )
 	{
-		$qs = dbQuery("SELECT reference FROM tbl_order WHERE id_customer = ".$_GET['id_customer']." AND role = 1 AND current_state = 9 ");	
+		$qs = dbQuery("SELECT reference FROM tbl_order WHERE id_customer = ".$_GET['id_customer']." AND role = 1 AND current_state = 9 ");
 	}
 	else
 	{
-		$qs = dbQuery("SELECT reference FROM tbl_order WHERE id_customer = ".$_GET['id_customer']." AND role = 1 AND current_state = 9 AND reference LIKE '%".$txt."%'");	
+		$qs = dbQuery("SELECT reference FROM tbl_order WHERE id_customer = ".$_GET['id_customer']." AND role = 1 AND current_state = 9 AND reference LIKE '%".$txt."%'");
 	}
 	$data = array();
 	if( dbNumRows($qs) > 0 )
 	{
 		while( $rs = dbFetchArray($qs) )
 		{
-			$data[] = $rs['reference'];	
+			$data[] = $rs['reference'];
 		}
 	}
 	else
@@ -43,7 +43,7 @@ if( isset( $_GET['getOrderReference'] ) && isset( $_REQUEST['term'] ) )
 	}
 	else
 	{
-		$data[] = 'ไม่พบข้อมูล';	
+		$data[] = 'ไม่พบข้อมูล';
 	}
 	echo json_encode($data);
 }
@@ -57,7 +57,7 @@ if( isset( $_GET['get_tranform_reference'] ) && isset( $_REQUEST['term'] ) )
 	}
 	else
 	{
-		$qs = dbQuery("SELECT order_reference FROM tbl_receive_tranform WHERE order_reference LIKE '%".$_REQUEST['term']."%' GROUP BY order_reference ORDER BY order_reference ASC");	
+		$qs = dbQuery("SELECT order_reference FROM tbl_receive_tranform WHERE order_reference LIKE '%".$_REQUEST['term']."%' GROUP BY order_reference ORDER BY order_reference ASC");
 	}
 	$data = array();
 	if( dbNumRows($qs) > 0 )
@@ -78,11 +78,11 @@ if( isset( $_REQUEST['term'] ) && isset( $_GET['get_po'] ) )
 {
 	if( $_REQUEST['term'] == "*" )
 	{
-		$qs = dbQuery("SELECT reference, name FROM tbl_po JOIN tbl_supplier ON tbl_po.id_supplier = tbl_supplier.id WHERE tbl_po.status != 0 ORDER BY date_add DESC");	
+		$qs = dbQuery("SELECT reference, name FROM tbl_po JOIN tbl_supplier ON tbl_po.id_supplier = tbl_supplier.id WHERE tbl_po.status != 0 ORDER BY date_add DESC");
 	}
 	else
 	{
-		$qs = dbQuery("SELECT reference, name FROM tbl_po JOIN tbl_supplier ON tbl_po.id_supplier = tbl_supplier.id WHERE tbl_po.status != 0 AND (reference LIKE '%".$_REQUEST['term']."%' OR name LIKE '%".$_REQUEST['term']."%') ORDER BY reference DESC");	
+		$qs = dbQuery("SELECT reference, name FROM tbl_po JOIN tbl_supplier ON tbl_po.id_supplier = tbl_supplier.id WHERE tbl_po.status != 0 AND (reference LIKE '%".$_REQUEST['term']."%' OR name LIKE '%".$_REQUEST['term']."%') ORDER BY reference DESC");
 	}
 	$data = array();
 	if( dbNumRows($qs) > 0 )
@@ -103,7 +103,7 @@ if( isset( $_REQUEST['term'] ) && isset( $_GET['get_active_po'] ) )
 {
 	if( $_REQUEST['term'] == "*")
 	{
-		$qs = dbQuery("SELECT id_po, reference, name FROM tbl_po JOIN tbl_supplier ON tbl_po.id_supplier = tbl_supplier.id WHERE tbl_po.status != 0 AND tbl_po.valid = 0");	
+		$qs = dbQuery("SELECT id_po, reference, name FROM tbl_po JOIN tbl_supplier ON tbl_po.id_supplier = tbl_supplier.id WHERE tbl_po.status != 0 AND tbl_po.valid = 0");
 	}else{
 		$qs = dbQuery("SELECT id_po, reference, name FROM tbl_po JOIN tbl_supplier ON tbl_po.id_supplier = tbl_supplier.id WHERE (reference LIKE '%".$_REQUEST['term']."%' OR name LIKE '%".$_REQUEST['term']."%') AND tbl_po.status != 0 AND tbl_po.valid = 0");
 	}
@@ -130,14 +130,14 @@ if( isset( $_REQUEST['term'] ) && isset( $_GET['get_supplier'] ) )
 	}
 	else
 	{
-		$qs = dbQuery("SELECT id, code, name FROM tbl_supplier WHERE code LIKE '%".$_REQUEST['term']."%' OR name LIKE '%".$_REQUEST['term']."%'");	
+		$qs = dbQuery("SELECT id, code, name FROM tbl_supplier WHERE code LIKE '%".$_REQUEST['term']."%' OR name LIKE '%".$_REQUEST['term']."%'");
 	}
 	$data = array();
 	if( dbNumRows($qs) > 0 )
 	{
 		while($rs = dbFetchArray($qs)) :
 			$data[] = $rs['code']." | ".$rs['name']." | ".$rs['id'];
-		endwhile;	
+		endwhile;
 	}
 	else
 	{
@@ -148,10 +148,10 @@ if( isset( $_REQUEST['term'] ) && isset( $_GET['get_supplier'] ) )
 
 /***************  Supplier Code ******************/
 
-if( isset( $_REQUEST['term'] ) && isset( $_GET['get_supplier_code'] ) ) 
+if( isset( $_REQUEST['term'] ) && isset( $_GET['get_supplier_code'] ) )
 {
 	if( $_REQUEST['term'] == "*")
-	{	
+	{
 		$qs = dbQuery("SELECT id, code, name FROM tbl_supplier");
 	}else{
 		$qs = dbQuery("SELECT id, code, name FROM tbl_supplier WHERE code LIKE '%".$_REQUEST['term']."%'");
@@ -161,7 +161,7 @@ if( isset( $_REQUEST['term'] ) && isset( $_GET['get_supplier_code'] ) )
 	{
 		while( $rs = dbFetchArray($qs) )
 		{
-			$data[] = $rs['code']." : ".$rs['name']." : ".$rs['id'];	
+			$data[] = $rs['code']." : ".$rs['name']." : ".$rs['id'];
 		}
 	}else{
 		$data[] = "ไม่พบข้อมูล";
@@ -171,10 +171,10 @@ if( isset( $_REQUEST['term'] ) && isset( $_GET['get_supplier_code'] ) )
 
 /***************  Supplier Name ******************/
 
-if( isset( $_REQUEST['term'] ) && isset( $_GET['get_supplier_name'] ) ) 
+if( isset( $_REQUEST['term'] ) && isset( $_GET['get_supplier_name'] ) )
 {
 	if( $_REQUEST['term'] == "*")
-	{	
+	{
 		$qs = dbQuery("SELECT id, code, name FROM tbl_supplier");
 	}else{
 		$qs = dbQuery("SELECT id, code, name FROM tbl_supplier WHERE name LIKE '%".$_REQUEST['term']."%'");
@@ -184,7 +184,7 @@ if( isset( $_REQUEST['term'] ) && isset( $_GET['get_supplier_name'] ) )
 	{
 		while( $rs = dbFetchArray($qs) )
 		{
-			$data[] = $rs['code']." : ".$rs['name']." : ".$rs['id'];	
+			$data[] = $rs['code']." : ".$rs['name']." : ".$rs['id'];
 		}
 	}else{
 		$data[] = "ไม่พบข้อมูล";
@@ -200,7 +200,7 @@ if( isset($_REQUEST['term']) && isset( $_GET['getProductReferenceOnly'] ) )
 	$t = $_REQUEST['term'];
 	if( $t == "*")
 	{
-		$qs = dbQuery("SELECT reference FROM tbl_product_attribute ORDER BY id_product ASC");	
+		$qs = dbQuery("SELECT reference FROM tbl_product_attribute ORDER BY id_product ASC");
 	}
 	else
 	{
@@ -216,9 +216,9 @@ if( isset($_REQUEST['term']) && isset( $_GET['getProductReferenceOnly'] ) )
 	}
 	else
 	{
-		$data[] = "ไม่พบข้อมูล";	
+		$data[] = "ไม่พบข้อมูล";
 	}
-	echo json_encode($data);	
+	echo json_encode($data);
 }
 
 if( isset($_REQUEST['term']) && isset( $_GET['get_product_attribute'] ) )
@@ -226,11 +226,11 @@ if( isset($_REQUEST['term']) && isset( $_GET['get_product_attribute'] ) )
 	$t = $_REQUEST['term'];
 	if( isset( $_GET['no_visual'] ) )
 	{
-		
+
 	}
 	if( $t == "*")
 	{
-		$qs = dbQuery("SELECT id_product_attribute, reference FROM tbl_product_attribute ORDER BY id_product ASC");	
+		$qs = dbQuery("SELECT id_product_attribute, reference FROM tbl_product_attribute ORDER BY id_product ASC");
 	}
 	else
 	{
@@ -241,12 +241,12 @@ if( isset($_REQUEST['term']) && isset( $_GET['get_product_attribute'] ) )
 	{
 		while($rs = dbFetchArray($qs) )
 		{
-			$data[] = $rs['reference']." | ".$rs['id_product_attribute'];	
+			$data[] = $rs['reference']." | ".$rs['id_product_attribute'];
 		}
 	}
 	else
 	{
-		$data[] = "ไม่พบข้อมูล";	
+		$data[] = "ไม่พบข้อมูล";
 	}
 	echo json_encode($data);
 }
@@ -267,7 +267,7 @@ if( isset( $_REQUEST['term'] ) && isset( $_GET['getProductCode'] ) )
 	}
 	else
 	{
-		$data = 'nodata';	
+		$data = 'nodata';
 	}
 	echo $data;
 }
@@ -344,19 +344,19 @@ if( isset($_REQUEST['term']) && isset($_GET['get_employee']) )
 	}
 	else
 	{
-		$qs = dbQuery("SELECT id_employee, first_name, last_name FROM tbl_employee WHERE first_name LIKE '%".$t."%' OR last_name LIKE '%".$t."%' ORDER BY first_name ASC");	
+		$qs = dbQuery("SELECT id_employee, first_name, last_name FROM tbl_employee WHERE first_name LIKE '%".$t."%' OR last_name LIKE '%".$t."%' ORDER BY first_name ASC");
 	}
 	$data = array();
 	if( dbNumRows($qs) > 0 )
 	{
 		while( $rs = dbFetchArray($qs) )
 		{
-			$data[] = $rs['first_name']." ".$rs['last_name']." | ".$rs['id_employee'];	
+			$data[] = $rs['first_name']." ".$rs['last_name']." | ".$rs['id_employee'];
 		}
 	}
 	else
 	{
-		$data[] = "ไม่พบข้อมูล";	
+		$data[] = "ไม่พบข้อมูล";
 	}
 	echo json_encode($data);
 }
@@ -395,8 +395,8 @@ if( isset($_REQUEST['term']) && isset($_GET['get_customer_id']) ){
 if( isset($_REQUEST['term']) && isset( $_GET['get_customer'] ) )
 {
 	$text = trim($_REQUEST['term']);
-	if( $text == "*" )	
-	{ 
+	if( $text == "*" )
+	{
 		$qs = dbQuery("SELECT id_customer, customer_code, first_name, last_name FROM tbl_customer ORDER BY customer_code");
 	}
 	else
@@ -413,7 +413,7 @@ if( isset($_REQUEST['term']) && isset( $_GET['get_customer'] ) )
 	}
 	else
 	{
-		$data = array("ไม่พบข้อมูล");	
+		$data = array("ไม่พบข้อมูล");
 	}
 	echo json_encode($data);
 }
@@ -441,7 +441,7 @@ if( isset($_REQUEST['term']) && isset($_GET['consign_zone']) )
 	{
 		$data = array("ไม่พบข้อมูล");
 	}
-	echo json_encode($data);	
+	echo json_encode($data);
 }
 
 /********************  Lend Reference  **************/
@@ -457,7 +457,7 @@ if( isset($_REQUEST['term']) && isset($_GET['get_lend_id']) ){
 /***********************  รายชื่อพนักงานที่ได้มีงบประมาณในการเบิกอภินันทนาการ  ***********************/
 if( isset($_REQUEST['term']) && isset($_GET['get_support_employee_id']) )
 {
-	$sql = dbQuery("SELECT tbl_employee.id_employee, first_name, last_name FROM tbl_employee JOIN tbl_support ON tbl_employee.id_employee = tbl_support.id_employee WHERE first_name LIKE '%".$_REQUEST['term']."%' OR last_name LIKE '%".$_REQUEST['term']."%' "); 	
+	$sql = dbQuery("SELECT tbl_employee.id_employee, first_name, last_name FROM tbl_employee JOIN tbl_support ON tbl_employee.id_employee = tbl_support.id_employee WHERE first_name LIKE '%".$_REQUEST['term']."%' OR last_name LIKE '%".$_REQUEST['term']."%' ");
 	$data = array();
 	while( $rs = dbFetchArray($sql) )
 	{
@@ -472,10 +472,18 @@ if( isset($_GET['get_zone_name']) && isset($_REQUEST['term']) )
 	$text = $_REQUEST['term'];
 	$qs = dbQuery("SELECT id_zone, zone_name FROM tbl_zone WHERE zone_name LIKE '%".$text."%' ");
 	$data = array();
-	while($rs = dbFetchArray($qs))
+	if(dbNumRows($qs) > 0)
 	{
-		$data[] = $rs['id_zone']." : ".$rs['zone_name'];
+		while($rs = dbFetchArray($qs))
+		{
+			$data[] = $rs['id_zone']." : ".$rs['zone_name'];
+		}
 	}
+	else
+	{
+		$data[] = "Not found";
+	}
+
 	echo json_encode($data);
 }
 
@@ -495,7 +503,7 @@ if( isset( $_GET['get_zone'] ) && isset( $_REQUEST['term'] ) )
 	{
 		while($rs = dbFetchArray($qs) )
 		{
-			$data[] = $rs['zone_name'];	
+			$data[] = $rs['zone_name'];
 		}
 	}
 	else
@@ -533,14 +541,14 @@ if( isset( $_GET['getTransferZone'] ) && isset( $_REQUEST['term'] ) )
 	{
 		while( $rs = dbFetchObject($qs) )
 		{
-			$ds[] = $rs->zone_name.' | '.$rs->id_zone;	
+			$ds[] = $rs->zone_name.' | '.$rs->id_zone;
 		}
 	}
 	else
 	{
-		$ds[] = 'ไม่พบข้อมูล';	
+		$ds[] = 'ไม่พบข้อมูล';
 	}
-	
+
 	echo json_encode($ds);
 }
 
@@ -553,7 +561,7 @@ if( isset( $_GET['get_sender'] ) )
 	$data = array();
 	while( $rs = dbFetchArray($qs) )
 	{
-		$data[] = $rs['id_sender']." | ".$rs['name'];	
+		$data[] = $rs['id_sender']." | ".$rs['name'];
 	}
 	echo json_encode($data);
 }

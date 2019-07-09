@@ -21,12 +21,12 @@
 17.  ABOUT PAGE
 18.  CONTACT US PAGE
 19.  PRODUCT MODAL [Qick View]
-20.  SUBSCRIBE | PROMOTIONAL MODAL 
+20.  SUBSCRIBE | PROMOTIONAL MODAL
 21.  WEB PAGE PROGRESS BAR CSS
 22.  CUSTOM RESPONSIVE
 
 /* =============================================================== */
-/* IMPORT CSS 
+/* IMPORT CSS
 /* =============================================================== */
 
 @import url("owl.carousel.css");
@@ -626,6 +626,7 @@ legend {
     width: 100%;
     left: 0;
     right: 0;
+    transition: 0.5s;
 }
 
 .megamenu .dropdown.megamenu-80width .dropdown-menu {
@@ -656,6 +657,7 @@ legend {
     width: 100%;
     left: 0;
     right: 0;
+    transition: 0.5s;
 }
 
 @media (max-width: 969px) {
@@ -1238,7 +1240,7 @@ legend {
 }
 
 /* =============================================================== */
-/* HOME PAGE BOXES SLIDER 
+/* HOME PAGE BOXES SLIDER
 /* =============================================================== */
 
 .box-pagination {
@@ -1614,7 +1616,7 @@ h1.bolder-style.dark, h1.bolder-style.dark a {
 }
 
 /* =============================================================== */
-/* HOME PAGE SLIDER  
+/* HOME PAGE SLIDER
 /* =============================================================== */
 
 .sliderImg {
@@ -2050,7 +2052,7 @@ h1.bolder-style.dark, h1.bolder-style.dark a {
 /*  // Style   2  end*/
 
 /* =============================================================== */
-/* HOME PAGE LOOK 2  
+/* HOME PAGE LOOK 2
 /* =============================================================== */
 
 .home-intro h2 {
@@ -2280,12 +2282,18 @@ h1.bolder-style.dark, h1.bolder-style.dark a {
     .featuredImgLook2 .col-md-3 {
         width: 100%;
     }
+    .megamenu .megamenu-content {
+        padding-top: 0px;
+        padding-bottom: 20px;
+        padding-left: 15px;
+        *zoom: 1;
+    }
 }
 
 /* ---------- // Home look 2 end //--------*/
 
 /* =============================================================== */
-/* HOME PAGE LOOK 3  
+/* HOME PAGE LOOK 3
 /* =============================================================== */
 
 #imageShowCase {
@@ -6163,23 +6171,27 @@ div.quickview {
 }
 
 .increase-btn {
-	background-color:#fff; 
-	border: solid 1px #ccc; 
-	border-radius:0px !important; 
-	height:36px; 
+	background-color:#fff;
+	border: solid 1px #ccc;
+	border-radius:0px !important;
+	height:36px;
 	margin-left: 1px !important;
 }
 
 .decrease-btn {
-	background-color:#fff; 
-	border: solid 1px #ccc; 
-	border-radius:0px !important; 
-	height:36px; 
+	background-color:#fff;
+	border: solid 1px #ccc;
+	border-radius:0px !important;
+	height:36px;
 	margin-right: 1px !important;
 }
 
 .stock-label {
-	position:relative; 
-	top:15px; 
+	position:relative;
+	top:15px;
 	color:#C60;
+}
+
+.display-block {
+  display: block;
 }

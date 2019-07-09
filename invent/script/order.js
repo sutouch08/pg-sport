@@ -1,4 +1,23 @@
 // JavaScript Document
+function toggleCOD()
+{
+	var i = $('#isCOD').val();
+	if(i == 1){
+		$('#isCOD').val(0);
+		$('#btn-cod').removeClass('btn-success');
+		$('#btn-cod').html('เก็บเงินปลายทาง');
+		return;
+	}
+
+	if(i == 0){
+		$('#isCOD').val(1);
+		$('#btn-cod').addClass('btn-success');
+		$('#btn-cod').html('<i class="fa fa-check"></i> เก็บเงินปลายทาง');
+		return;
+	}
+}
+
+
 function confirmEditPrice() {
     $("#editPriceModal").modal('show');
 }
@@ -603,6 +622,7 @@ function editOrder() {
     $("#payment").removeAttr("disabled");
     $("#online").removeAttr("disabled");
     $("#comment").removeAttr("disabled");
+    $("#btn-cod").removeAttr("disabled");
     $("#btnEdit").css("display", "none");
     $("#btnUpdate").css("display", "");
 }

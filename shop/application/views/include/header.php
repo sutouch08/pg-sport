@@ -13,10 +13,10 @@
     <!-- Bootstrap core CSS -->
      <link rel="stylesheet" href="<?php echo base_url(); ?>library/css/jquery-ui-1.10.4.custom.min.css" />
      <script src="<?php echo base_url(); ?>library/js/jquery.min.js"></script>
-     <script src="<?php echo base_url(); ?>library/js/handlebars-v3.js"></script> 
+     <script src="<?php echo base_url(); ?>library/js/handlebars-v3.js"></script>
   	<script src="<?php echo base_url(); ?>library/js/jquery-ui-1.10.4.custom.min.js"></script>
     <script src="<?php echo base_url(); ?>library/js/sweet-alert.js"></script>
-   <script src="<?php echo ROOT_PATH; ?>library/js/jquery.cookie.js"></script>
+   <script src="<?php echo base_url(); ?>library/js/jquery.cookie.js"></script>
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>library/css/sweet-alert.css">
     <link href="<?php echo base_url(); ?>shop/assets/bootstrap/css/bootstrap.css" rel="stylesheet">
 
@@ -77,14 +77,14 @@
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only"> Toggle navigation </span> 
-                <span class="icon-bar"> </span> 
-                <span class="icon-bar"> </span> 
+                <span class="sr-only"> Toggle navigation </span>
+                <span class="icon-bar"> </span>
+                <span class="icon-bar"> </span>
                 <span class="icon-bar"> </span>
             </button>
-            <a href="<?php echo base_url(); ?>shop/main/cart/<?php echo $this->id_cart; ?>"> 
+            <a href="<?php echo base_url(); ?>shop/main/cart/<?php echo $this->id_cart; ?>">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-cart">
-            	<i class="fa fa-shopping-basket fa-lg colorWhite"> </i> 
+            	<i class="fa fa-shopping-basket fa-lg colorWhite"> </i>
             <?php if( $this->cart_qty > 0 ) : ?>
             	<span id="cartMobileLabel" class="label labelRounded label-danger" style="position: relative; margin-left:-10px; top:-10px;"><?php echo number_format($this->cart_qty); ?> </span>
             <?php else : ?>

@@ -10,10 +10,10 @@ function getOrderStateInTime($state, $from, $to) //--- กรองวันท�
 	{
 		while( $rs = dbFetchObject($qs) )
 		{
-			$sc .= $rs->id_order.', ';	
+			$sc .= $rs->id_order.', ';
 		}
 		$sc = trim($sc, ', ');
-	}	
+	}
 	return $sc;
 }
 
@@ -45,7 +45,7 @@ function selectTime($time)
 	{
 		$sc .= '<option value="'.$hrs.'" '.isSelected($time, $hrs).'>'.$hrs.'</option>';
 	}
-	return $sc;		
+	return $sc;
 }
 
 /*
@@ -87,7 +87,7 @@ function getStateIn($state)
 	{
 		if( $val == 1 )
 		{
-			$sc .= $id[$key].',';	
+			$sc .= $id[$key].',';
 		}
 	}
 	return trim($sc, ',');
@@ -120,13 +120,13 @@ function categoryTabMenu($mode = 'order')
 			$sc .= 	'<ul class="dropdown-menu" role="menu" aria-labelledby="ul-'.$rs->id_category.'">';
 			$sc .= 	subCategoryTab($rs->id_category, $ajax);
 			$sc .=  '</ul>';
-			$sc .= '</li>';			
+			$sc .= '</li>';
 		}
 		else
 		{
 			$sc .= '<li class="menu"><a href="#cat-'.$rs->id_category.'" role="tab" data-toggle="tab" onClick="'.$ajax.'('.$rs->id_category.')">'.$rs->category_name.'</a></li>';
 		}
-		
+
 	}
 	$sc .= '<script>
 						function expandCategory(el)
@@ -139,7 +139,7 @@ function categoryTabMenu($mode = 'order')
 								el.className += " " + className
 							}
 						}
-					
+
 						function collapseCategory(el)
 						{
 							var className = "open";
@@ -151,9 +151,9 @@ function categoryTabMenu($mode = 'order')
 								el.className=el.className.replace(reg, " ")
 							}
 						}
-						
+
 						//--------------------------------  โหลดรายการสินค้าสำหรับดูยอดคงเหลือ  -----------------------------//
-					function getViewCategory(id) 
+					function getViewCategory(id)
 					{
 						var output = $("#cat-" + id);
 						$(".tab-pane").removeClass("active");
@@ -176,10 +176,10 @@ function categoryTabMenu($mode = 'order')
 								}
 							});
 						}
-						
+
 						output.addClass("active");
 					}
-					
+
 					//--------------------------------  โหลดรายการสินค้าสำหรับจิ้มสั่งสินค้า  -----------------------------//
 					function getCategory(id) {
 						var output = $("#cat-" + id);
@@ -217,12 +217,12 @@ function subCategoryTab($parent, $ajax)
 {
 	$sc = '';
 	$qs = dbQuery("SELECT * FROM tbl_category WHERE parent_id = ".$parent." ORDER BY category_name ASC");
-	
+
 	if( dbNumRows($qs) > 0 )
 	{
 		while( $rs = dbFetchObject($qs) )
 		{
-			if( haveSubCategory($rs->id_category) === TRUE ) //----- ถ้ามี sub category 
+			if( haveSubCategory($rs->id_category) === TRUE ) //----- ถ้ามี sub category
 			{
 				$sc .= '<li class="dropdown-submenu" >';
 				$sc .= '<a id="ul-'.$rs->id_category.'" class="dropdown-toggle" href="#cat-'.$rs->id_category.'" role="tab" data-toggle="tab" onClick="'.$ajax.'('.$rs->id_category.')">';
@@ -236,7 +236,7 @@ function subCategoryTab($parent, $ajax)
 			{
 				$sc .= '<li class="menu"><a href="#cat-'.$rs->id_category.'" role="tab" data-toggle="tab" onClick="'.$ajax.'('.$rs->id_category.')">'.$rs->category_name.'</a></li>';
 			}
-			
+
 		}
 	}
 	return $sc;
@@ -248,12 +248,12 @@ function getSubCategoryTab($parent, $ajax)
 {
 	$sc = '';
 	$qs = dbQuery("SELECT * FROM tbl_category WHERE parent_id = ".$parent." ORDER BY category_name ASC");
-	
+
 	if( dbNumRows($qs) > 0 )
 	{
 		while( $rs = dbFetchObject($qs) )
 		{
-			if( haveSubCategory($rs->id_category) === TRUE ) //----- ถ้ามี sub category 
+			if( haveSubCategory($rs->id_category) === TRUE ) //----- ถ้ามี sub category
 			{
 				$sc .= '<li class="dropdown-submenu" >';
 				$sc .= '<a id="ul-'.$rs->id_category.'" class="dropdown-toggle" href="#cat-'.$rs->id_category.'" data-toggle="tab" onClick="'.$ajax.'('.$rs->id_category.')">';
@@ -267,7 +267,7 @@ function getSubCategoryTab($parent, $ajax)
 			{
 				$sc .= '<li class="menu"><a href="#cat-'.$rs->id_category.'" role="tab" data-toggle="tab" onClick="'.$ajax.'('.$rs->id_category.')">'.$rs->category_name.'</a></li>';
 			}
-			
+
 		}
 	}
 	return $sc;
@@ -278,12 +278,12 @@ function getSubCategoryTab($parent, $ajax)
 function getCategoryTab()
 {
 	$sc = '';
-	$qs = dbQuery("SELECT * FROM tbl_category WHERE id_category != 0"); 
+	$qs = dbQuery("SELECT * FROM tbl_category WHERE id_category != 0");
 	while($rs = dbFetchObject($qs))
 	{
 		$sc .= '<div class="tab-pane" id="cat-'.$rs->id_category.'"></div>';
 	}
-	
+
 	return $sc;
 }
 
@@ -295,7 +295,7 @@ function getOrderDetail($id_order_detail)
 	$qs = dbQuery("SELECT * FROM tbl_order_detail WHERE id_order_detail = ".$id_order_detail);
 	if( dbNumRows($qs) == 1 )
 	{
-		$sc = dbFetchArray($qs);	
+		$sc = dbFetchArray($qs);
 	}
 	return $sc;
 }
@@ -321,7 +321,7 @@ function getOnlineAddress($id_order)
 		$qs = dbQuery("SELECT * FROM tbl_address_online WHERE customer_code = '".$code."'");
 		if( dbNumRows($qs) > 0 )
 		{
-			$sc = $qs;	
+			$sc = $qs;
 		}
 	}
 	return $sc;
@@ -347,11 +347,11 @@ function getDefaultOnlineAddress($id_order)
 		$qs = dbQuery("SELECT * FROM tbl_address_online WHERE customer_code = '".$code."' AND is_default = 1");
 		if( dbNumRows($qs) == 1 )
 		{
-			$sc = $qs;	
+			$sc = $qs;
 		}
 		else if( dbNumRows($qs) == 0 )
 		{
-			$qr = dbQuery("SELECT * FROM tbl_address_online WHERE customer_code = '".$code."' LIMIT 1");	
+			$qr = dbQuery("SELECT * FROM tbl_address_online WHERE customer_code = '".$code."' LIMIT 1");
 			if( dbNumRows($qr) == 1 )
 			{
 				$sc = $qr;
@@ -374,11 +374,40 @@ function onlineOrderByCustomer($txt)
 		{
 			$in .= $rs['id_order'];
 			if( $i != $row ){ $in .= ', '; }
-			$i++;	
+			$i++;
 		}
 	}
 	return $in;
 }
+
+
+
+
+function onlineCodeByReceiver($txt)
+{
+	$in = FALSE;
+	$qr = "SELECT customer_code FROM tbl_address_online ";
+	$qr .= "WHERE ";
+	$qr .= "first_name LIKE'%".$txt."%' ";
+	$qr .= "OR ";
+	$qr .= "last_name LIKE'%".$txt."%' ";
+	//echo $qr;
+	$qs = dbQuery($qr);
+	if(dbNumRows($qs) > 0)
+	{
+		$in = '';
+		$i = 1;
+		while($rs = dbFetchObject($qs))
+		{
+			$in .= $i == 1 ? "'".$rs->customer_code."' " : ",'".$rs->customer_code."' ";
+			$i++;
+		}
+	}
+
+	return $in;
+}
+
+
 
 function getSpace($amount, $length)
 {
@@ -399,14 +428,14 @@ function getCustomerOnlineReference($id_order)
 	$qs = dbQuery("SELECT customer FROM tbl_order_online WHERE id_order = ".$id_order);
 	if( dbNumRows($qs) == 1 )
 	{
-		list( $sc ) = dbFetchArray($qs);	
+		list( $sc ) = dbFetchArray($qs);
 	}
 	return $sc;
 }
 
 function onlineCustomerName($id_order)
 {
-	$sc = 'ไม่ได้กำหนดชื่อลูกค้า';	
+	$sc = 'ไม่ได้กำหนดชื่อลูกค้า';
 	$qs = getDefaultOnlineAddress($id_order);
 	if( $qs !== FALSE ) //----- ถ้ามีที่อยู่
 	{
@@ -421,7 +450,7 @@ function paymentMethod($se = '' )
 	$options = '<option value="เครดิต" '.isSelected('เครดิต', $se).'>เครดิต</option>';
 	$options .= '<option value="เงินสด" '.isSelected('เงินสด', $se).'>เงินสด</option>';
 	//$options .= '<option value="ออนไลน์" '.isSelected('ออนไลน์', $se).'>ออนไลน์</option>';
-	return $options;		
+	return $options;
 }
 function getIdProductByCode($code)
 {
@@ -440,7 +469,7 @@ function discountLabel($p_dis, $a_dis)
 	$dis = 0.00;
 	if( $p_dis > 0 && $a_dis == 0.00 )
 	{
-		$dis = $p_dis.' %';	
+		$dis = $p_dis.' %';
 	}
 	if( $a_dis > 0 && $p_dis == 0.00 )
 	{
@@ -457,7 +486,7 @@ function isSaved($id_order)
 	{
 		$sc = FALSE;
 	}
-	return $sc;		
+	return $sc;
 }
 
 function orderAmount($id)
@@ -491,7 +520,7 @@ function orderQty($id_order)
 	list( $qty ) = dbFetchArray($qs);
 	if( ! is_null( $qty ) )
 	{
-		$sc = $qty;	
+		$sc = $qty;
 	}
 	return $sc;
 }
@@ -526,19 +555,19 @@ function getServiceFee($id_order)
 	$qs = dbQuery("SELECT amount FROM tbl_service_fee WHERE id_order = ".$id_order);
 	if( dbNumRows($qs) > 0 )
 	{
-		list( $fee ) = dbFetchArray($qs);	
+		list( $fee ) = dbFetchArray($qs);
 	}
 	return $fee;
 }
 
 function addServiceFee($id_order, $amount)
 {
-	return dbQuery("INSERT INTO tbl_service_fee (id_order, amount) VALUES (".$id_order.", ".$amount.")");	
+	return dbQuery("INSERT INTO tbl_service_fee (id_order, amount) VALUES (".$id_order.", ".$amount.")");
 }
 
 function updateServiceFee($id_order, $amount)
 {
-	return dbQuery("UPDATE tbl_service_fee SET amount = ".$amount." WHERE id_order = ".$id_order);	
+	return dbQuery("UPDATE tbl_service_fee SET amount = ".$amount." WHERE id_order = ".$id_order);
 }
 
 function removeServiceFee($id_order)
@@ -546,7 +575,7 @@ function removeServiceFee($id_order)
 	$sc = TRUE;
 	$qs = dbQuery("DELETE FROM tbl_service_fee WHERE id_order = ".$id_order);
 	if( ! $qs ){ $sc = FALSE; }
-	return $sc;	
+	return $sc;
 }
 
 //--------------------------------------------------------
@@ -573,7 +602,7 @@ function selectMin($se = '' )
 	{
 		$ix = $i < 10 ? '0'.$i : $i;
 		$sc .= '<option value="'.$ix.'" '.isSelected($se, $ix).'>'.$ix.'</option>';
-		$i++;	
+		$i++;
 	}
 	return $sc;
 }
@@ -585,14 +614,14 @@ function isPaymentExists($id_order)
 	$qs = dbQuery("SELECT id_payment FROM tbl_payment WHERE id_order = ".$id_order);
 	if( dbNumRows($qs) > 0 )
 	{
-		list( $sc ) = dbFetchArray($qs);	
+		list( $sc ) = dbFetchArray($qs);
 	}
 	return $sc;
 }
 
 function validOrder($id_order)
 {
-	return dbQuery("UPDATE tbl_order SET valid = 1 WHERE id_order = ".$id_order);	
+	return dbQuery("UPDATE tbl_order SET valid = 1 WHERE id_order = ".$id_order);
 }
 
 function insertOrderState($id_order, $state, $id_emp)
@@ -638,7 +667,7 @@ function orderExpiration()
 			while( $rs = dbFetchArray($qs) )
 			{
 				$qr = dbQuery("UPDATE tbl_order_detail SET valid_detail = 2 WHERE id_order = ".$rs['id_order']);
-				$qa = dbQuery("UPDATE tbl_order SET valid = 2 WHERE id_order = ".$rs['id_order']);	
+				$qa = dbQuery("UPDATE tbl_order SET valid = 2 WHERE id_order = ".$rs['id_order']);
 			}
 		}
 	}
@@ -705,7 +734,7 @@ function isDelivered($id_order)
 		list( $code ) = dbFetchArray($qs);
 		if( ! is_null( $code ) )
 		{
-			$sc = TRUE;	
+			$sc = TRUE;
 		}
 	}
 	return $sc;
@@ -732,7 +761,7 @@ function stateLabel($id_order_state)
 	$qs = dbQuery("SELECT state_name FROM tbl_order_state WHERE id_order_state = ".$id_order_state);
 	if( dbNumRows($qs) == 1 )
 	{
-		list( $sc ) = dbFetchArray($qs);	
+		list( $sc ) = dbFetchArray($qs);
 	}
 	return $sc;
 }
@@ -750,7 +779,7 @@ function getOrderTableWidth($id_pd)
 	$rs 	= dbNumRows($qs);
 	if( $rs > 0 )
 	{
-		$sc = $rs * $tdWidth + $padding;	
+		$sc = $rs * $tdWidth + $padding;
 	}
 	return $sc;
 }
@@ -765,7 +794,7 @@ function countAttribute($id_pd)
 		$color = $rs['id_color'] == 0 ? 0 : 1 ;
 		$size	= $rs['id_size'] == 0 ? 0 : 1 ;
 		$attr	= $rs['id_attribute'] == 0 ? 0 : 1;
-		$sc 	= $color + $size + $attr;	
+		$sc 	= $color + $size + $attr;
 	}
 	return $sc;
 }

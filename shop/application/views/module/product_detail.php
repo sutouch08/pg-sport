@@ -5,7 +5,7 @@
         <div class="row">
 
             <!-- left column -->
-	<?php if( isset( $images ) && $images !== FALSE ) : ?>            
+	<?php if( isset( $images ) && $images !== FALSE ) : ?>
 
             <div class="col-lg-8 col-md-8 col-sm-7 col-xs-12">
                 <div class="product-images-carousel-wrapper">
@@ -13,7 +13,7 @@
                         <a class="prev"><span class="icon-wrap"></span></a>
                         <a class="next"><span class="icon-wrap"></span></a>
                     </nav>
-		
+
                     <div class="product-images-carousel">
 		<?php foreach( $images as $img ) : ?>
                         <div class="product-carousel-item">
@@ -21,15 +21,15 @@
 
                             <img class="img-responsive product-carousel-item-img lazyOwl " src='<?php echo get_image_path($img->id_image, 4); ?>' alt='Image Title'/>
                         </div>
-	     <?php endforeach; ?>                   
+	     <?php endforeach; ?>
                     </div>
-			
+
                 </div>
 
 
             </div>
             <!--/ left column end -->
-	<?php endif; ?>            
+	<?php endif; ?>
 	<?php 	$dis 		= get_discount($this->id_customer, $pd->id_product); ?>
                 <!-- right column -->
             <div class="col-lg-4 col-md-4 col-sm-5 col-xs-12">
@@ -49,53 +49,47 @@
                     <?php 	$colors 	= get_product_colors($pd->id_product); ?>
                     <div class="product-details-product-color">
                             <span class="selected-color">
-                            	<strong>Color </strong> 
-							<?php if( $colors !== FALSE ) : ?>    
-                            <?php $i = count($colors); ?>                
-                            <?php 	foreach( $colors as $color ) : ?>
-                            	<span class="color-value" style="padding-right:10px; display:inline-block"><?php echo $color->color_name; ?></span><?php if( $i >1 ) : ?>|  <?php endif; ?>
-                            <?php $i--; ?> 
-							<?php 	endforeach; ?>                                
-							<?php endif; ?>                                
+                            	<span class="display-block"><strong>Color</strong></span>
+							                <?php if( !empty($colors) ) : ?>
+                                <?php 	foreach( $colors as $color ) : ?>
+                            	     <span class="color-value"><?php echo $color->color_name; ?></span>
+                                 <?php 	endforeach; ?>
+							                <?php endif; ?>
                             </span>
                     </div>
                     <!--/.color-details-->
                     <?php  endif; ?>
-                    
+
                     <?php if( has_attribute($pd->id_product, 'size') ) : ?>
                    <?php 	$sizes	= get_product_sizes($pd->id_product); ?>
                     <div class="product-details-product-color">
-                            <span class="selected-color">
-                            	<strong>Size </strong> 
-							<?php if( $sizes !== FALSE ) : ?>  
-                            <?php 	$i = count($sizes) ; ?>                  
+                      <span class="selected-color">
+                        <span class="display-block"><strong>Size</strong></span>
+							            <?php if(!empty($sizes)) : ?>
                             <?php 	foreach( $sizes as $size ) : ?>
-                            	<span class="color-value" style="padding-right:10px; display:inline-block"><?php echo $size->size_name; ?></span><?php if( $i >1 ) : ?>|  <?php endif; ?>
-							<?php $i--; ?>                                
-							<?php 	endforeach; ?>                                
-							<?php endif; ?>                                
-                            </span>
+                            	<span class="color-value"><?php echo $size->size_name; ?></span>
+                            <?php 	endforeach; ?>
+                          <?php endif; ?>
+                      </span>
                     </div>
                     <!--/.size-details-->
                     <?php  endif; ?>
-                    
+
                     <?php if( has_attribute($pd->id_product, 'attribute') ) : ?>
-                    <?php 	$attrs	 = get_product_attributes($pd->id_product); ?>    
+                    <?php 	$attrs	 = get_product_attributes($pd->id_product); ?>
                     <div class="product-details-product-color">
-                            <span class="selected-color">
-                            	<strong>Attribute </strong> 
-							<?php if( $attrs !== FALSE ) : ?>  
-                            <?php 	$i = count($attrs) ; ?>                  
-                            <?php 	foreach( $attrs as $attr ) : ?>
-                            	<span class="color-value" style="padding-right:10px; display:inline-block"><?php echo $attr->attribute_name; ?></span><?php if( $i >1 ) : ?>|  <?php endif; ?>
-							<?php $i--; ?>                                
-							<?php 	endforeach; ?>                                
-							<?php endif; ?>                                
-                            </span>
+                      <span class="selected-color">
+                        <span class="display-block"><strong>Attribute </strong></span>
+                        <?php if( !empty($attrs)) : ?>
+                          <?php 	foreach( $attrs as $attr ) : ?>
+                            <span class="color-value" ><?php echo $attr->attribute_name; ?></span>
+                          <?php 	endforeach; ?>
+                        <?php endif; ?>
+                      </span>
                     </div>
                     <!--/.attribute-details-->
                     <?php  endif; ?>
-                    
+
                     <div class="row row-filter clearfix hide visible-xs">
                     <?php if( $count_attrs['length'] == 2 && $count_attrs['horizontal'] == 'color') : ?>
                     <?php 	$colors = get_product_colors($pd->id_product); ?>
@@ -103,62 +97,62 @@
                         <div class="col-xs-6">
                             <select class="form-control" id="colorFilter">
                                 <option value="" selected>Color</option>
-					<?php	foreach( $colors as $color ) : ?>                                
+					<?php	foreach( $colors as $color ) : ?>
                                 <option value="<?php echo $color->id_color; ?>"><?php echo $color->color_code.' | '.$color->color_name; ?></option>
-					<?php 	endforeach; 	?>                                
+					<?php 	endforeach; 	?>
                             </select>
                         </div>
                       	<?php endif; ?>
                     <?php endif; ?>
-                      
+
                     <?php if( $count_attrs['length'] == 2 && $count_attrs['horizontal'] == 'attribute') : ?>
                     <?php 	$attrs = get_product_attributes($pd->id_product); ?>
                     <?php 	if( $attrs !== FALSE ) : ?>
                         <div class="col-xs-6">
                             <select class="form-control" id="attrFilter">
                                 <option value="" selected>Attribute</option>
-					<?php	foreach( $attrs as $attr ) : ?>                                
+					<?php	foreach( $attrs as $attr ) : ?>
                                 <option value="<?php echo $attr->id_attribute; ?>"><?php echo $color->attribute_name; ?></option>
-					<?php 	endforeach; 	?>                                
+					<?php 	endforeach; 	?>
                             </select>
                         </div>
                       	<?php endif; ?>
                       <?php endif; ?>
-                      
+
                     <?php if( $count_attrs['length'] == 3) : ?>
                      <?php 	$colors = get_product_colors($pd->id_product); ?>
                     <?php 	if( $colors !== FALSE ) : ?>
                         <div class="col-xs-6">
                             <select class="form-control" id="colorFilter">
                                 <option value="" selected>Color</option>
-					<?php	foreach( $colors as $color ) : ?>                                
+					<?php	foreach( $colors as $color ) : ?>
                                 <option value="<?php echo $color->id_color; ?>"><?php echo $color->color_code.' | '.$color->color_name; ?></option>
-					<?php 	endforeach; 	?>                                
+					<?php 	endforeach; 	?>
                             </select>
                         </div>
                     <?php endif; ?>
-                        
+
                     <?php 	$attrs = get_product_attributes($pd->id_product); ?>
                     <?php 	if( $attrs !== FALSE ) : ?>
                         <div class="col-xs-6">
                             <select class="form-control" id="attrFilter">
                                 <option value="" selected>Attribute</option>
-					<?php	foreach( $attrs as $attr ) : ?>                                
+					<?php	foreach( $attrs as $attr ) : ?>
                                 <option value="<?php echo $attr->id_attribute; ?>"><?php echo $attr->attribute_name; ?></option>
-					<?php 	endforeach; 	?>                                
+					<?php 	endforeach; 	?>
                             </select>
                         </div>
                       <?php endif; ?>
                       <?php endif; ?>
                   </div>
-                  
-                        
+
+
                     <!-- productFilter -->
 
                     <div class="row row-cart-actions clearfix hide visible-xs">
                         <div class="col-sm-12 "><button type="button" class="btn btn-block btn-dark" onClick="getOrderGridWithFilter(<?php echo $pd->id_product; ?>)">แสดงรายการ</button></div>
                     </div>
-                    
+
                      <div class="row row-cart-actions clearfix hidden-xs">
                         <div class="col-sm-12 "><button type="button" class="btn btn-block btn-dark" onClick="getOrderGrid(<?php echo $pd->id_product; ?>)">ต้องการสั่งซื้อ</button></div>
                     </div>
@@ -169,9 +163,9 @@
 
                     <div class="product-share clearfix">
                         <p> SHARE </p>
-                        
+
                         <div class="socialIcon">
-                        
+
                             <a name="fb_share" data-href="<?php echo current_url(); ?>" href="https://www.facebook.com/sharer/sharer.php?u=<?php echo current_url(); ?>"> <i class="fa fa-facebook"></i></a>
                             <a class="twitter-share-button"  href="https://twitter.com/intent/tweet"><i class="fa fa-twitter"></i></a>
                             <a href="#"> <i class="fa fa-google-plus"></i></a>
@@ -205,7 +199,7 @@
             <h5 class="modal-title text-center" id="productCode"><?php echo $pd->product_code; ?> |  <?php echo $pd->product_name; ?></h5>
             </div>
             <div class="modal-body" id="orderContent">
-            
+
             </div>
             <div class="modal-footer">
             <input type="hidden" name="id_product" id="id_product" value="<?php echo $pd->id_product; ?>" />
@@ -238,9 +232,9 @@ function addToCart()
 			}
 			else
 			{
-				swal({ title: 'ไม่สำเร็จ', title : 'เพิ่มสินค้าลงตะกร้าไม่สำเร็จ กรุณาลองใหม่อีกครั้ง', type: 'error' });	
+				swal({ title: 'ไม่สำเร็จ', title : 'เพิ่มสินค้าลงตะกร้าไม่สำเร็จ กรุณาลองใหม่อีกครั้ง', type: 'error' });
 			}
-			
+
 		}
 	});
 }
@@ -294,28 +288,28 @@ function validQty(el, qty)
 					$('#mainGrid').css('width', wid);
 					$('#orderContent').html(arr[1]);
 					$("#orderGrid").modal('show');
-				}				
+				}
 			}
 		});
 	}
-	
+
 	function getOrderGridWithFilter(id_pd)
 	{
 		var c = 0;
 		var filter;
 		var idc = '';
 		var ida = '';
-		
-		if( $('#colorFilter').length && !$("#attrFilter").length){ 
+
+		if( $('#colorFilter').length && !$("#attrFilter").length){
 			filter = { attr : 'color', id : $("#colorFilter").val() };
-			c += 1; 
+			c += 1;
 			idc	= $('#colorFilter').val();
 		}
-		
-		if( $('#attrFilter').length && !$("#colorFilter").length ){ 
+
+		if( $('#attrFilter').length && !$("#colorFilter").length ){
 			filter = { attr : 'attribute', id : $("#attrFilter").val() };
-			c += 1; 
-			ida = $('#attrFilter').val();	
+			c += 1;
+			ida = $('#attrFilter').val();
 		}
 		if( $("#colorFilter").length && $("#attrFilter").length ){
 			c += 2;
@@ -325,16 +319,16 @@ function validQty(el, qty)
 		}
 		if( $('#colorFilter').length && idc == '' ){ swal('กรุณาระบุสี'); return false; }
 		if( $('#attrFilter').length && ida == ''){ swal('กรุณาระบุคุณลักษณะ'); return false; }
-		
+
 		if( c == 0 ){
-			getOrderGrid(id_pd);	
+			getOrderGrid(id_pd);
 		}else{
 			var ds = JSON.stringify(filter);
 			console.log(ds);
 			OrderGridWithFilter(id_pd, ds, c);
 		}
 	}
-	
+
 	function OrderGridWithFilter(id_pd, data, count)
 	{
 		load_in();
@@ -354,7 +348,7 @@ function validQty(el, qty)
 					$("#orderGrid").modal('show');
 				}
 			}
-		});				
+		});
 	}
 
 </script>

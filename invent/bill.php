@@ -45,7 +45,8 @@
 <!-- End page place holder -->
 <?php
 ///************************** แสดงรายละเอียด ****************************//
-if(isset($_GET['view_detail'])&&isset($_GET['id_order'])){
+if(isset($_GET['view_detail'])&&isset($_GET['id_order']))
+{
 	$id_employee = $_COOKIE['user_id'];
 	$id_order = $_GET['id_order'];
 	$bill_discount = bill_discount($id_order);
@@ -198,7 +199,9 @@ if(isset($_GET['view_detail'])&&isset($_GET['id_order'])){
 <?php endif; ?>
 <?php
 
-}else{
+}
+else
+{
 echo"
 <div class='row'>
 <div class='col-sm-12'>
@@ -242,7 +245,7 @@ echo"
 			}
 
 		}
-		else if($row==0)
+		else
 		{
 			echo"<tr><td colspan='9' align='center'><h3><span class='glyphicon glyphicon-exclamation-sign'></span>&nbsp;ไม่มีรายการในช่วงนี้</h3></td></tr>";
 		}

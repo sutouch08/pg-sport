@@ -46,7 +46,15 @@ switch($page){
 			$content	= 'order_transform.php';
 			$pageTitle	= 'เบิกแปรสภาพ';
 			break;
-
+		case 'stock_movement' :
+			$content = 'stock_movement.php';
+			$pageTitle = 'Stock Movement';
+			break;
+		case 'stock' :
+			$content = 'stock.php';
+			$pageTitle = 'Stock';
+			break;
+			
 		//-- ปิดการใช้งานไว้ก่อน ใช้ order_transform แทน
 		case "requisition";
 			$content = "requisition.php";

@@ -166,11 +166,11 @@ if( isset( $_GET['addOnlineAddress'] ) )
 	if( $code !== FALSE )
 	{
 		$data		= array(
-								"customer_code"	=> $code,
-								"first_name"			=> $_POST['Fname'],
-								"last_name"			=> $_POST['Lname'],
-								"address1"			=> $_POST['address1'],
-								"address2"			=> $_POST['address2'],
+								"customer_code"	=> addslashes($code),
+								"first_name"			=> addslashes($_POST['Fname']),
+								"last_name"			=> addslashes($_POST['Lname']),
+								"address1"			=> addslashes($_POST['address1']),
+								"address2"			=> addslashes($_POST['address2']),
 								"province"			=> $_POST['province'],
 								"postcode"			=> $_POST['postcode'],
 								"phone"				=> $_POST['phone'],
@@ -299,7 +299,8 @@ if( isset( $_GET['addNewOrder'] ) )
 						"comment"		=> $_POST['comment'],
 						"valid"				=> 0,
 						"role"				=> $_POST['role'],
-						"date_add"		=> $date_add
+						"date_add"		=> $date_add,
+						"isCOD"	=> $_POST['isCOD']
 						);
 	$order = new order();
 	$rs = $order->add($data);
@@ -311,7 +312,7 @@ if( isset( $_GET['addNewOrder'] ) )
 	{
 		if( isset( $_POST['online'] ) )
 		{
-			$order->updateOnlineOrderCustomer($rs, $_POST['online']);
+			$order->updateOnlineOrderCustomer($rs, addslashes($_POST['online']));
 		}
 		echo $rs;
 	}
@@ -328,14 +329,15 @@ if( isset( $_GET['updateEditOrderHeader'] ) )
 						"id_employee"	=> $_POST['id_employee'],
 						"payment"		=> $_POST['payment'],
 						"comment"		=> $_POST['comment'],
-						"date_add"		=> dbDate($_POST['doc_date'], true)
+						"date_add"		=> dbDate($_POST['doc_date'], true),
+						"isCOD" => $_POST['isCOD']
 							);
 	$rs = $order->updateOrder($id, $data);
 	if( $rs )
 	{
 		if( isset( $_POST['online'] ) )
 		{
-			$order->updateOnlineOrderCustomer($id, $_POST['online']);
+			$order->updateOnlineOrderCustomer($id, addslashes($_POST['online']));
 		}
 		$sc = 'success';
 	}
@@ -730,6 +732,8 @@ if( isset( $_GET['clearFilter'] ) )
 							'viewType',
 							'closed',
 							'delivered',
+							'isCOD',
+							'unPaid',
 							'state_1',
 							'state_3',
 							'state_4',
@@ -985,17 +989,20 @@ if(isset($_GET['edit'])&&isset($_GET['state_change'])){
 	$id_order = $_POST['id_order'];
 	$id_employee = $_POST['id_employee'];
 	$id_order_state = $_POST['order_state'];
+
+	$order = new order($id_order);
+	$content = $order->payment == 'ออนไลน์' ? 'order_online' : 'order';
 	if($id_order_state != 0){
 		if(order_state_change($id_order, $id_order_state, $id_employee)){
 			$message = "เปลี่ยนสถานะเรียบร้อยแล้ว";
-			header("location: ../index.php?content=order&edit=y&id_order=$id_order&view_detail=y&message=$message");
+			header("location: ../index.php?content=".$content."&edit=y&id_order=$id_order&view_detail=y&message=$message");
 		}else{
 			$message = "เปลี่ยนสถานะไม่สำเร็จ";
-			header("location: ../index.php?content=order&edit=y&id_order=$id_order&view_detail=y&error=$message");
+			header("location: ../index.php?content=".$content."&edit=y&id_order=$id_order&view_detail=y&error=$message");
 		}
 		}else{
 			$message = "คุณไม่ได้เลือกสถานะ";
-			header("location: ../index.php?content=order&edit=y&id_order=$id_order&view_detail=y&error=$message");
+			header("location: ../index.php?content=o".$content."&edit=y&id_order=$id_order&view_detail=y&error=$message");
 		}
 }
 
@@ -1394,7 +1401,7 @@ if( isset( $_GET['print_order']) && isset( $_GET['id_order'] ) )
 				$product = new product();
 				while($i<$row) :
 					$rs = dbFetchArray($detail);
-					if(count($rs) != 0) :
+					if(!empty($rs)) :
 
 						$barcode			= "<img src='".WEB_ROOT."library/class/barcode/barcode.php?text=".$rs['barcode']."' style='height:8mm;' />";
 						$product_name 	= "<input type='text' style='border:0px; width:100%;' value='".$product->product_reference($rs['id_product_attribute'])." : ".$product->product_name($rs['id_product'])."' />";
@@ -1531,7 +1538,7 @@ if( isset( $_GET['getData'] ) && isset( $_GET['id_product'] ) )
 {
 	$id_pd		= $_GET['id_product'];
 	$id_cus		= $_GET['id_customer'];
-	$id_order = $_GET['id_order'];
+	$id_order = isset($_GET['id_order']) ? $_GET['id_order'] : '';
 	$tableWidth	= countAttribute($id_pd) == 1 ? 800 : getOrderTableWidth($id_pd);
 	$pd			= new product();
 	$pd->product_detail($id_pd, $id_cus);

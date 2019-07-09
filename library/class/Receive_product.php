@@ -1,4 +1,4 @@
-<?php 
+<?php
 class receive_product
 {
 
@@ -28,6 +28,31 @@ public function get_data($id)
 		$this->status					= $rs['status'];
 	}
 }
+
+
+
+
+public function getDetails($id)
+{
+		$qr  = "SELECT rd.id_receive_product_detail, rd.id_receive_product, rd.id_product, rd.id_product_attribute, ";
+		$qr .= "pa.reference, pd.product_name, rd.qty, rd.id_warehouse, rd.id_zone, rd.status ";
+		$qr .= "FROM tbl_receive_product_detail AS rd ";
+		$qr .= "JOIN tbl_product_attribute AS pa ON rd.id_product_attribute = pa.id_product_attribute ";
+		$qr .= "JOIN tbl_product AS pd ON rd.id_product = pd.id_product ";
+		$qr .= "WHERE rd.id_receive_product = ".$id;
+		return dbQuery($qr);
+}
+
+
+
+public function getSavedDetails($id)
+{
+	$qr  = "SELECT * FROM tbl_receive_product_detail WHERE id_receive_product = ".$id;
+
+	return dbQuery($qr);
+}
+
+
 
 public function save_add($id)
 {
@@ -66,20 +91,124 @@ public function save_add($id)
 	}
 	$this->valid_po($this->id_po);
 	if($i == $rows){ $this->change_status($id, 1); }
-	return $i; 
+	return $i;
 }
+
+
+
+public function update($id, array $ds = array())
+{
+	if(!empty($ds))
+	{
+		$set = "";
+		$i = 1;
+		foreach($ds as $field => $value)
+		{
+			$set .= $i == 1 ? $field ." = '".$value."'" : ", ".$field." = '".$value."'";
+			$i++;
+		}
+
+		$qr  = "UPDATE tbl_receive_product SET ".$set." ";
+		$qr .= "WHERE id_receive_product = ".$id;
+
+		if(dbQuery($qr) === FALSE)
+		{
+			$this->error = dbError();
+			return FALSE;
+		}
+
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+
 
 
 public function inPO($id_po, $id_product_attribute)
 {
 	$qty = 0;
-	$qs = dbQuery("SELECT qty FROM tbl_po_detail WHERE id_po = ".$id_po." AND id_product_attribute = ".$id_product_attribute);	
+	$qs = dbQuery("SELECT qty FROM tbl_po_detail WHERE id_po = ".$id_po." AND id_product_attribute = ".$id_product_attribute);
 	if( dbNumRows($qs) == 1 )
 	{
-		list($qty) = dbFetchArray($qs);	
+		list($qty) = dbFetchArray($qs);
 	}
 	return $qty;
 }
+
+
+
+
+
+
+public function addNewItem(array $ds = array())
+{
+	if(!empty($ds))
+	{
+		$fields = "";
+		$values = "";
+		$i = 1;
+		foreach($ds as $field => $value)
+		{
+			$fields .= $i === 1 ? $field : ", ".$field;
+			$values .= $i === 1 ? "'".$value."'" : ", '".$value."'";
+			$i++;
+		}
+
+		$qr = "INSERT INTO tbl_receive_product_detail (". $fields. ") VALUES (". $values .")";
+		return dbQuery($qr);
+	}
+
+	return FALSE;
+}
+
+
+
+
+public function updateItem(array $ds = array())
+{
+	if(!empty($ds))
+	{
+		$qr  = "UPDATE tbl_receive_product_detail SET ";
+		$qr .= "qty = ".$ds['qty']." ";
+		$qr .= ", id_warehouse = ".$ds['id_warehouse']." ";
+		$qr .= ", id_zone = ".$ds['id_zone']." ";
+		$qr .= ", id_employee = ".$ds['id_employee']." ";
+		$qr .= "WHERE id_receive_product = ".$ds['id_receive_product']." ";
+		$qr .= "AND id_product_attribute = ".$ds['id_product_attribute']." ";
+		$qr .= "AND status = 0 ";
+
+		return dbQuery($qr);
+	}
+
+	return FALSE;
+}
+
+
+
+
+
+public function isExists($id_receive_product, $id_pa)
+{
+	$qr  = "SELECT id_receive_product_detail FROM tbl_receive_product_detail ";
+	$qr .= "WHERE id_receive_product = ".$id_receive_product." ";
+	$qr .= "AND id_product_attribute = ".$id_pa." ";
+	$qr .= "AND status = 0";
+
+	$rs = dbQuery($qr);
+
+	if(dbNumRows($rs) > 0)
+	{
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+
+
+
 
 public function add_item(array $data)
 {
@@ -89,7 +218,7 @@ public function add_item(array $data)
 	{
 		$qs = dbQuery("SELECT qty FROM tbl_receive_product_detail WHERE id_receive_product = ".$data['id_receive_product']." AND id_product_attribute = ".$data['id_product_attribute']." AND id_zone = ".$data['id_zone']." AND status = 0");
 		if(dbNumRows($qs) == 1 )
-		{ 
+		{
 			$qr = dbQuery("UPDATE tbl_receive_product_detail SET qty = qty + ".$data['qty']." WHERE id_receive_product = ".$data['id_receive_product']." AND id_product_attribute = ".$data['id_product_attribute']." AND id_zone = ".$data['id_zone']." AND status = 0");
 		}else{
 			$qr = dbQuery("INSERT INTO tbl_receive_product_detail (id_receive_product, id_product, id_product_attribute, qty, id_warehouse, id_zone, id_employee, date_add) VALUES (".$data['id_receive_product'].", ".$data['id_product'].", ".$data['id_product_attribute'].", ".$data['qty'].", ".$data['id_warehouse'].", ".$data['id_zone'].", ".$data['id_employee'].", '".$data['date_add']."')");
@@ -100,8 +229,13 @@ public function add_item(array $data)
 		return "xx";
 	}else{
 		return "aa";
-	}	
+	}
 }
+
+
+
+
+
 
 public function delete_doc($id)
 {
@@ -110,28 +244,37 @@ public function delete_doc($id)
 	{
 		while($rs = dbFetchArray($qs) )
 		{
-			$this->delete_item($rs['id_receive_product_detail']);	
+			$this->delete_item($rs['id_receive_product_detail']);
 		}
 	}
 	return dbQuery("DELETE FROM tbl_receive_product WHERE id_receive_product = ".$id);
 }
+
+
+
+
+
 
 public function delete_item($id)
 {
 	$rs = $this->isSaved($id);
 	if($rs)
 	{
-		$rd = $this->roll_back_action($id);	
+		$rd = $this->roll_back_action($id);
 		if($rd)
 		{
-			return dbQuery("DELETE FROM tbl_receive_product_detail WHERE id_receive_product_detail = ".$id);	
+			return dbQuery("DELETE FROM tbl_receive_product_detail WHERE id_receive_product_detail = ".$id);
 		}else{
 			return false;
 		}
 	}else{
-		return dbQuery("DELETE FROM tbl_receive_product_detail WHERE id_receive_product_detail = ".$id);	
+		return dbQuery("DELETE FROM tbl_receive_product_detail WHERE id_receive_product_detail = ".$id);
 	}
 }
+
+
+
+
 
 ///// Check if item is saved return id_product_attribute, id_zone and qty in array  else return false ///
 public function isSaved($id)
@@ -140,28 +283,40 @@ public function isSaved($id)
 	return dbNumRows($qs);
 }
 
+
+
+
+
 public function roll_back_action($id)
 {
 	$rs = $this->get_item($id);
+
 	if($rs)
 	{
 		if(!isset($this->reference) )
 		{
-			$this->get_data($rs['id_receive_product']);	
+			$this->get_data($rs['id_receive_product']);
 		}
+
 		$rd = $this->delete_movement($this->reference, $rs['id_product_attribute'], $rs['qty'], $rs['id_zone']);
+
 		if($rd)
 		{
 			$rx = update_stock_zone($rs['qty']*-1, $rs['id_zone'], $rs['id_product_attribute']);
 			if($rx)
 			{
-				return $this->receive_item($this->id_po, $rs['id_product_attribute'], $rs['qty']*-1);	
+				return $this->receive_item($this->id_po, $rs['id_product_attribute'], $rs['qty']*-1);
 			}
+
 		}else{
 			return false;
 		}
-	}		
+	}
 }
+
+
+
+
 
 public function get_items($id)
 {
@@ -176,6 +331,10 @@ public function get_items($id)
 	return $qs;
 }
 
+
+
+
+
 public function get_item($id)
 {
 	$qs = dbQuery("SELECT * FROM tbl_receive_product_detail WHERE id_receive_product_detail = ".$id);
@@ -187,15 +346,25 @@ public function get_item($id)
 	}
 }
 
+
+
+
 public function get_saved_items($id)
 {
 	return dbQuery("SELECT * FROM tbl_receive_product_detail WHERE id_receive_product = ".$id." AND status = 1");
 }
 
+
+
+
+
 public function get_not_save_items($id)
 {
-	return dbQuery("SELECT * FROM tbl_receive_product_detail WHERE id_receive_product = ".$id." AND status = 0");	
+	return dbQuery("SELECT * FROM tbl_receive_product_detail WHERE id_receive_product = ".$id." AND status = 0");
 }
+
+
+
 
 public function add(array $data)
 {
@@ -203,45 +372,62 @@ public function add(array $data)
 	return dbInsertId();
 }
 
-public function update($id, array $data)
-{
-	return dbQuery("UPDATE tbl_receive_product SET invoice = '".$data['invoice']."', po_reference = '".$data['po_reference']."', id_po = ".$data['id_po'].", id_employee = ".$data['id_employee'].", date_add = '".$data['date_add']."', remark = '".$data['remark']."' WHERE id_receive_product = ".$id);
-}
+
+
+
 
 public function change_status($id, $status)
 {
-	return dbQuery("UPDATE tbl_receive_product SET status = ".$status." WHERE id_receive_product = ".$id);	
+	return dbQuery("UPDATE tbl_receive_product SET status = ".$status." WHERE id_receive_product = ".$id);
 }
+
+
+
 
 public function change_item_status($id, $status)
 {
-	return dbQuery("UPDATE tbl_receive_product_detail SET status = ".$status." WHERE id_receive_product_detail = ".$id);	
+	return dbQuery("UPDATE tbl_receive_product_detail SET status = ".$status." WHERE id_receive_product_detail = ".$id);
 }
+
+
+
+
 
 public function total_qty($id)
 {
 	$qty = 0;
 	$qs = dbQuery("SELECT SUM(qty) AS qty FROM tbl_receive_product_detail WHERE status = 1 AND id_receive_product = ".$id);
 	if(dbNumRows($qs) == 1 )
-	{ 
+	{
 		list($qty)	= dbFetchArray($qs);
 	}
 	return $qty;
 }
 
+
+
+
 public function total_amount($id)
 {
 	$sc = 0;
-	$qs = dbQuery("SELECT tbl_receive_product_detail.qty, tbl_product_attribute.cost FROM tbl_receive_product_detail JOIN tbl_product_attribute ON tbl_receive_product_detail.id_product_attribute = tbl_product_attribute.id_product_attribute WHERE tbl_receive_product_detail.status = 1 AND id_receive_product = ".$id);
+	$qr  = "SELECT rd.qty, pd.cost FROM tbl_receive_product_detail AS rd ";
+	$qr .= "JOIN tbl_product_attribute AS pd ON rd.id_product_attribute = pd.id_product_attribute ";
+	$qr .= "WHERE rd.status = 1 ";
+	$qr .= "AND rd.id_receive_product = ".$id;
+
+	$qs = dbQuery($qr);
+
 	if( dbNumRows($qs) > 0 )
 	{
 		while( $rs = dbFetchObject($qs) )
 		{
-			$sc += ($rs->qty * $rs->cost);	
+			$sc += ($rs->qty * $rs->cost);
 		}
 	}
 	return $sc;
 }
+
+
 
 
 public function insert_movement($move, $reason, $id_product_attribute, $id_warehouse, $qty, $reference, $date_upd, $id_zone = 0 )
@@ -256,6 +442,9 @@ public function insert_movement($move, $reason, $id_product_attribute, $id_wareh
 	}
 }
 
+
+
+
 function delete_movement($reference, $id_product_attribute, $qty, $id_zone)
 {
 	$rs = 0;
@@ -268,6 +457,9 @@ function delete_movement($reference, $id_product_attribute, $qty, $id_zone)
 	return $rs;
 }
 
+
+
+
 public function get_po_item_qty($id_po, $id_product_attribute)
 {
 	$qty = 0;
@@ -279,6 +471,9 @@ public function get_po_item_qty($id_po, $id_product_attribute)
 	return $qty;
 }
 
+
+
+
 public function get_po_received_qty($id_po, $id_product_attribute)
 {
 	$qty = 0;
@@ -289,6 +484,10 @@ public function get_po_received_qty($id_po, $id_product_attribute)
 	}
 	return $qty;
 }
+
+
+
+
 
 public function get_new_reference($date = "")
 {
@@ -304,22 +503,28 @@ public function get_new_reference($date = "")
 		$ra = explode('-', $str, 2);
 		$num = $ra[1];
 		$run_num = $num + 1;
-		$reference = $prefix."-".$run_num;		
+		$reference = $prefix."-".$run_num;
 	}else{
 		$reference = $prefix."-".$year.$month."00001";
 	}
-	return $reference;		
+	return $reference;
 }
+
+
 
 
 public function receive_item($id_po, $id_product_attribute, $qty)
 {
-	return dbQuery("UPDATE tbl_po_detail SET received = received + ".$qty." WHERE id_po = ".$id_po." AND id_product_attribute = ".$id_product_attribute);	
+	return dbQuery("UPDATE tbl_po_detail SET received = received + ".$qty." WHERE id_po = ".$id_po." AND id_product_attribute = ".$id_product_attribute);
 }
+
+
+
+
 
 public function valid_qty_with_po($id_po, $id_product_attribute)
 {
-	$qs = dbQuery("SELECT id_po_detail FROM tbl_po_detail WHERE id_po = ".$id_po." AND id_product_attribute = ".$id_product_attribute." AND (received > qty OR received = qty) AND valid = 0");	
+	$qs = dbQuery("SELECT id_po_detail FROM tbl_po_detail WHERE id_po = ".$id_po." AND id_product_attribute = ".$id_product_attribute." AND (received > qty OR received = qty) AND valid = 0");
 	if(dbNumRows($qs) == 1 )
 	{
 		list($id) = dbFetchArray($qs);
@@ -329,19 +534,30 @@ public function valid_qty_with_po($id_po, $id_product_attribute)
 	}
 }
 
+
+
+
+
 public function change_valid_po_detail($id_po_detail, $i = 1)
 {
-	return dbQuery("UPDATE tbl_po_detail SET valid = ".$i." WHERE id_po_detail = ".$id_po_detail );	
+	return dbQuery("UPDATE tbl_po_detail SET valid = ".$i." WHERE id_po_detail = ".$id_po_detail );
 }
+
+
+
+
 
 public function valid_po($id_po)
 {
 	$qs = dbQuery("SELECT id_po_detail FROM tbl_po_detail WHERE id_po = ".$id_po." AND (received < qty)");
 	if(dbNumRows($qs) == 0 )
 	{
-		dbQuery("UPDATE tbl_po SET valid = 1 WHERE id_po = ".$id_po);	
+		dbQuery("UPDATE tbl_po SET valid = 1 WHERE id_po = ".$id_po);
 	}
 }
+
+
+
 
 }/// end class
 ?>

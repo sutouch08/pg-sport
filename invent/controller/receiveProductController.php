@@ -3,6 +3,227 @@ require "../../library/config.php";
 require "../../library/functions.php";
 require "../function/tools.php";
 
+/*********************   New Code ***********************/
+if(isset($_GET['updateHeader']))
+{
+	$id = $_POST['id_receive_product'];
+	$invoice = $_POST['invoice'];
+	$remark = $_POST['remark'];
+	$sc = TRUE;
+
+	$arr = array(
+		'invoice' => $invoice,
+		'remark' => $remark
+	);
+
+	$cs = new receive_product();
+	if($cs->update($id, $arr) !== TRUE)
+	{
+		$sc = FALSE;
+		$message = 'Update Not successfull';
+	}
+
+	echo $sc === TRUE ? 'success' : $message;
+}
+
+
+
+
+
+if(isset($_GET['receiveItems']) && isset($_POST['id_receive_product']))
+{
+	$id_rp = $_POST['id_receive_product'];
+	$id_po = $_POST['id_po'];
+	$id_zone = $_POST['id_zone'];
+	$details = json_decode($_POST['detail']);
+	$id_warehouse = get_warehouse_by_zone($id_zone);
+	$id_emp = getCookie('user_id');
+	$date = date('Y-m-d');
+	$sc = TRUE;
+	$message = '';
+
+	if(!empty($details))
+	{
+		$rd = new receive_product();
+
+		startTransection();
+
+		foreach($details as $item)
+		{
+			if($sc === FALSE)
+			{
+				break;
+			}
+
+			$data = array(
+				'id_receive_product' => $id_rp,
+				'id_product' => $item->id_product,
+				'id_product_attribute' => $item->id_product_attribute,
+				'qty' => $item->qty,
+				'id_warehouse' => $id_warehouse,
+				'id_zone' => $id_zone,
+				'id_employee' => $id_emp,
+				'date_add' => $date
+			);
+
+
+			if($rd->isExists($id_rp, $item->id_product_attribute) === TRUE)
+			{
+				if($rd->updateItem($data) === FALSE)
+				{
+					$sc = FALSE;
+					$message = 'ปรับปรุงข้อมูลไม่สำเร็จ';
+				}
+			}
+			else
+			{
+				if($rd->addNewItem($data) === FALSE)
+				{
+					$sc = FALSE;
+					$message = 'เพิ่มข้อมูลไม่สำเร็จ';
+				}
+			}
+
+		} //--- end foreach
+
+		if($sc === TRUE)
+		{
+			commitTransection();
+		}
+		else
+		{
+			dbRollback();
+		}
+	}
+	else
+	{
+		$sc = FALSE;
+		$message = 'ไม่พบข้อมูลรับเข้ากรุณาตรวจสอบรายการ';
+	}
+
+	echo $sc === TRUE ? 'success' : $message;
+
+}
+
+
+if(isset($_GET['receiveItem']) && isset($_POST['id_receive_product']))
+{
+	$id_rp = $_POST['id_receive_product'];
+	$id_po = $_POST['id_po'];
+	$id_zone = $_POST['id_zone'];
+	$id_pd = $_POST['id_product'];
+	$id_pa = $_POST['id_product_attribute'];
+	$qty   = $_POST['qty'];
+
+	$rd = new receive_product();
+
+	$data = array(
+		'id_receive_product' => $id_rp,
+		'id_product' => $id_pd,
+		'id_product_attribute' => $id_pa,
+		'qty' => $qty,
+		'id_warehouse' => get_warehouse_by_zone($id_zone),
+		'id_zone' => $id_zone,
+		'id_employee' => getCookie('user_id'),
+		'date_add' => date('Y-m-d')
+	);
+
+	if($rd->isExists($id_rp, $id_pa) === TRUE)
+	{
+		$rs = $rd->updateItem($data);
+	}
+	else
+	{
+		$rs = $rd->addNewItem($data);
+	}
+
+	echo $rs === TRUE ? 'success' : 'รับเข้าโซนไม่สำเร็จ';
+
+}
+
+
+
+
+if( isset( $_GET['cancleReceiveItem']) && isset($_POST['id_receive_product']))
+{
+	$id_rp = $_POST['id_receive_product'];
+	$id_pa = $_POST['id_product_attribute'];
+
+	$qr  = "DELETE FROM tbl_receive_product_detail ";
+	$qr .= "WHERE id_receive_product = ".$id_rp." " ;
+	$qr .= "AND id_product_attribute = ".$id_pa." ";
+	$qr .= "AND status = 0 ";
+
+	$qs = dbQuery($qr);
+
+	echo dbAffectedRows();
+}
+
+
+
+
+if( isset($_GET['unSaveRecieved']) && isset($_POST['id_receive_product']))
+{
+	$sc = TRUE;
+	$message = '';
+	$id = $_POST['id_receive_product'];
+	$rd = new receive_product();
+	$qs = $rd->getSavedDetails($id);
+
+	if(dbNumRows($qs) > 0)
+	{
+		startTransection();
+		while($rs = dbFetchObject($qs))
+		{
+			if($sc === FALSE)
+			{
+				break;
+			}
+
+			if($rd->roll_back_action($rs->id_receive_product_detail) === FALSE)
+			{
+				$sc = FALSE;
+				$message = 'ย้อนรายการไม่สำเร็จ';
+			}
+
+			if($rd->change_item_status($rs->id_receive_product_detail, 0) === FALSE)
+			{
+				$sc = FALSE;
+				$message = 'เปลี่ยนสถานะรายการไม่สำเร็จ';
+			}
+		}
+
+		if($sc === TRUE)
+		{
+			if($rd->change_status($rd->id_receive_product, 0) === FALSE)
+			{
+				$sc = FALSE;
+				$message = 'เปลี่ยนสถานะเอกสารไม่สำเร็จ';
+			}
+		}
+
+		if($sc === TRUE)
+		{
+			commitTransection();
+		}
+		else
+		{
+			dbRollback();
+		}
+
+		endTransection();
+	}
+
+	echo $sc === TRUE ? 'success' : $message;
+}
+
+
+
+
+
+/****************** End New code  *********************/
+
+
 
 if( isset( $_GET['check_approve'] ) && isset( $_POST['password'] ) )
 {
@@ -51,9 +272,11 @@ if( isset( $_GET['delete_doc'] ) && isset( $_GET['id_receive_product'] ) )
 	{
 		echo "success";
 	}else{
-		echo "fail";
+		echo "ลบเอกสารไม่สำเร็จ";
 	}
 }
+
+
 
 
 if( isset( $_GET['delete_item'] ) && isset( $_POST['id_receive_product_detail'] ) )
@@ -63,7 +286,7 @@ if( isset( $_GET['delete_item'] ) && isset( $_POST['id_receive_product_detail'] 
 	if($rs)
 	{
 		echo "success";
-	}else{ 
+	}else{
 		echo "fali";
 	}
 }
@@ -88,14 +311,17 @@ if( isset( $_GET['sum_item'] ) && isset( $_POST['id_receive_product'] ) )
 						"qty"					=> $rs['qty'],
 						"status"				=> isActived($rs['status'])
 						);
-			array_push($data, $arr);	
-			$n++;					
+			array_push($data, $arr);
+			$n++;
 		}
 		echo json_encode($data);
 	}else{
 		echo "fail";
 	}
 }
+
+
+
 
 
 if( isset( $_GET['add_item'] ) && isset( $_POST['id_receive_product'] ) )
@@ -143,7 +369,7 @@ if( isset( $_GET['add_item'] ) && isset( $_POST['id_receive_product'] ) )
 	}
 	else
 	{
-		echo "barcode_fail";	
+		echo "barcode_fail";
 	}
 }
 
@@ -175,20 +401,23 @@ if( isset( $_GET['add_new']) && isset( $_POST['id_po'] ) )
 	$data	= array(
 				"reference"			=> $rd->get_new_reference(dbDate($_POST['date_add'])),
 				"invoice"				=> $_POST['invoice'],
-				"po_reference"		=> $_POST['po_reference'],
-				"id_po"				=> $_POST['id_po'],
-				"id_employee"		=> $_POST['id_employee'],
+				"po_reference"	=> $_POST['po_reference'],
+				"id_po"				  => $_POST['id_po'],
+				"id_employee"		=> getCookie('user_id'),
 				"date_add"			=> dbDate($_POST['date_add']),
 				"remark"				=> $_POST['remark']
 				);
+
 	$rs	= $rd->add($data);
 	if($rs)
 	{
 		echo $rs;
 	}else{
-		echo "fail";
+		echo "เพิ่มเอกสารไม่สำเร็จ";
 	}
 }
+
+
 
 if( isset($_GET['get_zone'] ) && isset( $_POST['barcode'] ) )
 {
@@ -197,7 +426,7 @@ if( isset($_GET['get_zone'] ) && isset( $_POST['barcode'] ) )
 	if(dbNumRows($qs) == 1 )
 	{
 		list($id, $name) = dbFetchArray($qs);
-		echo $id." : ".$name;	
+		echo $id." : ".$name;
 	}else{
 		echo "fail";
 	}
@@ -211,7 +440,14 @@ if( isset( $_GET['print'] ) && isset( $_GET['id_receive_product'] ) )
 	$print = new printer();
 	echo $print->doc_header();
 	$print->add_title("เอกสารรับสินค้าเข้าตามใบสั่งซื้อ");
-	$header	= array("เลขที่เอกสาร"=>$ro->reference, "เลขที่ใบสั่งซื้อ"=>$ro->po_reference, "ผู้ทำรายการ"=>employee_name($ro->id_employee),"เลขที่ใบส่งของ"=>$ro->invoice, "Supplier"=> supplier_name($po->id_supplier), "วันที่"=>thaiDate($ro->date_add));
+	$header	= array(
+								"เลขที่เอกสาร"=>$ro->reference,
+								"เลขที่ใบสั่งซื้อ"=>$ro->po_reference,
+								"ผู้ทำรายการ"=>employee_name($ro->id_employee),
+								"เลขที่ใบส่งของ"=>$ro->invoice,
+								"Supplier"=> supplier_name($po->id_supplier),
+								"วันที่"=>thaiDate($ro->date_add)
+							);
 	$print->add_header($header);
 	$detail = $ro->get_saved_items($id);
 	$total_row = dbNumRows($detail);
@@ -229,7 +465,7 @@ if( isset( $_GET['print'] ) && isset( $_GET['id_receive_product'] ) )
 						array("โซน", "width:20%; text-align:center; border-left: solid 1px #ccc; border-top:0px; border-top-right-radius:10px")
 						);
 	$print->add_subheader($thead);
-	
+
 	//***************************** กำหนด css ของ td *****************************//
 	$pattern = array(
 							"text-align: center; border-top:0px;",
@@ -237,16 +473,16 @@ if( isset( $_GET['print'] ) && isset( $_GET['id_receive_product'] ) )
 							"border-left: solid 1px #ccc; border-top:0px;",
 							"border-left: solid 1px #ccc; border-top:0px; text-align:center;",
 							"border-left: solid 1px #ccc; border-top:0px; text-align:center"
-							);					
-	$print->set_pattern($pattern);	
-	
+							);
+	$print->set_pattern($pattern);
+
 	//*******************************  กำหนดช่องเซ็นของ footer *******************************//
-	$footer	= array( 
-						array("ผู้ทำรายการ", "","วันที่............................."), 
+	$footer	= array(
+						array("ผู้ทำรายการ", "","วันที่............................."),
 						array("ผู้ตรวจสอบ", "","วันที่............................."),
 						array("ผู้อนุมัติ", "","วันที่.............................")
-						);						
-	$print->set_footer($footer);		
+						);
+	$print->set_footer($footer);
 	$n = 1;
 	while($total_page > 0 )
 	{
@@ -256,16 +492,16 @@ if( isset( $_GET['print'] ) && isset( $_GET['id_receive_product'] ) )
 				echo $print->table_start();
 				$i = 0;
 				$product = new product();
-				while($i<$row) : 
+				while($i<$row) :
 					$rs = dbFetchArray($detail);
-					if(count($rs) != 0) :
+					if(!empty($rs)) :
 						$data = array( $n, get_product_reference($rs['id_product_attribute']), get_product_name($rs['id_product']), $rs['qty'], get_zone($rs['id_zone']) );
 						$total_qty += $rs['qty'];
 					else :
 						$data = array("", "", "", "","");
 					endif;
 					echo $print->print_row($data);
-					$n++; $i++;  	
+					$n++; $i++;
 				endwhile;
 				echo $print->table_end();
 				if($print->current_page == $print->total_page){ $qty = number_format($total_qty); $remark = $ro->remark; }else{ $qty = ""; $remark = ""; }
@@ -276,7 +512,7 @@ if( isset( $_GET['print'] ) && isset( $_GET['id_receive_product'] ) )
 						array("<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-bottom:0px;'><strong>มูลค่ารวม</strong></td>
 						<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-right:0px; border-bottom:0px; border-bottom-right-radius:10px; text-align:right;'> - </td>")
 						);
-			echo $print->print_sub_total($sub_total);						
+			echo $print->print_sub_total($sub_total);
 			echo $print->content_end();
 			echo $print->footer;
 		echo $print->page_end();
@@ -300,8 +536,8 @@ if( isset( $_GET['get_received_product'] ) && isset( $_POST['id_received_product
 						"remark"			=> $re->remark
 						);
 	array_push($data, $arr);
-	
-	$no = 1; 
+
+	$no = 1;
 	$total_qty = 0;
 	$qs = $re->get_items($id);
 	while($rs = dbFetchArray($qs) )
@@ -315,23 +551,25 @@ if( isset( $_GET['get_received_product'] ) && isset( $_POST['id_received_product
 						"status"					=> isActived($rs['status'])
 						);
 		array_push($data, $arr);
-		$total_qty += $rs['qty'];		
-		$no++; 	
+		$total_qty += $rs['qty'];
+		$no++;
 	}
 	$arr = array("total_qty"	=> number_format($total_qty));
 	array_push($data, $arr);
-	
-	echo json_encode($data);		
+
+	echo json_encode($data);
 }
 
 
 if( isset( $_GET['clear_filter'] ) )
 {
-	setcookie("receive_from_date","",time()-3600,"/");	
-	setcookie("receive_to_date","",time()-3600,"/");	
-	setcookie("receive_filter","",time()-3600,"/");	
-	setcookie("receive_search_text","",time()-3600,"/");	
-	echo "success";
+	deleteCookie('sCode');
+	deleteCookie('sInvoice');
+	deleteCookie('sPo');
+	deleteCookie('sSup');
+	deleteCookie('fromDate');
+	deleteCookie('toDate');
+	echo "done";
 }
 
 ?>

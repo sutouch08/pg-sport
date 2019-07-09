@@ -1,4 +1,4 @@
-<?php 
+<?php
 class Product extends CI_Controller
 {
 	public $home;
@@ -6,21 +6,21 @@ class Product extends CI_Controller
 	public $title = "รายละเอียดสินค้า";
 	public $id_customer;
 	public $cart_value;
-	
+
 	public function __construct()
 	{
-		parent::__construct();		
+		parent::__construct();
 		$this->load->model("product_model");
 		$this->home = base_url()."shop/product";
-		$this->id_customer = getIdCustomer();	
-		$this->cart_value	= cartValue(getIdCart($this->id_customer)); 
-	}	
-	
+		$this->id_customer = getIdCustomer();
+		$this->cart_value	= cartValue(getIdCart($this->id_customer));
+	}
+
 	public function index()
 	{
-		
+
 	}
-	
+
 	public function addToCart($id_cus, $id_cart)
 	{
 		$this->load->model('cart_model');
@@ -40,7 +40,7 @@ class Product extends CI_Controller
 			{
 				if( $qty != '')
 				{
-					$rs = $this->cart_model->addToCart($id_c, $id_pa, $qty, NOW());	
+					$rs = $this->cart_model->addToCart($id_c, $id_pa, $qty, NOW());
 				}
 			}
 			echo 'success';
@@ -50,24 +50,24 @@ class Product extends CI_Controller
 			echo 'fail';
 		}
 	}
-	
+
 	public function orderGrid()
 	{
 		if( $this->input->post('id_pd') )
 		{
 			$id_pd 	= $this->input->post('id_pd');
-			// ต้องการรู้ว่า สินค้า มีกี่ Attr และ อะไรบ้าง ลำดับเป็นยังไง 
+			// ต้องการรู้ว่า สินค้า มีกี่ Attr และ อะไรบ้าง ลำดับเป็นยังไง
 			 // return ค่ากลับมาเป็น Array ('length' => 1-3, 'horizontal ' => เอาอะไรอยู่ด้านหัว , 'vertical' => เอาอะไรอยู่ด้านข้าง, 'tab' => อะไรอยู่ tab เสริม
-			$attrs 	= $this->product_model->getAttrs($id_pd); 
+			$attrs 	= $this->product_model->getAttrs($id_pd);
 			$count 	= $attrs['length'];
 			if( $count == 1 ){ $grid = $this->getOrderGridOneAttr($id_pd, $attrs); }
 			if( $count == 2 ){ $grid = $this->getOrderGridTwoAttr($id_pd, $attrs); }
 			if( $count == 3 ){ $grid = $this->getOrderGridThreeAttr($id_pd, $attrs); }
 			echo $grid;
-			
+
 		}
 	}
-	
+
 	public function orderGridWithFilter()
 	{
 		if( $this->input->post('filter')  )
@@ -76,10 +76,10 @@ class Product extends CI_Controller
 			$id_pd 	= $this->input->post('id_pd');
 			$c 		= $this->input->post('count');
 			if( $c == 1 )		// 1 Filter
-			{	
+			{
 				$horizontal 	= $filter->attr;
 				$vertical		= 'size';
-				$id_filter		= $filter->id;	
+				$id_filter		= $filter->id;
 				$grid = $this->getOrderGridWithOneFilter($id_pd, $id_filter, $horizontal, $vertical);
 			}
 			else if( $c == 2 )
@@ -90,11 +90,11 @@ class Product extends CI_Controller
 				$id_attribute	= $filter->attribute;
 				$grid = $this->getOrderGridWithTwoFilter($id_pd, $id_color, $id_attribute, $horizontal, $vertical);
 			}
-						
-			echo $grid;		
+
+			echo $grid;
 		}
 	}
-	
+
 	public function attrLabel($attr, $id)
 	{
 		$label = '';
@@ -114,7 +114,7 @@ class Product extends CI_Controller
 		}
 		return $label;
 	}
-	
+
 	public function createHeaderRow($id_pd, array $attrs)
 	{
 		$horizontal	= $attrs['horizontal'];
@@ -133,9 +133,9 @@ class Product extends CI_Controller
 			$ds .= '</tr>';
 		}
 		$data = array('width' => $width, 'header' => $ds);
-		return $data;		
+		return $data;
 	}
-	
+
 
 	public function createTabs($id_pd, $tab)
 	{
@@ -156,7 +156,7 @@ class Product extends CI_Controller
 		}
 		return $ds;
 	}
-	
+
 	public function getOrderGridWithOneFilter($id_pd, $id_filter, $horizontal = 'color', $vertical = 'size')
 	{
 		$width = 240;
@@ -178,7 +178,7 @@ class Product extends CI_Controller
 					$ds .= '<td align="center" style="vertical-align:middle;">';
 					if( $qty > 0 )
 					{
-						$ds .= '<input type="text" class="form-control input-sm input-qty" style="margin-bottom:0px;" id="qty_'.$rx->id_pa.'" name="qty['.$rx->id_pa.']" placeholder="'.$qty.' in stock" onkeyup="validQty($(this), '.$qty.')" />';	
+						$ds .= '<input type="number" class="form-control input-sm input-qty text-center" style="margin-bottom:0px;" id="qty_'.$rx->id_pa.'" name="qty['.$rx->id_pa.']" placeholder="'.$qty.' in stock" onkeyup="validQty($(this), '.$qty.')" />';
 					}
 					else
 					{
@@ -200,8 +200,8 @@ class Product extends CI_Controller
 		$data = $width.' || '.$ds;
 		return $data;
 	}
-	
-	
+
+
 	public function getOrderGridTwoAttr($id_pd, array $attrs)
 	{
 		$horizontal	= $attrs['horizontal'];
@@ -210,7 +210,7 @@ class Product extends CI_Controller
 		$width 		= $header['width'];
 		$ds 			= '<table class="table table-bordered" style="width:100%;">';
 		$ds 			.= $header['header'];
-								
+
 		$rs = $this->product_model->getVertical($id_pd, $vertical);
 		if( $rs )
 		{
@@ -219,7 +219,7 @@ class Product extends CI_Controller
 				$ds .= '<tr><td align="center" style="vertical-align:middle; height: 53px;">'.$this->attrLabel($vertical, $rd->id).'</td>';
 				$ra = $this->product_model->getHorizontal($id_pd, $horizontal);
 				foreach( $ra as $rm )
-				{				
+				{
 					$rx = $this->product_model->get_id_product_attribute_by_attrs($id_pd, $horizontal, $rm->id, $vertical, $rd->id, 'attribute', 0);
 					if( $rx )
 					{
@@ -227,7 +227,7 @@ class Product extends CI_Controller
 						$ds .= '<td align="center" style="vertical-align:middle;">';
 						if( $qty > 0 )
 						{
-							$ds .= '<input type="text" class="form-control input-sm input-qty" style="margin-bottom:0px;" id="qty_'.$rx->id_pa.'" name="qty['.$rx->id_pa.']" placeholder="'.$qty.' in stock" onkeyup="validQty($(this), '.$qty.')" />';	
+							$ds .= '<input type="number" class="form-control input-sm input-qty text-center" style="margin-bottom:0px;" id="qty_'.$rx->id_pa.'" name="qty['.$rx->id_pa.']" placeholder="'.$qty.' in stock" onkeyup="validQty($(this), '.$qty.')" />';
 						}
 						else
 						{
@@ -245,13 +245,13 @@ class Product extends CI_Controller
 				$ds .= '</tr>';
 			}
 		}
-		
+
 		$ds .= '</table>';
 		$width = $width > 300 ? $width : 300;
 		$data = $width.' || '.$ds;
 		return $data;
 	}
-	
+
 	public function getOrderGridWithTwoFilter($id_pd, $id_color, $id_attribute, $horizontal = 'color', $vertical = 'size')
 	{
 		$id		= 'id_'.$horizontal;
@@ -272,7 +272,7 @@ class Product extends CI_Controller
 					$ds .= '<td align="center" style="vertical-align:middle;">';
 					if( $qty > 0 )
 					{
-						$ds .= '<input type="text" class="form-control input-sm input-qty" style="margin-bottom:0px;" id="qty_'.$rx->id_pa.'" name="qty['.$rx->id_pa.']" placeholder="'.$qty.' in stock" onkeyup="validQty($(this), '.$qty.')" />';	
+						$ds .= '<input type="number" class="form-control input-sm input-qty text-center" style="margin-bottom:0px;" id="qty_'.$rx->id_pa.'" name="qty['.$rx->id_pa.']" placeholder="'.$qty.' in stock" onkeyup="validQty($(this), '.$qty.')" />';
 					}
 					else
 					{
@@ -293,17 +293,17 @@ class Product extends CI_Controller
 		$data = '320 || '.$ds;
 		return $data;
 	}
-	
+
 	public function getOrderGridThreeAttr($id_pd, array $attrs)
 	{
 		$tab		= $attrs['tab'];
 		$ver		= $attrs['vertical'];
-		$hor		= $attrs['horizontal'];	
+		$hor		= $attrs['horizontal'];
 		$width	= 120;
 		$ds 		= '';
 		$ds		.= $this->createTabs($id_pd, $tab);
 		$qs 		= $this->product_model->getTabs($id_pd, $tab);
-		
+
 		if( $qs )
 		{
 			$ds .= '<!-- Tab content --><div class="tab-content">';
@@ -313,21 +313,21 @@ class Product extends CI_Controller
 			{
 				$ds .= '<div class="tab-pane '.$active.'" id="Tab'.$n.'">';
  				$grid = $this->getOrderGridTwoAttrByTabs($id_pd, $hor, $ver, $rs->id);
-				$ds .= $grid['table'];				
+				$ds .= $grid['table'];
 				$ds .= '</div>';
 				$n++;
 				$active = '';
 				$width = $width > $grid['width'] ? $width : $grid['width'];
 			}
-			
-			$ds .= '</div><!-- /.tab content -->';	
+
+			$ds .= '</div><!-- /.tab content -->';
 		}
-		
+
 		$width = $width > 300 ? $width : 300;
 		$data = $width.' || '.$ds;
-		return $data;		
+		return $data;
 	}
-	
+
 	public function getOrderGridOneAttr($id_pd, array $attrs)
 	{
 		$attr 	= $attrs['horizontal'];
@@ -339,12 +339,12 @@ class Product extends CI_Controller
 			foreach( $rs->result() as $rd )
 			{
 				$ds 	.= '<tr>';
-				$ds 	.= '<td align="center" style="width:50%; vertical-align:middle; height: 53px;">'.$this->attrLabel($attr, $rd->id).'</td>'; 
+				$ds 	.= '<td align="center" style="width:50%; vertical-align:middle; height: 53px;">'.$this->attrLabel($attr, $rd->id).'</td>';
 				$qty 	= apply_stock_filter($this->product_model->getAvailableQty($rd->id_pa));
 				$ds .= '<td align="center" style="vertical-align:middle;">';
 				if( $qty > 0 )
 				{
-					$ds .= '<input type="text" class="form-control input-sm input-qty" style="margin-bottom:0px;" id="qty_'.$rd->id_pa.'" name="qty['.$rd->id_pa.']" placeholder="'.$qty.' in stock" onkeyup="validQty($(this), '.$qty.')" />';	
+					$ds .= '<input type="number" class="form-control input-sm input-qty text-center" style="margin-bottom:0px;" id="qty_'.$rd->id_pa.'" name="qty['.$rd->id_pa.']" placeholder="'.$qty.' in stock" onkeyup="validQty($(this), '.$qty.')" />';
 				}
 				else
 				{
@@ -354,12 +354,12 @@ class Product extends CI_Controller
 				$ds .= '</tr>';
 			}
 		}
-		
+
 		$ds	.= '</table>';
 		$data = '300 || '.$ds;
-		return $data;	
+		return $data;
 	}
-	
+
 	public function getOrderGridTwoAttrByTabs($id_pd, $horizontal, $vertical, $id_tab)
 	{
 		$attrs			= array('horizontal' => $horizontal, 'vertical' => $vertical);
@@ -367,7 +367,7 @@ class Product extends CI_Controller
 		$width 		= $header['width'];
 		$ds 			= '<table class="table table-bordered" style="width:100%;">';
 		$ds 			.= $header['header'];
-								
+
 		$rs = $this->product_model->getVertical($id_pd, $vertical);
 		if( $rs )
 		{
@@ -376,7 +376,7 @@ class Product extends CI_Controller
 				$ds .= '<tr><td align="center" style="vertical-align:middle; height: 53px;">'.$this->attrLabel($vertical, $rd->id).'</td>';
 				$ra = $this->product_model->getHorizontal($id_pd, $horizontal);
 				foreach( $ra as $rm )
-				{				
+				{
 					$rx = $this->product_model->get_id_product_attribute_by_attrs($id_pd, $horizontal, $rm->id, $vertical, $rd->id, 'attribute', $id_tab);
 					if( $rx )
 					{
@@ -384,7 +384,7 @@ class Product extends CI_Controller
 						$ds .= '<td align="center" style="vertical-align:middle;">';
 						if( $qty > 0 )
 						{
-							$ds .= '<input type="text" class="form-control input-sm input-qty" style="margin-bottom:0px;" id="qty_'.$rx->id_pa.'" name="qty['.$rx->id_pa.']" placeholder="'.$qty.' in stock" onkeyup="validQty($(this), '.$qty.')" />';	
+							$ds .= '<input type="number" class="form-control input-sm input-qty text-center" style="margin-bottom:0px;" id="qty_'.$rx->id_pa.'" name="qty['.$rx->id_pa.']" placeholder="'.$qty.' in stock" onkeyup="validQty($(this), '.$qty.')" />';
 						}
 						else
 						{
@@ -402,7 +402,7 @@ class Product extends CI_Controller
 				$ds .= '</tr>';
 			}
 		}
-		
+
 		$ds .= '</table>';
 		$data = array('width' => $width, 'table' => $ds);
 		return $data;

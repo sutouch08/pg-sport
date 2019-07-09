@@ -1,4 +1,4 @@
-<?php 
+<?php
 class po
 {
 
@@ -52,8 +52,8 @@ public function cancle_close($id_po)
 	else
 	{
 		dbRollback();
-		return false;	
-	}		
+		return false;
+	}
 }
 
 public function close_po($id_po)
@@ -69,13 +69,13 @@ public function close_po($id_po)
 	else
 	{
 		dbRollback();
-		return false;	
+		return false;
 	}
 }
 
 public function delete_po($id_po)
 {
-	return dbQuery("DELETE FROM tbl_po WHERE id_po = ".$id_po);	
+	return dbQuery("DELETE FROM tbl_po WHERE id_po = ".$id_po);
 }
 
 public function drop_all_detail($id_po)
@@ -85,7 +85,7 @@ public function drop_all_detail($id_po)
 
 public function drop_detail($id_po_detail)
 {
-	return dbQuery("DELETE FROM tbl_po_detail WHERE id_po_detail = ".$id_po_detail);	
+	return dbQuery("DELETE FROM tbl_po_detail WHERE id_po_detail = ".$id_po_detail);
 }
 
 public function drop_different($id_po, array $detail)
@@ -101,7 +101,7 @@ public function drop_different($id_po, array $detail)
 		$i++;
 	}
 	$qs = dbQuery("SELECT * FROM tbl_po_detail WHERE id_po = ".$id_po." AND id_product_attribute NOT IN(".$in.")");
-	
+
 	if(dbNumRows($qs) > 0 )
 	{
 		while($rs = dbFetchArray($qs))
@@ -131,7 +131,21 @@ public function get_detail($id_po)
 	$qs .= "LEFT JOIN tbl_size ON tbl_size.id_size = tbl_product_attribute.id_size LEFT JOIN tbl_attribute ON tbl_product_attribute.id_attribute = tbl_attribute.id_attribute ";
 	$qs .= "WHERE id_po = ".$id_po." ORDER BY tbl_po_detail.id_product ASC, tbl_product_attribute.id_color ASC, tbl_size.position ASC, tbl_attribute.position ASC";
 	$qs = dbQuery($qs);
-	return $qs;	
+	return $qs;
+}
+
+
+public function getPoBacklog($id_po)
+{
+	$qr  = "SELECT po.id_po_detail, po.id_product, po.id_product_attribute, pd.reference, pr.product_name, po.qty, po.received ";
+	$qr .= "FROM tbl_po_detail AS po ";
+	$qr .= "LEFT JOIN tbl_product_attribute AS pd ON po.id_product_attribute = pd.id_product_attribute ";
+	$qr .= "LEFT JOIN tbl_product AS pr ON pd.id_product = pr.id_product ";
+	$qr .= "WHERE po.id_po = ".$id_po." ";
+	$qr .= "AND po.valid = 0";
+	//echo $qr;
+
+	return dbQuery($qr);
 }
 
 public function add_item(array $data)
@@ -144,7 +158,7 @@ public function add_item(array $data)
 		$qs = "UPDATE tbl_po_detail SET price = ".$data['price'].", qty = ".$data['qty'].", discount_percent = ".$data['discount_percent'].", discount_amount = ".$data['discount_amount'].", total_discount = ".$data['total_discount'].", total_amount = ".$data['total_amount'];
 		$qs .= " WHERE id_po_detail = ".$id_po_detail;
 		return  dbQuery($qs);
-		
+
 	}else{
 		$qs  = "INSERT INTO tbl_po_detail (id_po, id_product, id_product_attribute, price, qty, discount_percent, discount_amount, total_discount, total_amount) ";
 		$qs .= "VALUES (".$data['id_po'].", ".$data['id_product'].", ".$data['id_product_attribute'].", ".$data['price'].", ".$data['qty'].", ".$data['discount_percent'].", ".$data['discount_amount'].", ".$data['total_discount'].", ".$data['total_amount'].")";
@@ -160,7 +174,7 @@ public function add_item(array $data)
 
 public function get_items($id)
 {
-	return dbQuery("SELECT * FROM tbl_po_detail WHERE id_po = ".$id);	
+	return dbQuery("SELECT * FROM tbl_po_detail WHERE id_po = ".$id);
 }
 
 public function get_item($id)
@@ -174,10 +188,10 @@ public function add(array $data)
 	$sql .= "('".$data['reference']."', ".$data['id_supplier'].", ".$data['id_employee'].", '".$data['due_date']."', '".$data['date_add']."', '".$data['remark']."', ".$data['role'].")";
 	$qs = dbQuery($sql);
 	if( $qs )
-	{	
-		return dbInsertId(); 
-	}else{ 
-		return false; 
+	{
+		return dbInsertId();
+	}else{
+		return false;
 	}
 }
 
@@ -190,13 +204,13 @@ public function update($id, array $data)
 public function update_bill_discount($id, $discount)
 {
 	$qs = dbQuery("UPDATE tbl_po SET bill_discount = ".$discount." WHERE id_po = ".$id);
-	return $qs;	
+	return $qs;
 }
 
 public function update_status($id, $status)
 {
 	$qs = dbQuery("UPDATE tbl_po SET status = ".$status." WHERE id_po = ".$id);
-	return $qs;	
+	return $qs;
 }
 
 public function getDiscount($d_percent, $d_amount)
@@ -205,7 +219,7 @@ public function getDiscount($d_percent, $d_amount)
 	if($d_percent != 0)
 	{
 		$discount['value'] 	= $d_percent;
-		$discount['unit']		= "%";	
+		$discount['unit']		= "%";
 	}else if($d_amount != 0){
 		$discount['value']	= $d_amount;
 		$discount['unit']		= "THB";
@@ -220,7 +234,7 @@ public function total_qty($id)
 {
 	$qty = 0;
 	$qs = dbQuery("SELECT SUM(qty) AS qty FROM tbl_po_detail WHERE id_po = ".$id);
-	if( dbNumRows($qs) == 1 )	
+	if( dbNumRows($qs) == 1 )
 	{
 		list($qty)	= dbFetchArray($qs);
 	}
@@ -240,7 +254,7 @@ public function po_received_qty($id_po)
 
 public function receive_item($id_po, $id_product_attribute, $qty)
 {
-	return dbQuery("UPDATE tbl_po_detail SET received = received + ".$qty." WHERE id_po = ".$id_po." AND id_product_attribute = ".$id_product_attribute);	
+	return dbQuery("UPDATE tbl_po_detail SET received = received + ".$qty." WHERE id_po = ".$id_po." AND id_product_attribute = ".$id_product_attribute);
 }
 
 public function supplier_code($id)
@@ -251,7 +265,7 @@ public function supplier_code($id)
 	{
 		list($code) = dbFetchArray($qs);
 	}
-	return $code;		
+	return $code;
 }
 
 public function supplier_name($id)
@@ -275,5 +289,20 @@ public function get_id_po_by_reference($reference)
 	}
 	return $id_po;
 }
+
+
+public function getDetailByItem($id_po, $id_pa)
+{
+	$qr = "SELECT * FROM tbl_po_detail WHERE id_po = ".$id_po." AND id_product_attribute = ".$id_pa;
+	$qs = dbQuery($qr);
+	if(dbNumRows($qs) == 1)
+	{
+		return dbFetchObject($qs);
+	}
+
+	return FALSE;	
+}
+
+
 }/// end class
 ?>

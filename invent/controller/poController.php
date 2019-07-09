@@ -155,29 +155,42 @@ if( isset( $_GET['close_po'] ) && isset( $_GET['id_po'] ) )
 if( isset( $_GET['insert_item'] ) )
 {
 	$id_product	= $_POST['id_product'];
+	$product = new product();
+	$pdName = get_product_name($id_product);
 	$p_data		= $_POST['qty'];
 	$no			= $_GET['no'];
-	$price		= $_POST['cost'];
 	$discount	= $_POST['discount'];
 	$unit			= $_POST['unit'];
-	if($unit == "percent"){ $d_price = $price - ($price * ($discount*0.01)); }else{ $d_price = $price - $discount; }
+
 	$result		= array();
 	$po			= new po();
+
 	foreach($p_data as $id => $qty)
 	{
 		if($qty != "" )
 		{
+			$pd = $product->getDetail($id);
+
+			if($unit == "percent")
+			{
+				$d_price = $pd->cost - ($pd->cost * ($discount*0.01));
+			}
+			else
+			{
+				$d_price = $pd->cost - $discount;
+			}
+
 			$no++;
 			$arr = array(
-						"no"						=> $no,
-						"id"							=> $id,
-						"code"					=> get_product_reference($id),
-						"product_name"			=> get_product_name($id_product),
-						"price"					=> $price,
-						"qty"						=> $qty,
-						"discount"				=> $discount,
-						"unit"						=> unit_selected($unit),
-						"total_amount"			=> number_format($d_price * $qty,2)
+						"no"	=> $no,
+						"id"		=> $id,
+						"code"	=> $pd->reference,
+						"product_name"	=> $pdName,
+						"price"	=> $pd->cost,
+						"qty"	=> $qty,
+						"discount" => $discount,
+						"unit"	=> unit_selected($unit),
+						"total_amount"	=> number_format($d_price * $qty,2)
 						);
 			array_push($result, $arr);
 		}
@@ -388,8 +401,8 @@ if( isset( $_GET['print_po']) && isset( $_GET['id_po'] ) )
 	//**************  กำหนดหัวตาราง  ******************************//
 	$thead	= array(
 						array("ลำดับ", "width:5%; text-align:center; border-top:0px; border-top-left-radius:10px;"),
-						array("รหัส", "width:15%; text-align:center;border-left: solid 1px #ccc; border-top:0px;"),
-						array("สินค้า", "width:35%; text-align:center;border-left: solid 1px #ccc; border-top:0px;"),
+						array("รหัส", "width:20%; text-align:center;border-left: solid 1px #ccc; border-top:0px;"),
+						array("สินค้า", "width:30%; text-align:center;border-left: solid 1px #ccc; border-top:0px;"),
 						array("จำนวน", "width:10%; text-align:center; border-left: solid 1px #ccc; border-top:0px;"),
 						array("ราคา", "width:10%; text-align:center; border-left: solid 1px #ccc; border-top:0px;"),
 						array("ส่วนลด", "width:15%; text-align:center; border-left: solid 1px #ccc; border-top:0px;"),
@@ -428,7 +441,7 @@ if( isset( $_GET['print_po']) && isset( $_GET['id_po'] ) )
 				$product = new product();
 				while($i<$row) :
 					$rs = dbFetchArray($detail);
-					if(count($rs) != 0) :
+					if(!empty($rs)) :
 						$id_product 		= $product->getProductId($rs['id_product_attribute']);
 						$product_code 	= $product->product_reference($rs['id_product_attribute']);
 						$product_name 	= "<input type='text' style='border:0px; width:100%;' value='".$product->product_name($id_product)."' />";
@@ -558,7 +571,7 @@ if( isset( $_GET['print_barcode']) && isset( $_GET['id_po'] ) )
 				$product = new product();
 				while($i<$row) :
 					$rs = dbFetchArray($detail);
-					if(count($rs) != 0) :
+					if(!empty($rs)) :
 						$product->product_attribute_detail($rs['id_product_attribute']);
 						$id_product 		= $product->id_product; //$product->getProductId($rs['id_product_attribute']);
 						$product_code 	= $product->product_reference($rs['id_product_attribute']);

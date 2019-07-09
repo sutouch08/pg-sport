@@ -1,4 +1,4 @@
-<?php 
+<?php
 	$page_name = "ใบสั่งซื้อ/PO";
 	$id_tab = 46;
 	$id_profile = $_COOKIE['profile_id'];
@@ -10,7 +10,7 @@
 	$ps = checkAccess($id_profile, 50);
 	$close = $ps['add']+$ps['edit']+$ps['delete'];
 	accessDeny($view);
-	include "function/po_helper.php"; 
+	include "function/po_helper.php";
   	$btn_back = "<button type='button' class='btn btn-warning btn-sm' onclick='go_back()' ><i class='fa fa-arrow-left'></i>&nbsp; กลับ</button>";
 	$btn = "";
   	if( isset( $_GET['add'] ) && isset( $_GET['id_po'] ) )
@@ -26,28 +26,28 @@
 		if($close)
 		{
 			if($p->valid == 0 && $p->status != 0 ){ $btn .= "<button type='button' class='btn btn-danger btn-sm' id='btn_close_po' onclick='close_po()' ><i class='fa fa-lock'></i>&nbsp; ปิดใบสั่งซื้อ</button>"; }
-			if($p->valid == 1 ){ $btn .= "<button type='button' class='btn btn-primary btn-sm' id='btn_cancle_close' onclick='cancle_close_po()'><i class='fa fa-unlock'></i>&nbsp; ยกเลิกการปิดใบสั่งซื้อ</button>"; }			 
+			if($p->valid == 1 ){ $btn .= "<button type='button' class='btn btn-primary btn-sm' id='btn_cancle_close' onclick='cancle_close_po()'><i class='fa fa-unlock'></i>&nbsp; ยกเลิกการปิดใบสั่งซื้อ</button>"; }
 		}
 		if($edit){ $btn .= "<button type='button'class='btn btn-success btn-sm' id='btn_save_edit' onclick='save_edit()' ><i class='fa fa-save'></i>&nbsp; บันทึก</button>"; }
-		$btn .= "<button type='button' class='btn btn-info btn-sm' onclick='print_po()' ><i class='fa fa-print'></i>&nbsp; พิมพ์</button>"; 
+		$btn .= "<button type='button' class='btn btn-info btn-sm' onclick='print_po()' ><i class='fa fa-print'></i>&nbsp; พิมพ์</button>";
 	}else if( isset($_GET['view_detail']) ){
 		$btn .= $btn_back;
 		$p = new po($_GET['id_po']);
 		if($close)
 		{
 			if($p->valid == 0 && $p->status != 0 ){ $btn .= "<button type='button' class='btn btn-danger btn-sm' id='btn_close_po' onclick='close_po()' ><i class='fa fa-lock'></i>&nbsp; ปิดใบสั่งซื้อ</button>"; }
-			if($p->valid == 1 ){ $btn .= "<button type='button' class='btn btn-primary btn-sm' id='btn_cancle_close' onclick='cancle_close_po()'><i class='fa fa-unlock'></i>&nbsp; ยกเลิกการปิดใบสั่งซื้อ</button>"; }			 
+			if($p->valid == 1 ){ $btn .= "<button type='button' class='btn btn-primary btn-sm' id='btn_cancle_close' onclick='cancle_close_po()'><i class='fa fa-unlock'></i>&nbsp; ยกเลิกการปิดใบสั่งซื้อ</button>"; }
 		}
 		if($edit){ $btn .= "<button type='button' class='btn btn-primary btn-sm' id='btn_go_edit' onclick='go_edit()' ><i class='fa fa-pencil'></i>&nbsp; แก้ไข</button>"; }
 		if($add){ $btn .= "<button type='button' class='btn btn-success btn-sm' onclick='add()' ><i class='fa fa-plus'></i>&nbsp; เพิ่มใหม่</button>"; }
-		$btn .= "<button type='button' class='btn btn-info btn-sm' onclick='print_po()' ><i class='fa fa-print'></i>&nbsp; พิมพ์</button>"; 
-		$btn .= "<button type='button' class='btn btn-info btn-sm' onclick='print_barcode()' ><i class='fa fa-barcode'></i>&nbsp; พิมพ์</button>"; 
+		$btn .= "<button type='button' class='btn btn-info btn-sm' onclick='print_po()' ><i class='fa fa-print'></i>&nbsp; พิมพ์</button>";
+		$btn .= "<button type='button' class='btn btn-info btn-sm' onclick='print_barcode()' ><i class='fa fa-barcode'></i>&nbsp; พิมพ์</button>";
 	}else{
 		$btn .= '<button type="button" class="btn btn-sm btn-info" onclick="updateReceived()"><i class="fa fa-retweet"></i> &nbsp; คำนวนยอดรับสินค้าใหม่</button>';
 		if($add){ $btn .= "<button type='button' class='btn btn-success btn-sm' onclick='add()' ><i class='fa fa-plus'></i>&nbsp; เพิ่มใหม่</button>"; }
-		
+
 	}
-  
+
 	?>
  <style>
  	.input-xs{
@@ -57,7 +57,7 @@
 		line-height: 15px;
 		border-radius: 3px;
 	}
- </style>   
+ </style>
 <div class="container">
 <!-- page place holder -->
 <div class="row" style="height:30px;">
@@ -76,10 +76,11 @@ if( isset( $_GET['add'] ) ) :
 ?>
 <!-----------------------------------------------  Add  ----------------------------------->
     <?php if( !isset($_GET['id_po']) ) : ?>
+			<?php $newReference = get_max_po_reference(); ?>
 <div class="row">
 	<div class="col-sm-2">
     	<label>เลขที่เอกสาร</label>
-        <input type="text" class="form-control input-sm" id="reference" name="reference" placeholder="เลขที่ PO" style="text-align:center;" onblur="check_reference('')" />
+        <input type="text" class="form-control input-sm" id="reference" name="reference" placeholder="เลขที่ PO" style="text-align:center;" onblur="check_reference('')" value="<?php echo $newReference; ?>" />
     </div>
     <div class="col-sm-2">
     	<label>วันที่เอกสาร</label>
@@ -98,9 +99,9 @@ if( isset( $_GET['add'] ) ) :
     	<label>กำหนดรับสินค้า</label>
         <input type="text" name="due_date" id="due_date" class="form-control input-sm" style="text-align:center" placeholder="วันที่ต้องการใช้" />
     </div>
-    
+
     <div class="col-sm-12">&nbsp;</div>
-    
+
     <div class="col-sm-2">
         <select name="role" id="role" class="form-control input-sm">
         	<?php echo select_po_role(); ?>
@@ -113,7 +114,7 @@ if( isset( $_GET['add'] ) ) :
         <button type="button" class="btn btn-success btn-block" id="btn_add" onclick="add_new_po()"><i class="fa fa-plus"></i>&nbsp; เพิ่ม</button>
         <input type="hidden" id="is_duplicate" value="0"  />
     </div>
-</div>    
+</div>
     <?php else : ?>
     <?php 	$po = new po($_GET['id_po']); 	?>
 <div class="row">
@@ -139,9 +140,9 @@ if( isset( $_GET['add'] ) ) :
     	<label>กำหนดรับสินค้า</label>
         <input type="text" name="due_date" id="due_date" class="form-control input-sm" style="text-align:center" placeholder="วันที่ต้องการใช้" value="<?php echo thaiDate($po->due_date); ?>" disabled />
     </div>
-    
+
     <div class="col-sm-12">&nbsp;</div>
-    
+
     <div class="col-sm-2">
         <select name="role" id="role" class="form-control input-sm" disabled>
         	<?php echo select_po_role($po->role); ?>
@@ -154,7 +155,7 @@ if( isset( $_GET['add'] ) ) :
         <button type="button" class="btn btn-sm btn-warning btn-block" id="btn_edit" onclick="edit()" ><i class="fa fa-pencil"></i>&nbsp; แก้ไข</button>
         <button type="button" class="btn btn-sm btn-success btn-block" id="btn_update" style="display:none; margin-top:0px;" onclick="update()"><i class="fa fa-save"></i>&nbsp; บันทึก</button>
     </div>
-</div>    
+</div>
 
 <hr style='border-color:#CCC; margin-top: 10px; margin-bottom:10px;' />
 <div class="row">
@@ -226,7 +227,7 @@ if( isset( $_GET['add'] ) ) :
     <?php endif; ?>
 <!-----------------------------------------------  Add  ----------------------------------->
 <?php
-elseif( isset( $_GET['edit'] ) && isset( $_GET['id_po'] ) ) : 
+elseif( isset( $_GET['edit'] ) && isset( $_GET['id_po'] ) ) :
 ?>
 <!-----------------------------------------------  Edit  ----------------------------------->
 	<?php 	$id_po	= $_GET['id_po']; ?>
@@ -267,7 +268,7 @@ elseif( isset( $_GET['edit'] ) && isset( $_GET['id_po'] ) ) :
     	<label>กำหนดรับสินค้า</label>
         <input type="text" name="due_date" id="due_date" class="form-control input-sm" style="text-align:center" placeholder="วันที่ต้องการใช้" value="<?php echo thaiDate($po->due_date); ?>" disabled />
     </div>
-    
+
     <div class="col-sm-12">&nbsp;</div>
     <div class="col-sm-2">
         <select name="role" id="role" class="form-control input-sm" disabled>
@@ -282,7 +283,7 @@ elseif( isset( $_GET['edit'] ) && isset( $_GET['id_po'] ) ) :
         <button type="button" class="btn btn-sm btn-success btn-block" id="btn_update" style="display:none; margin-top:0px;" onclick="update()"><i class="fa fa-save"></i>&nbsp; บันทึก</button>
         <input type="hidden" id="is_duplicate" value="0"  />
     </div>
-</div>    
+</div>
 
 <hr style='border-color:#CCC; margin-top: 10px; margin-bottom:10px;' />
 <div class="row">
@@ -324,10 +325,10 @@ elseif( isset( $_GET['edit'] ) && isset( $_GET['id_po'] ) ) :
     <?php	$total_qty = 0; $total_discount = 0; $total_amount = 0; $total_price = 0; ?>
     <?php 	if(dbNumRows($qs) > 0 ) : ?>
     <?php	$n = 1; ?>
-    
+
     <?php	while($rs = dbFetchArray($qs) ) : ?>
-	<?php		$id 	= $rs['id_product_attribute']; ?>    	
-    <?php 		$dis	= $po->getDiscount($rs['discount_percent'], $rs['discount_amount']); ?>		
+	<?php		$id 	= $rs['id_product_attribute']; ?>
+    <?php 		$dis	= $po->getDiscount($rs['discount_percent'], $rs['discount_amount']); ?>
     			<tr id="row_<?php echo $id; ?>" style="font-size:12px;">
 				<td align="center" style="border-left:solid 1px #DDD;">
                 	<span class="no"><?php echo $n; ?></span>
@@ -354,11 +355,11 @@ elseif( isset( $_GET['edit'] ) && isset( $_GET['id_po'] ) ) :
                <?php endif;?>
                </td>
 			</tr>
-	<?php $n++; $total_qty += $rs['qty']; $total_discount += $rs['total_discount'];  $total_amount += $rs['total_amount']; $total_price += $rs['qty']*$rs['price']; ?>            
-    <?php	endwhile; ?>    
+	<?php $n++; $total_qty += $rs['qty']; $total_discount += $rs['total_discount'];  $total_amount += $rs['total_amount']; $total_price += $rs['qty']*$rs['price']; ?>
+    <?php	endwhile; ?>
     <?php	else : ?>
        			<tr id="bf"><td colspan="10" style="height:50px; border-left:solid 1px #DDD; border-right:solid 1px #DDD; border-top:0px;"><center><h4>-----  ไม่มีรายการ  -----</h4></center></td></tr>
-	<?php	endif; ?>                
+	<?php	endif; ?>
             </tbody>
         </table>
         <table class="table table-bordered" style="margin-bottom:50px;">
@@ -391,7 +392,7 @@ elseif( isset( $_GET['edit'] ) && isset( $_GET['id_po'] ) ) :
 <?php endif; ?>
 <!-----------------------------------------------  Edit  ----------------------------------->
 <?php
-elseif( isset( $_GET['view_detail'] ) && isset($_GET['id_po']) ) : 
+elseif( isset( $_GET['view_detail'] ) && isset($_GET['id_po']) ) :
 ?>
 <!-----------------------------------------------  View  ----------------------------------->
 		<?php 	$id_po	= $_GET['id_po']; ?>
@@ -423,8 +424,8 @@ elseif( isset( $_GET['view_detail'] ) && isset($_GET['id_po']) ) :
     <div class="col-sm-2">
     	<label>กำหนดรับสินค้า</label>
         <span class="form-control input-sm" style="border:0px; padding-left:0px;"><?php echo thaiDate($po->due_date); ?></span>
-    </div>    
-</div>    
+    </div>
+</div>
 
 <hr style='border-color:#CCC; margin-top: 10px; margin-bottom:10px;' />
 <div class="row">
@@ -432,6 +433,7 @@ elseif( isset( $_GET['view_detail'] ) && isset($_GET['id_po']) ) :
     	<table class="table table-bordered" style="margin-bottom:0px;">
         	<thead style="font-size:14px;">
             	<th style="width:5%; text-align:center">ลำดับ</th>
+								<th style="width:10%;">บาร์โค้ด</th>
                 <th style="width:15%;">รหัสสินค้า</th>
                 <th>รายละเอียด</th>
                 <th style="width:6%; text-align:right;">จำนวน</th>
@@ -447,12 +449,25 @@ elseif( isset( $_GET['view_detail'] ) && isset($_GET['id_po']) ) :
     <?php	$n = 1; ?>
     <?php	$total_qty = 0; $total_discount = 0; $total_amount = 0; $total_price = 0; ?>
     <?php	while($rs = dbFetchArray($qs) ) : ?>
-	<?php		$id 	= $rs['id_product_attribute']; ?>    	
-    <?php 		$dis	= $po->getDiscount($rs['discount_percent'], $rs['discount_amount']); ?>		
-    			<tr id="row_<?php echo $id; ?>" style="font-size:12px;">
+	<?php		$id 	= $rs['id_product_attribute']; ?>
+    <?php 		$dis	= $po->getDiscount($rs['discount_percent'], $rs['discount_amount']); ?>
+    		<tr id="row_<?php echo $id; ?>" style="font-size:12px;">
 				<td align="center" style="border-left:solid 1px #DDD;"><?php echo $n; ?></td>
-				<td style="border-left:solid 1px #DDD;"><span class="form-control input-sm" style="border:0px; height:20px; padding:0px;"><?php echo get_product_reference($id); ?></span></td>
-				<td style="border-left:solid 1px #DDD;"><span class="form-control input-sm" style="border:0px; height:20px;  padding:0px;"><?php echo get_product_name($rs['id_product']); ?></span></td>
+				<td style="border-left:solid 1px #DDD;">
+					<span class="form-control input-sm" style="border:0px; height:20px; padding:0px;">
+						<?php echo get_barcode($id); ?>
+					</span>
+				</td>
+				<td style="border-left:solid 1px #DDD;">
+					<span class="form-control input-sm" style="border:0px; height:20px; padding:0px;">
+						<?php echo get_product_reference($id); ?>
+					</span>
+				</td>
+				<td style="border-left:solid 1px #DDD;">
+					<span class="form-control input-sm" style="border:0px; height:20px;  padding:0px;">
+						<?php echo get_product_name($rs['id_product']); ?>
+					</span>
+				</td>
 				<td align="right" style="border-left:solid 1px #DDD;"><?php echo number_format($rs['qty']); ?></td>
 				<td align="right" style="border-left:solid 1px #DDD;"><?php echo number_format($rs['price'],2); ?></td>
 				<td align="center" style="border-left:solid 1px #DDD;"><?php echo number_format($dis['value'],2); ?></td>
@@ -460,11 +475,11 @@ elseif( isset( $_GET['view_detail'] ) && isset($_GET['id_po']) ) :
 			   <td align="right" style="border-left:solid 1px #DDD;"><?php echo number_format($rs['total_amount'],2); ?></td>
                <td align="right" style="border-left:solid 1px #DDD;"><?php echo number_format($rs['received']); ?></td>
 			</tr>
-	<?php $n++; $total_qty += $rs['qty']; $total_discount += $rs['total_discount'];  $total_amount += $rs['total_amount']; $total_price += $rs['qty']*$rs['price']; ?>            
-    <?php	endwhile; ?>    
+	<?php $n++; $total_qty += $rs['qty']; $total_discount += $rs['total_discount'];  $total_amount += $rs['total_amount']; $total_price += $rs['qty']*$rs['price']; ?>
+    <?php	endwhile; ?>
     <?php	else : ?>
        			<tr id="bf"><td colspan="10" style="height:50px; border-left:solid 1px #DDD; border-right:solid 1px #DDD; border-top:0px;"><center><h4>-----  ไม่มีรายการ  -----</h4></center></td></tr>
-	<?php	endif; ?>                
+	<?php	endif; ?>
             </tbody>
         </table>
         <table class="table table-bordered" style="margin-bottom:50px;">
@@ -495,15 +510,15 @@ elseif( isset( $_GET['view_detail'] ) && isset($_GET['id_po']) ) :
 </div>
 <!-----------------------------------------------  View  ----------------------------------->
 
-<?php 
-else : 
+<?php
+else :
 ?>
 <!-----------------------------------------------  List  ----------------------------------->
 <?php
 	if( isset($_POST['from_date']) && $_POST['from_date'] !=""){ setcookie("po_from_date", date("Y-m-d", strtotime($_POST['from_date'])), time() + 3600, "/"); }else{ setcookie("po_from_date", "", time() + 3600, "/"); }
 	if( isset($_POST['to_date']) && $_POST['to_date'] != ""){ setcookie("po_to_date",  date("Y-m-d", strtotime($_POST['to_date'])), time() + 3600, "/"); }else{ setcookie("po_to_date", "", time() + 3600, "/"); }
 	$paginator = new paginator();
-?>	
+?>
 <form  method='post' id='form'>
 <div class='row'>
 	<div class='col-sm-2 col-md-2 col-sm-3 col-sx-3'>
@@ -512,48 +527,48 @@ else :
             	<option value="reference"  <?php if( isset( $_POST['filter'] ) ){ echo isSelected($_POST['filter'], "reference"); 	}else if( isset( $_COOKIE['po_filter'] ) ){ echo isSelected($_COOKIE['po_filter'], "reference"); 	} ?>>เลขที่เอกสาร</option>
 				<option value='supplier'     <?php if( isset( $_POST['filter'] ) ){ echo isSelected($_POST['filter'], "supplier");    	}else if( isset( $_COOKIE['po_filter'] ) ){ echo isSelected($_COOKIE['po_filter'], "supplier");   	} ?>>ชื่อผู้ขาย</option>
 			</select>
-		
-	</div>	
+
+	</div>
 	<div class='col-sm-3 col-md-3 col-sm-3 col-sx-3'>
     	<label>คำค้น</label>
-        <?php 
-			$value = '' ; 
-			if(isset($_POST['search_text'])) : 
-				$value = $_POST['search_text']; 
-			elseif(isset($_COOKIE['po_search_text'])) : 
-				$value = $_COOKIE['po_search_text']; 
-			endif; 
+        <?php
+			$value = '' ;
+			if(isset($_POST['search_text'])) :
+				$value = $_POST['search_text'];
+			elseif(isset($_COOKIE['po_search_text'])) :
+				$value = $_COOKIE['po_search_text'];
+			endif;
 		?>
-		<input class='form-control' type='text' name='search_text' id='search_text' placeholder="ระบุคำที่ต้องการค้นหา" value='<?php echo $value; ?>' />	
-	</div>	
+		<input class='form-control' type='text' name='search_text' id='search_text' placeholder="ระบุคำที่ต้องการค้นหา" value='<?php echo $value; ?>' />
+	</div>
 	<div class='col-sm-2 col-md-2 col-sm-2 col-sx-2'>
 		<label>จากวันที่</label>
-            <?php 
-				$value = ""; 
-				if(isset($_POST['from_date']) && $_POST['from_date'] != "") : 
-					$value = date("d-m-Y", strtotime($_POST['from_date'])); 
-				elseif( isset($_COOKIE['po_from_date'])) : 
-					$value = date("d-m-Y", strtotime($_COOKIE['po_from_date'])); 
-				endif; 
+            <?php
+				$value = "";
+				if(isset($_POST['from_date']) && $_POST['from_date'] != "") :
+					$value = date("d-m-Y", strtotime($_POST['from_date']));
+				elseif( isset($_COOKIE['po_from_date'])) :
+					$value = date("d-m-Y", strtotime($_COOKIE['po_from_date']));
+				endif;
 				?>
 			<input type='text' class='form-control' name='from_date' id='from_date' placeholder="ระบุวันที่" style="text-align:center;"  value='<?php echo $value; ?>'/>
-	</div>	
+	</div>
 	<div class='col-sm-2 col-md-2 col-sm-2 col-sx-2'>
 		<label>ถึงวันที่</label>
             <?php
 				$value = "";
 				if( isset($_POST['to_date']) && $_POST['to_date'] != "" ) :
-				 	$value = date("d-m-Y", strtotime($_POST['to_date'])); 
+				 	$value = date("d-m-Y", strtotime($_POST['to_date']));
 				 elseif( isset($_COOKIE['po_to_date']) ) :
 					$value = date("d-m-Y", strtotime($_COOKIE['po_to_date']));
 				 endif;
-			?>  
+			?>
 			<input type='test' class='form-control'  name='to_date' id='to_date' placeholder="ระบุวันที่" style="text-align:center" value='<?php echo $value; ?>' />
 	</div>
 	<div class='col-sm-2 col-md-2 col-sm-2 col-sx-2'>
     	<label style="visibility:hidden">show</label>
 		<button class='btn btn-sm btn-primary btn-block' id='search-btn' type='submit' onclick="load_in()" ><i class="fa fa-search"></i>&nbsp;ค้นหา</button>
-	</div>	
+	</div>
 	<div class='col-sm-1 col-md-1 col-sm-1 col-sx-1'>
     	<label style="visibility:hidden">show</label>
 		<button type='button' class='btn btn-sm btn-danger' onclick="clear_filter()"><i class='fa fa-refresh'></i>&nbsp;reset</button>
@@ -563,10 +578,10 @@ else :
 <hr style='border-color:#CCC; margin-top: 15px; margin-bottom:0px;' />
 <?php
 
-		if(isset($_POST['from_date']) && $_POST['from_date'] != ""){$from = date('Y-m-d',strtotime($_POST['from_date'])); }else if( isset($_COOKIE['po_from_date'])){ $from = date('Y-m-d',strtotime($_COOKIE['po_from_date'])); }else{ $from = "";} 
+		if(isset($_POST['from_date']) && $_POST['from_date'] != ""){$from = date('Y-m-d',strtotime($_POST['from_date'])); }else if( isset($_COOKIE['po_from_date'])){ $from = date('Y-m-d',strtotime($_COOKIE['po_from_date'])); }else{ $from = "";}
 		if(isset($_POST['to_date']) && $_POST['to_date'] != ""){ $to =date('Y-m-d',strtotime($_POST['to_date']));  }else if(  isset($_COOKIE['po_to_date'])){  $to =date('Y-m-d',strtotime($_COOKIE['po_to_date'])); }else{ $to = "";}
 		if(isset($_POST['get_rows'])){$get_rows = $_POST['get_rows'];$paginator->setcookie_rows($get_rows);}else if(isset($_COOKIE['get_rows'])){$get_rows = $_COOKIE['get_rows'];}else{$get_rows = 50;}
-		
+
 		/****  เงื่อนไขการแสดงผล *****/
 		if(isset($_POST['search_text'])/* && $_POST['search_text'] !="" */) :
 			$text = $_POST['search_text'];
@@ -576,13 +591,13 @@ else :
 		elseif(isset($_COOKIE['po_search_text']) && isset($_COOKIE['po_filter'])) :
 			$text = $_COOKIE['po_search_text'];
 			$filter = $_COOKIE['po_filter'];
-		else : 
+		else :
 			$text	= "";
 			$filter	= "";
 		endif;
 		$where = "WHERE id_po != 0 ";
 		if( $text != "" ) :
-			switch( $filter) :				
+			switch( $filter) :
 				case "supplier" :
 					$in = "";
 					$q = dbQuery("SELECT id FROM tbl_supplier WHERE code LIKE '%".$text."%' OR name LIKE '%".$text."%' ORDER BY id");
@@ -590,13 +605,13 @@ else :
 					if($row > 0 )
 					{
 						$i = 1;
-						while($r = dbFetchArray($q) )	
+						while($r = dbFetchArray($q) )
 						{
 							$in .= $r['id'];
 							if($i<$row){ $in .=", "; }
 							$i++;
 						}
-						
+
 						$where .= "AND id_supplier IN(".$in.")";
 					}else{
 						$where .= "AND id_supplier = 0";
@@ -606,17 +621,17 @@ else :
 				$where .= "AND reference LIKE'%$text%'";
 				break;
 			endswitch;
-			if($from != "" && $to != "" ) : 
-				$where .= " AND (date_add BETWEEN '".$from." 00:00:00' AND '".$to." 23:59:59')";  
+			if($from != "" && $to != "" ) :
+				$where .= " AND (date_add BETWEEN '".$from." 00:00:00' AND '".$to." 23:59:59')";
 			endif;
 		else :
-			if($from != "" && $to != "" ) : 
-				$where .= "AND (date_add BETWEEN '".$from." 00:00:00' AND '".$to." 23:59:59')";  
-			endif;	
+			if($from != "" && $to != "" ) :
+				$where .= "AND (date_add BETWEEN '".$from." 00:00:00' AND '".$to." 23:59:59')";
+			endif;
 		endif;
 		$where .= " ORDER BY date_add DESC";
-		
-?>		
+
+?>
 
 <?php
 $paginator = new paginator();
@@ -625,9 +640,9 @@ if(isset($_POST['get_rows'])){$get_rows = $_POST['get_rows'];$paginator->setcook
 		$paginator->display($get_rows,"index.php?content=po");
 		$Page_Start = $paginator->Page_Start;
 		$Per_Page = $paginator->Per_Page;
-?>	
+?>
 <style>
-	.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td 
+	.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td
 	{
 		vertical-align:middle;
 	}
@@ -683,8 +698,8 @@ if(isset($_POST['get_rows'])){$get_rows = $_POST['get_rows'];$paginator->setcook
         <?php endwhile; ?>
   	<?php else : ?>
     <tr><td colspan="6"><center><h4>-----  ไม่มีรายการ  -----</h4></center></td></tr>
-    <?php endif; ?>	    
-    
+    <?php endif; ?>
+
     </table>
     </div>
 </div>
@@ -704,12 +719,12 @@ endif;
 				<td align="center" style="border-left:solid 1px #DDD;">
 					<select name="unit[{{id}}]" id="unit_{{id}}" class="form-control input-xs" onchange="recal({{id}})">
 						{{{unit}}}
-					</select> 
+					</select>
 				</td>
 			   <td align="right" style="border-left:solid 1px #DDD;"><span id="total_{{id}}" class="number" style="font-size:14px;">{{ total_amount }}</span></td>
 			   <td align="right" style="border-right:solid 1px #DDD;"><button type="button" class="btn btn-danger btn-xs" onclick="delete_row({{ id }})"><i class="fa fa-trash"></i></button></td>
 			</tr>
-</script>	
+</script>
 <!-----------------------  Order Grid ------------->
 <button data-toggle='modal' data-target='#order_grid' id='btn_toggle' style='display:none;'>toggle</button>
 <form id="item_form">
@@ -754,7 +769,7 @@ endif;
 					<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
 				 </div>
 				 <div class='modal-body' id='info_body'>
-                 	
+
                  </div>
 				 <div class='modal-footer'>
 				 </div>
@@ -770,7 +785,7 @@ endif;
                 <h4 class="modal-title" style="text-align:center;" id="title">reference</h4>
             </div>
             <div class="modal-body" id="detail_body">
-            
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">ปิด</button>
@@ -787,7 +802,7 @@ endif;
                 <h4 class="modal-title" style="text-align:center;" id="amount_title">มูลค่าสั่งซื้อแต่ละเดือน</h4>
             </div>
             <div class="modal-body" id="amount_body">
-            	
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">ปิด</button>
@@ -803,7 +818,7 @@ endif;
 <thead>
 <th style="width:150px; text-align:center;">เดือน</th>
 	{{#each roles}}
-<th style="width:150px; text-align:center;">{{ role }}</th>		
+<th style="width:150px; text-align:center;">{{ role }}</th>
 	{{/each}}
 </thead>
 {{/if}}
@@ -846,8 +861,8 @@ endif;
 		</td>
     </tr>
 	{{/each}}
-</table>  
-</script>  
+</table>
+</script>
 <script id="po_template" type="text/x-handlebars-template">
 <table class="table table-striped">
 <thead style="font-size:12px;">
@@ -942,7 +957,7 @@ function view_item_po(id)
 {
 	var left = ($(document).width() - 800)/2;
 	var url = "index.php?content=po_by_product&get_item_po&id_product_attribute="+id+"&nomenu";
-	window.open(url, "_blank", "width=600, height=800, left="+left+", scrollbars=yes");	
+	window.open(url, "_blank", "width=600, height=800, left="+left+", scrollbars=yes");
 }
 
 function get_info_detail()
@@ -980,7 +995,7 @@ function get_info_detail()
 				}
 				else
 				{
-					swal("รหัสสินค้าไม่ถูกต้อง", "รหัสสินค้าที่ระบุไม่ถูกต้อง คุณต้องระบุรหัสรุ่นสินค้าเท่านั้น", "error");	
+					swal("รหัสสินค้าไม่ถูกต้อง", "รหัสสินค้าที่ระบุไม่ถูกต้อง คุณต้องระบุรหัสรุ่นสินค้าเท่านั้น", "error");
 				}
 			}
 		});
@@ -989,7 +1004,7 @@ function get_info_detail()
 
 function view_po(id)
 {
-	window.open("index.php?content=po&view_detail=y&id_po="+id, "_blank", "width=1000, height=800, scrollbars=yes");	
+	window.open("index.php?content=po&view_detail=y&id_po="+id, "_blank", "width=1000, height=800, scrollbars=yes");
 }
 
 function get_info()
@@ -1009,16 +1024,16 @@ function get_info()
 				var data 		= $.parseJSON(rs);
 				var output	= $("#info_body");
 				render(source, data, output);
-				$("#product_info").modal("show");				
+				$("#product_info").modal("show");
 			}
 		});
 	}
 }
-</script>    
+</script>
 <script>
-$.fn.digits = function(){ 
-    return this.each(function(){ 
-        $(this).text( $(this).text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ); 
+$.fn.digits = function(){
+    return this.each(function(){
+        $(this).text( $(this).text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") );
     })
 }
 </script>
@@ -1056,7 +1071,7 @@ function save_edit()
 						load_in();
 						window.location.reload();
 						});
-				
+
 				return false;
 			}
 		}
@@ -1096,7 +1111,7 @@ function recal(id)
 	}
 	var price 		= parseFloat($("#price_"+id).val());
 	var discount 	= parseFloat($("#discount_"+id).val());
-	var units			= $("#unit_"+id).val();	
+	var units			= $("#unit_"+id).val();
 	if(isNaN(qty) ){ qty = 0; }
 	if(isNaN(price) ){ price = 0; }
 	if(isNaN(discount) ){ discount = 0; }
@@ -1123,11 +1138,11 @@ function total_recal()
 		if( isNaN(qty) ){ qty = 0; }
 		if( isNaN(price) ){ price = 0; }
 		if( isNaN(discount) ){ discount = 0; }
-		if( units == "percent" ){  
-			var d_price = price - (price * (discount*0.01));  
-			var dis_c 	= price * (discount*0.01);  
-		}else{ 
-			var d_price = price - discount; 
+		if( units == "percent" ){
+			var d_price = price - (price * (discount*0.01));
+			var dis_c 	= price * (discount*0.01);
+		}else{
+			var d_price = price - discount;
 			var dis_c	= discount;
 		}
 			total_qty += qty;
@@ -1135,7 +1150,7 @@ function total_recal()
 			total_discount += dis_c * qty;
 			total_amount	 += d_price * qty;
 			no++;
-	});	
+	});
 	var bill_discount = parseFloat($("#bill_discount").val());
 	if(isNaN(bill_discount) ){ bill_discount = 0.00; }
 	total_discount += bill_discount;
@@ -1162,7 +1177,7 @@ function reorder()
 }
 function delete_row(id)
 {
-	$("#row_"+id).remove();	
+	$("#row_"+id).remove();
 	reorder()
 	total_recal();
 }
@@ -1214,7 +1229,7 @@ function delete_po(id, reference, supplier)
 						swal("ไม่สำเร็จ", "ลบใบสั่งซื้อไม่สำเร็จ ใบสั่งซื้ออาจถูกปิดแล้วหรือมีการรับสินค้าแล้ว", "error");
 					}
 				}
-			});						
+			});
 	});
 }
 
@@ -1225,7 +1240,7 @@ function check_qty()
 	$(".input_qty").each(function(index, element) {
         var q = parseInt($(this).val());
 		if( !isNaN(q)){ qty += q; }
-    });	
+    });
 	return qty;
 }
 
@@ -1276,7 +1291,7 @@ function insert_item()
 					swal("error");
 				}
 			}
-		});					
+		});
 	}else{
 		swal("คุณต้องใส่จำนวนอย่างน้อย 1 รายการ");
 		return false;
@@ -1308,7 +1323,7 @@ function get_product(){
 			}else{
 				load_out();
 				swal("ไม่มีรายการสินค้าที่ค้นหา");
-			}		
+			}
 		}
 	});
 }
@@ -1326,7 +1341,7 @@ function update()
 	var id_em		= $("#id_employee").val();
 	var dup			= $("#is_duplicate").val();
 	if( !isDate(date_add) )
-	{ 
+	{
 		swal("วันที่เอกสารไม่ถูกต้อง", "ตรวจสอบดูว่าวันที่เอกสารไม่ใช่ค่าว่าง หรือรูปแบบวันที่ถูกต้องหรือไม่", "error");
 		return false;
 	}else if( !isDate(due_date) ){
@@ -1382,8 +1397,8 @@ function edit()
 	$("#role").removeAttr("disabled");
 	$("#remark").removeAttr("disabled");
 	$("#btn_edit").css("display","none");
-	$("#btn_update").css("display","");	
-	
+	$("#btn_update").css("display","");
+
 }
 
 function updated()
@@ -1396,7 +1411,7 @@ function updated()
 	$("#role").attr("disabled", "disabled");
 	$("#remark").attr("disabled", "disabled");
 	$("#btn_update").css("display","none");
-	$("#btn_edit").css("display","");	
+	$("#btn_edit").css("display","");
 }
 
 function check_reference(id_po)
@@ -1433,7 +1448,7 @@ function add_new_po()
 	var id_em		= $("#id_employee").val();
 	var dup			= $("#is_duplicate").val();
 	if( !isDate(date_add) )
-	{ 
+	{
 		swal("วันที่เอกสารไม่ถูกต้อง", "ตรวจสอบดูว่าวันที่เอกสารไม่ใช่ค่าว่าง หรือรูปแบบวันที่ถูกต้องหรือไม่", "error");
 		return false;
 	}else if( !isDate(due_date) ){
@@ -1472,10 +1487,10 @@ $("#product_code").autocomplete({
 	source: "controller/autoComplete.php?product_code",
 	autoFocus: true
 });
-		
+
 $("#s_code").autocomplete({
 	minLength: 1,
-	source: "controller/autoComplete.php?get_supplier_code", 
+	source: "controller/autoComplete.php?get_supplier_code",
 	autoFocus: true,
 	close: function(event, ui)
 	{
@@ -1510,16 +1525,16 @@ $("#s_name").autocomplete({
 <script>
 function go_back()
 {
-	window.location.href = "index.php?content=po";	
+	window.location.href = "index.php?content=po";
 }
 function add()
 {
-	window.location.href = "index.php?content=po&add=y";	
+	window.location.href = "index.php?content=po&add=y";
 }
 function go_edit()
 {
 	var id_po = $("#id_po").val();
-	window.location.href="index.php?content=po&edit=y&id_po="+id_po;	
+	window.location.href="index.php?content=po&edit=y&id_po="+id_po;
 }
 function print_po()
 {
@@ -1591,7 +1606,7 @@ function cancle_close_po()
 						return false;
 					}
 				}
-			});						
+			});
 	});
 }
 
@@ -1627,7 +1642,7 @@ function close_po()
 						return false;
 					}
 				}
-			});						
+			});
 	});
 }
 

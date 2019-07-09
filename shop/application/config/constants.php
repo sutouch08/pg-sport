@@ -91,6 +91,5 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 */
 define('ROOT_PATH', '/invent/');
 define('IMG_PATH', '/invent/img/product');
-define('FILE_PATH', $_SERVER['DOCUMENT_ROOT'].'/invent/');
-define('SHOP_PATH', '/invent/shop/');
-
+define('FILE_PATH', $_SERVER['DOCUMENT_ROOT'].'/pg-sport/');
+define('SHOP_PATH', '/pg-sport/shop/');

@@ -56,6 +56,7 @@
     <?php endif; ?>
 
     <?php if( !isset($_GET['add'] ) && !isset( $_GET['edit'] ) && !isset( $_GET['view_stock'] ) ) : ?>
+			<button type="button" class="btn btn-warning btn-sm" onClick="clearFilter()">Reset</button>
     	<?php if( $add ) : ?>
         <button type="button" class="btn btn-primary btn-sm" onClick="addNewOnline()"><i class="fa fa-plus"></i> เพิ่มใหม่ ( ออนไลน์ )</button>
 		<?php endif; ?>
@@ -80,6 +81,9 @@ if(isset($_GET['add'])) :
 	$comment 			= isset($_GET['id_order']) ? $order->comment : '';
 	$payment 			= isset($_GET['id_order']) ? $order->payment : '';
 	$onlineCustomer	= isset($_GET['id_order']) ? getCustomerOnlineReference($id_order) : '';
+	$isCOD 	= isset($_GET['id_order']) ? $order->isCOD : 0;
+	$cod = $isCOD == 1 ? 'btn-success' : '';
+	$cod_text = $isCOD == 1 ? '<i class="fa fa-check"></i> เก็บเงินปลายทาง' : 'เก็บเงินปลายทาง';
 
 ?>
 <form id='addForm'>
@@ -87,6 +91,7 @@ if(isset($_GET['add'])) :
 	<input type='hidden' name='id_employee' value='<?php echo $user_id; ?>' />
     <input type='hidden' name='id_order' id='id_order' value='<?php echo $id_order; ?>' />
     <input type='hidden' name='id_customer' id='id_customer' value='<?php echo $id_customer; ?>' />
+		<input type="hidden" name="isCOD" id="isCOD" value="<?php echo $isCOD; ?>" />
     <input type="hidden" name="role" id="role" value="1" />
 		<input type="hidden" name="isOnline" id="isOnline" value="1" />
 	<div class='col-sm-2'>
@@ -106,6 +111,10 @@ if(isset($_GET['add'])) :
         <input type="text" name="online" id="online" class="form-control input-sm" value="<?php echo $onlineCustomer; ?>" <?php echo $active; ?> />
         <input type="hidden" name="payment" id="payment" value="ออนไลน์" />
     </div>
+		<div class="col-sm-2">
+			<label style="display:block; visibility:hidden;">COD</label>
+			<button type="button" class="btn btn-sm <?php echo $cod; ?>" id="btn-cod" onclick="toggleCOD()" <?php echo $active; ?>><?php echo $cod_text; ?></button>
+		</div>
 	<div class='col-sm-10'>
 		<label>หมายเหตุ</label>
     	<input type='text' id='comment' name='comment' class='form-control input-sm' value='<?php echo $comment; ?>' autocomplete='off' <?php echo $active; ?> />
@@ -245,7 +254,8 @@ if(isset($_GET['add'])) :
 		$customer->customer_stat();
 	endif;
 	$sale 				= new sale($order->id_sale);
-	$state 			= $order->orderState();
+	//$state 			= $order->orderState();
+	$state = dbQuery("SELECT * FROM tbl_order_state_change WHERE id_order = ".$id_order." ORDER BY date_add DESC, id_order_state_change DESC");
 	$role 				= $order->role;
 	$fee 				= getDeliveryFee($id_order);
 	$service			= getServiceFee($id_order);
@@ -301,6 +311,51 @@ if(isset($_GET['add'])) :
 	</div>
 </div><!-- /row -->
 <hr style='border-color:#CCC; margin-top: 5px; margin-bottom:5px;' />
+
+
+<div class='row'>
+	<form id='state_change' action='controller/orderController.php?edit&state_change' method='post'>
+	<div class='col-sm-6'>
+		<table class='table' style='width:100%; padding:10px; border: 1px solid #ccc;'>
+        	<tr>
+				<td style='width:25%; text-align:right; vertical-align:middle;'>สถานะ :&nbsp; </td>
+                <td style='width:40%; padding-right:10px;'>
+        			<input type='hidden' name='id_order' id="id_order" value='<?php echo $order->id_order; ?>' />
+                    <input type='hidden' name='id_employee' value='<?php echo $id_employee; ?>' />
+                    <?php if( $edit ) : ?>
+                        <select name='order_state' id='order_state' class='form-control input-sm'>
+                            <?php echo orderStateList($order->id_order); ?>
+                        </select>
+					<?php endif; ?>
+                </td>
+                <td style='padding-right:10px;'>
+                <?php if($edit) : ?>
+               	 	<button class='btn btn-default' type='button' onclick='state_change()' $can_edit>เพิ่ม</button>
+                <?php endif; ?>
+                </td>
+            </tr>
+<?php	if(dbNumRows($state) > 0 ) :		?>
+<?php		while($rd = dbFetchArray($state) ) :	?>
+                <tr  style='background-color:<?php echo state_color($rd['id_order_state']); ?>'>
+                    <td style='padding-top:10px; padding-bottom:10px; text-align:center; color:#FFF;'><?php echo $order->stateName($rd['id_order_state']); ?></td>
+                    <td style='padding-top:10px; padding-bottom:10px; text-align:center; color:#FFF;'><?php echo employee_name($rd['id_employee']); ?></td>
+                    <td style='padding-top:10px; padding-bottom:10px; text-align:center; color:#FFF;'><?php echo thaiDateTime($rd['date_add']); ?></td>
+                </tr>
+<?php		endwhile;		?>
+<?php else :	?>
+            <tr>
+                <td style='padding-top:10px; padding-bottom:10px; text-align:center;'><?php echo $order->currentState(); ?></td>
+                <td style='padding-top:10px; padding-bottom:10px; text-align:right;'></td>
+                <td style='padding-top:10px; padding-bottom:10px; text-align:center;'><?php echo date('d-m-Y H:i:s', strtotime($order->date_upd)); ?></td>
+            </tr>
+<?php endif; ?>
+ 		</table>
+ 	</div>
+    </form>
+
+</div><!-- /row-->
+<hr style='border-color:#CCC; margin-top: 5px; margin-bottom:5px;' />
+
 <div class="row"><div class="col-sm-12" style="padding-bottom:5px;"><?php echo paymentLabel($id_order); ?><?php echo emsLabel($id_order); ?><?php echo closedLabel($id_order); ?></div></div>
 <div class='row'>
     <?php  	$ado = getOnlineAddress($id_order);	?>
@@ -824,6 +879,11 @@ $('#modal_approve_edit').on('shown.bs.modal', function () {  $('#edit_bill_passw
 	//----- เฉพาะฉัน  ------//
 	$vt			= isset( $_POST['viewType'] ) ? $_POST['viewType'] : (getCookie('viewType') ? getCookie('viewType') : 0 );
 	$me		= $vt == 1 ? 'btn-info' : '';
+	$cod  = getFilter('cod','isCOD', 0);
+	$btn_cod = $cod == 1 ? 'btn-info' : '';
+	$unPaid = getFilter('unPaid', 'unPaid', 0);
+	$btn_paid = $unPaid == 1 ? 'btn-info' : '';
+
 	if( isset( $_POST['viewType'] ) ){ createCookie('viewType', $vt, 3600*24*60); }
 
 	//-------  เปิดบิลแล้ว  ------//
@@ -841,15 +901,15 @@ $('#modal_approve_edit').on('shown.bs.modal', function () {  $('#edit_bill_passw
 ?>
 <form  method='post' id='searchForm'>
 <div class="row">
-	<div class="col-sm-2 padding-5" style="padding-left:15px;">
+	<div class="col-sm-1 col-1-harf padding-5 first" >
  		<label>เอกสาร</label>
         <input type="text" class="form-control input-sm" id="s_ref" name="s_ref" value="<?php echo $s_ref; ?>" placeholder="พิมพ์เลขที่เอกสาร" />
     </div>
-    <div class="col-sm-2 padding-5">
+    <div class="col-sm-1 col-1-harf padding-5">
  		<label>ลูกค้า</label>
         <input type="text" class="form-control input-sm" id="s_cus" name="s_cus" value="<?php echo $s_cus; ?>" placeholder="พิมพ์ชื่อลูกค้า" />
     </div>
-    <div class="col-sm-2 padding-5">
+    <div class="col-sm-1 col-1-harf padding-5">
  		<label>พนักงาน</label>
         <input type="text" class="form-control input-sm" id="s_emp" name="s_emp" value="<?php echo $s_emp; ?>" placeholder="พิมพ์ชื่อพนักงาน" />
     </div>
@@ -870,79 +930,128 @@ $('#modal_approve_edit').on('shown.bs.modal', function () {  $('#edit_bill_passw
  		<label style="display:block; visibility:hidden;">&nbsp;</label>
          <button type="button" id="btn-delivered" class="btn btn-sm btn-block <?php echo $dv; ?>" onClick="toggleDelivered()">ยังไม่แจ้งจัดส่ง</button>
     </div>
-    <div class="col-sm-1 padding-5" style="padding-right:15px;">
+		<div class="col-sm-1 padding-5">
  		<label style="display:block; visibility:hidden;">&nbsp;</label>
-        <button type="button" class="btn btn-warning btn-sm btn-block" onClick="clearFilter()">Reset</button>
+         <button type="button" id="btn-paid" class="btn btn-sm btn-block <?php echo $btn_paid; ?>" onClick="toggleUnPaid()">ยังไม่ชำระเงิน</button>
+    </div>
+		<div class="col-sm-1 padding-5">
+ 		<label style="display:block; visibility:hidden;">&nbsp;</label>
+         <button type="button" id="btn-cod" class="btn btn-sm btn-block <?php echo $btn_cod; ?>" onClick="toggleCODFilter()">COD</button>
     </div>
 
 </div>
 <input type="hidden" name="viewType" id="viewType" value="<?php echo $vt; ?>" /><!-- ไว้กำหนดว่า ดูเฉาะฉันหรือทั้งหมด -->
 <input type="hidden" name="closed" id="closed" value="<?php echo $is_closed; ?>" /><!-- กรองเฉพาะตัวที่เปิดบิลแล้วหรือไม่ 0 =ไม่, 1 = เปิดแล้ว -->
 <input type="hidden" name="delivered" id="delivered" value="<?php echo $delivered; ?>" /><!-- บันทึกการจัดส่งไปแล้วหรือยัง 0 = ยัง, 1 = แจ้งแล้ว -->
+<input type="hidden" name="cod" id="cod" value="<?php echo $cod; ?>" /><!-- แสดงเฉพาะ เก็บเงินปลายทาง -->
+<input type="hidden" name="unPaid" id="unPaid" value="<?php echo $unPaid; ?>" />
 </form>
 <hr style='border-color:#CCC; margin-top: 15px; margin-bottom:0px;' />
 <?php
 //--------------------  เงื่อนไข ------------------//
 	$where = "JOIN tbl_order_online ON tbl_order.id_order = tbl_order_online.id_order WHERE order_status = 1 AND role = 1 AND payment = 'ออนไลน์' ";
-	if( $s_ref != '' OR $s_cus != '' OR $s_emp != '' OR $from != '' )
+
+	createCookie('s_ref', $s_ref);
+	createCookie('s_cus', $s_cus);
+	createCookie('s_emp', $s_emp);
+	createCookie('orderFrom', $from);
+	createCookie('orderTo', $to);
+	createCookie('unPaid', $unPaid);
+	createCookie('isCOD', $cod);
+
+	if( $s_ref != '' )
 	{
-		if( $s_ref != '' )
+		$where .= "AND reference LIKE '%".$s_ref."%' ";
+	}
+
+
+	if( $s_cus != '' )
+	{
+		$in = onlineOrderByCustomer($s_cus);
+		$name_in = onlineCodeByReceiver($s_cus);
+		if( $in !== FALSE OR $name_in !== FALSE)
 		{
-			createCookie('s_ref', $s_ref);
-			$where .= "AND reference LIKE '%".$s_ref."%' ";
-		}
-		if( $s_cus != '' )
-		{
-			createCookie('s_cus', $s_cus);
-			$in = onlineOrderByCustomer($s_cus);
-			if( $in !== FALSE )
+			if($in !== FALSE && $name_in !== FALSE)
+			{
+				$where .= "AND (tbl_order_online.id_order IN(".$in.") OR (tbl_order_online.customer IN(".$name_in."))) ";
+			}
+
+			if($in !== FALSE && $name_in === FALSE)
 			{
 				$where .= "AND tbl_order_online.id_order IN(".$in.") ";
 			}
-			else
+
+			if($in === FALSE && $name_in !== FALSE)
 			{
-				$where .= "AND id_customer = '' ";
+				$where .= "AND tbl_order_online.customer IN(".$name_in.") ";
 			}
+
 		}
-		if( $vt == 0 )
+		else
 		{
-			if( $s_emp != '' )
-			{
-				createCookie('s_emp', $s_emp);
-				$in = employee_in($s_emp);
-				if( $in !== FALSE )
-				{
-					$where .= "AND id_employee IN(".$in.") ";
-				}
-				else
-				{
-					$where .= "AND id_employee = '' ";
-				}
-			}
-		}
-		if( $from != '' )
-		{
-			createCookie('orderFrom', $from);
-			if( $to != '' ){ createCookie('orderTo', $to); }
-			$to	= $to == '' ? toDate($from) : toDate($to);
-			$from = fromDate($from);
-			$where .= "AND ( date_add BETWEEN '".$from."' AND '".$to."' ) ";
+			$where .= "AND id_customer = '' ";
 		}
 	}
+
+
+
+
+
+	if( $vt == 0 )
+	{
+		if( $s_emp != '' )
+		{
+			$in = employee_in($s_emp);
+			if( $in !== FALSE )
+			{
+				$where .= "AND id_employee IN(".$in.") ";
+			}
+			else
+			{
+				$where .= "AND id_employee = '' ";
+			}
+		}
+	}
+
+
+	if( $from != '' && $to != '' )
+	{
+		$where .= "AND date_add >= '".fromDate($from)."' ";
+		$where .= "AND date_add <= '".toDate($to)."' ";
+	}
+
+
 	if( $vt == 1 && getCookie('user_id') !== FALSE )
 	{
 		$where .= "AND id_employee = ".getCookie('user_id')." ";
 	}
+
+
 	if( $is_closed == 1 )
 	{
 		$where .= "AND current_state = 9 ";
 	}
+
+
 	if( $delivered == 1 )  //----- ถ้าต้องการกรองเฉพาะรายการที่ยังไม่แจ้งการจัดส่ง ---//
 	{
 		$where .= "AND delivery_code IS NULL ";
 	}
+
+	if( $unPaid == 1)
+	{
+
+		$where .= "AND tbl_order.valid = 0 ";
+	}
+
+	if($cod == 1)
+	{
+
+		$where .= "AND isCOD = 1 ";
+	}
+
 	$where .= "ORDER BY date_add DESC, tbl_order.id_order DESC";
-//echo $where;
+	//echo $where;
 ?>
 <div class='row'>
 	<div class='col-sm-7'>
@@ -961,13 +1070,13 @@ $('#modal_approve_edit').on('shown.bs.modal', function () {  $('#edit_bill_passw
 		<table class="table" style="border:solid 1px #ccc;">
             <thead>
                 <th style='width:5%; text-align:center;'>ID</th>
-                <th style='width:10%;'>เลขที่อ้างอิง</th>
+                <th style='width:15%;'>เลขที่อ้างอิง</th>
                 <th style='width:20%;'>ลูกค้า</th>
                 <th style='width:10%;'>พนักงาน</th>
-                <th style='width:10%; text-align:center;'>ยอดเงิน</th>
+                <th style='width:8%; text-align:center;'>ยอดเงิน</th>
                 <th style='width:15%; text-align:center;'>การชำระเงิน</th>
-                <th style='width:10%; text-align:center;'>สถานะ</th>
-                <th style='width:10%; text-align:center;'>วันที่เพิ่ม</th>
+                <th style='width:8%; text-align:center;'>สถานะ</th>
+                <th style='width:8%; text-align:center;'>วันที่เพิ่ม</th>
                 <th style='width:10%; text-align:center;'>วันที่ปรับปรุง</th>
             </thead>
 <?php	$qs = dbQuery("SELECT * FROM tbl_order ".$where." LIMIT ".$paginator->Page_Start." , ".$paginator->Per_Page);		?>
@@ -987,11 +1096,16 @@ $('#modal_approve_edit').on('shown.bs.modal', function () {  $('#edit_bill_passw
             <tr style='color:#555; background-color:#E6E9ED; font-size:12px;'>
             <?php	endif;	?>
 				<td align='center' style='cursor:pointer;' onclick="viewOrder(<?php echo $id; ?>)"><?php echo $id; ?></td>
-				<td style='cursor:pointer;' onclick="viewOrder(<?php echo $id; ?>)"><?php echo $order->reference; ?></td>
+				<td >
+					<?php echo $order->reference; ?>
+					<?php if($order->isCOD == 1 && $order->valid == 0) : ?>
+						<span class="label label-danger">รอเงินเข้า</span>
+					<?php endif; ?>
+				</td>
 				<td style='cursor:pointer;' onclick="viewOrder(<?php echo $id; ?>)"><?php echo $customer; ?></td>
 				<td style='cursor:pointer;' onclick="viewOrder(<?php echo $id; ?>)"><?php echo employee_name($order->id_employee); ?></td>
 				<td align='center' style='cursor:pointer;' onclick="viewOrder(<?php echo $id; ?>)"><?php echo number_format($orderAmount); ?></td>
-				<td align='center' style='cursor:pointer;' onclick="viewOrder(<?php echo $id; ?>)"><?php echo $order->payment; ?></td>
+				<td align='center' style='cursor:pointer;' onclick="viewOrder(<?php echo $id; ?>)"><?php echo ($order->isCOD == 1 ? 'เก็บเงินปลายทาง' : $order->payment); ?></td>
 				<td align='center' style='cursor:pointer;' onclick="viewOrder(<?php echo $id; ?>)"><?php echo $order->current_state_name; ?></td>
 				<td align='center' style='cursor:pointer;' onclick="viewOrder(<?php echo $id; ?>)"><?php echo thaiDate($order->date_add); ?></td>
 				<td align='center' style='cursor:pointer;' onclick="viewOrder(<?php echo $id; ?>)"><?php echo thaiDate($order->date_upd); ?></td>
@@ -1293,4 +1407,4 @@ $("#btnAdd").click(function(e) {
 		swal("ไม่พบผู้จัดส่ง", "ไม่พบรายชื่อผู้จัดส่ง กรุณาตรวจสอบว่าลูกค้ามีการกำหนดชื่อผู้จัดส่งในระบบแล้วหรือยัง", "warning");
 	}
 </script>
-<script src="script/order_online.js"></script>
+<script src="script/order_online.js?v=1"></script>

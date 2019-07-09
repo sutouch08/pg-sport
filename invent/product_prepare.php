@@ -238,7 +238,7 @@ if( isset( $_GET['id_order'] ) ) :
 					<td align='center'><?php echo $n; ?></td>
 					<td align='center'><?php echo $order->reference; ?></td>
 					<td align='center'><?php echo $customer; ?></td>
-					<td align='center'><?php echo $order->role_name; ?></td>
+					<td align='center'><?php echo $order->isCOD == 1 ? 'เก็บเงินปลายทาง' : ''; //$order->role_name; ?></td>
 					<td align='center'><?php echo thaiDate($order->date_add); ?></td>
 					<td align='center'><?php echo $emp_name; ?></td>
 					<td align='center'>
@@ -311,7 +311,7 @@ if( isset( $_GET['id_order'] ) ) :
             	<td align="center"><?php echo $n; ?></td>
                 <td align='center'><?php echo $order->reference; ?></td>
                 <td align='center'><?php echo $customer; ?></td>
-                <td align='center'><?php echo $order->role_name; ?></td>
+                <td align='center'><?php echo $order->isCOD == 1 ? 'เก็บเงินปลายทาง' : ''; //$order->role_name; ?></td>
                 <td align='center'><?php echo thaiDate($order->date_add); ?></td>
                 <td align="right"><button type="button" class="btn btn-sm btn-default" onClick="takeOrder(<?php echo $id_order; ?>)">จัดสินค้า</button></td>
         </tr>

@@ -30,6 +30,8 @@
                 <li><a href="index.php?content=drop_zero"><span class="glyphicon glyphicon-tasks"></span>&nbsp; เคลียร์ยอดสต็อกที่เป็นศูนย์</a></li>
                 <li><a href="index.php?content=buffer_zone"><span class="glyphicon glyphicon-tasks"></span>&nbsp; ตรวจสอบ BUFFER ZONE</a></li>
                 <li><a href="index.php?content=cancle_zone"><span class="glyphicon glyphicon-tasks"></span>&nbsp; ตรวจสอบ CANCLE ZONE</a></li>
+                <li><a href="index.php?content=stock"><span class="glyphicon glyphicon-tasks"></span>&nbsp; ตรวจสอบ Stock</a></li>
+                <li><a href="index.php?content=stock_movement"><span class="glyphicon glyphicon-tasks"></span>&nbsp; ตรวจสอบ Movement</a></li>
               </ul>
 
             </li>

@@ -13,11 +13,11 @@ if( isset( $_GET['insertAddress'] ) && isset( $_POST['id_customer'] ) )
 	$data = array(
 						'id_customer'	=> $_POST['id_customer'],
 						'alias'				=> $_POST['alias'],
-						'company'		=> $_POST['company'],
-						'first_name'		=> $_POST['fname'],
-						'last_name'		=> $_POST['lname'],
-						'address1'		=> $_POST['address1'],
-						'address2'		=> $_POST['address2'],
+						'company'		=> addslashes($_POST['company']),
+						'first_name'		=> addslashes($_POST['fname']),
+						'last_name'		=> addslashes($_POST['lname']),
+						'address1'		=> addslashes($_POST['address1']),
+						'address2'		=> addslashes($_POST['address2']),
 						'city'				=> $_POST['city'],
 						'postcode'		=> $_POST['postcode'],
 						'phone'			=> $_POST['phone'],
@@ -39,11 +39,11 @@ if( isset( $_GET['updateAddress'] ) && isset( $_GET['id_address'] ) )
 	$data = array(
 						'id_customer'	=> $_POST['id_customer'],
 						'alias'				=> $_POST['alias'],
-						'company'		=> $_POST['company'],
-						'first_name'		=> $_POST['fname'],
-						'last_name'		=> $_POST['lname'],
-						'address1'		=> $_POST['address1'],
-						'address2'		=> $_POST['address2'],
+						'company'		=> addslashes($_POST['company']),
+						'first_name'		=> addslashes($_POST['fname']),
+						'last_name'		=> addslashes($_POST['lname']),
+						'address1'		=> addslashes($_POST['address1']),
+						'address2'		=> addslashes($_POST['address2']),
 						'city'				=> $_POST['city'],
 						'postcode'		=> $_POST['postcode'],
 						'phone'			=> $_POST['phone'],
@@ -533,6 +533,15 @@ if( isset( $_GET['printOnlineAddressSheet'] ) && isset( $_GET['id_address'] ) )
 	$sender			.= '</div>';
 	/********* / Sender *************/
 
+	$cod = '';
+	if($order->isCOD == 1)
+	{
+		$orderAmount = orderAmount($id_order) - bill_discount($id_order) + getDeliveryFee($id_order) + getServiceFee($id_order);
+		$cod .= '<div class="col-sm-12" style="font-size:35px; text-align:center; vertical-align:text-middle; font-weight: bold;">';
+		$cod .= 'COD  : '.number($orderAmount).'.-';
+		$cod .= '</div>';
+	}
+
 	/*********** Receiver  **********/
 	$receiver		= '<div class="col-sm-12" style="font-size:24px; border:solid 2px #ccc; border-radius:10px; padding:10px;">';
 	$receiver		.= '<span style="display:block; font-size: 20px; font-weight:bold; padding-bottom:10px; border-bottom:solid 2px #ccc; margin-bottom:15px;">ผู้รับ &nbsp; |  &nbsp; ';
@@ -648,7 +657,10 @@ if( isset( $_GET['printOnlineAddressSheet'] ) && isset( $_GET['id_address'] ) )
 	$Page .= 		'<td valign="top" style="width:40%; padding:10px;">'.$sender.'</td>';
 	$Page .=			'<td valign="top" style="padding:10px;">'.$receiver.'</td>';
 	$Page .= 	'</tr>';
-	$Page	 .= 	'<tr><td></td><td style="padding:10px;">'.$barcode.'</td></tr>';
+	$Page	.= 	'<tr>';
+	$Page .= 		'<td>'.$cod.'</td>';
+	$Page .= 		'<td style="padding:10px;">'.$barcode.'</td>';
+	$Page .= 	'</tr>';
 	$Page .= '</table>';
 	$Page .= '<hr style="border: 1px dashed #ccc;" />';
 	$Page .= '<div class="row">';

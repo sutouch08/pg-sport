@@ -1,4 +1,56 @@
 // JavaScript Document
+function toggleCOD()
+{
+	var i = $('#isCOD').val();
+	if(i == 1){
+		$('#isCOD').val(0);
+		$('#btn-cod').removeClass('btn-success');
+		$('#btn-cod').html('เก็บเงินปลายทาง');
+		return;
+	}
+
+	if(i == 0){
+		$('#isCOD').val(1);
+		$('#btn-cod').addClass('btn-success');
+		$('#btn-cod').html('<i class="fa fa-check"></i> เก็บเงินปลายทาง');
+		return;
+	}
+}
+
+
+
+function toggleUnPaid()
+{
+	var i = $('#unPaid').val();
+	if(i == 1){
+		$('#unPaid').val(0);
+		getSearch();
+		return;
+	}
+
+	if(i == 0){
+		$('#unPaid').val(1);
+		getSearch();
+		return;
+	}
+}
+
+function toggleCODFilter()
+{
+	var i = $('#cod').val();
+	if(i == 1){
+		$('#cod').val(0);
+		getSearch();
+		return;
+	}
+
+	if(i == 0){
+		$('#cod').val(1);
+		getSearch();
+		return;
+	}
+}
+
 
 function saveService()
 {
@@ -19,7 +71,7 @@ function saveService()
 				swal('ข้อผิดพลาด !!', 'บันทึกค่าบริการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง', 'error');
 			}
 		}
-	});	
+	});
 }
 
 
@@ -65,13 +117,13 @@ function viewPaymentDetail(id_order)
 $("#emsNo").keyup(function(e) {
     if( e.keyCode == 13 )
 	{
-		saveDeliveryNo();	
+		saveDeliveryNo();
 	}
 });
 
 function inputDeliveryNo()
 {
-	$("#deliveryModal").modal('show');	
+	$("#deliveryModal").modal('show');
 }
 
 function saveDeliveryNo()
@@ -134,17 +186,17 @@ function submitPayment()
 			}
 			else if( rs == 'fail' )
 			{
-				swal("ข้อผิดพลาด", "ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่อีกครั้ง", "error");	
+				swal("ข้อผิดพลาด", "ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่อีกครั้ง", "error");
 			}
 			else
 			{
-				swal("ข้อผิดพลาด", rs, "error");	
+				swal("ข้อผิดพลาด", rs, "error");
 			}
 		}
-	});	
+	});
 }
 
-function readURL(input) 
+function readURL(input)
 {
    if (input.files && input.files[0]) {
         var reader = new FileReader();
@@ -168,9 +220,9 @@ $("#image").change(function(){
 			return false;
 		}
 		if( size > 2000000 )
-		{ 
-			swal("ขนาดไฟล์ใหญ่เกินไป", "ไฟล์แนบต้องมีขนาดไม่เกิน 2 MB", "error"); 
-			$(this).val(''); 
+		{
+			swal("ขนาดไฟล์ใหญ่เกินไป", "ไฟล์แนบต้องมีขนาดไม่เกิน 2 MB", "error");
+			$(this).val('');
 			return false;
 		}
 		readURL(this);
@@ -192,7 +244,7 @@ function removeFile()
 {
 	$("#previewImg").html('');
 	$("#block-image").css("opacity","0");
-	$("#btn-select-file").css('display', '');	
+	$("#btn-select-file").css('display', '');
 	$("#image").val('');
 }
 
@@ -205,12 +257,12 @@ $("#payAmount").focusout(function(e) {
 
 function dateClick()
 {
-	$("#payDate").focus();	
+	$("#payDate").focus();
 }
 $("#payDate").datepicker({ dateFormat: 'dd-mm-yy'});
 function selectFile()
 {
-	$("#image").click();	
+	$("#image").click();
 }
 
 function payOnThis(id)
@@ -239,14 +291,14 @@ function payOnThis(id)
 
 function payOrder()
 {
-	$("#selectBankModal").modal('show');	
+	$("#selectBankModal").modal('show');
 }
 
 function removeAddress(id)
 {
 	swal({
 		title: 'ต้องการลบที่อยู่ ?',
-		text: 'คุณแน่ใจว่าต้องการลบที่อยู่นี้ โปรดจำไว้ว่าการกระทำนี้ไม่สามารถกู้คืนได้',	
+		text: 'คุณแน่ใจว่าต้องการลบที่อยู่นี้ โปรดจำไว้ว่าการกระทำนี้ไม่สามารถกู้คืนได้',
 		type: 'warning',
 		showCancelButton: true,
 		confirmButtonColor: '#DD6855',
@@ -260,14 +312,14 @@ function removeAddress(id)
 				success: function(rs){
 					var rs = $.trim(rs);
 					if( rs == 'success' ){
-						swal({ title : "สำเร็จ", text: "ลบรายการเรียบร้อยแล้ว", timer: 1000, type: "success" });	
-						reloadAddressTable();						
+						swal({ title : "สำเร็จ", text: "ลบรายการเรียบร้อยแล้ว", timer: 1000, type: "success" });
+						reloadAddressTable();
 					}else{
-						swal("ข้อผิดพลาด!!", "ลบรายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง", "error");	
+						swal("ข้อผิดพลาด!!", "ลบรายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง", "error");
 					}
 				}
 			});
-		});	
+		});
 }
 //----------  edit address  -----------//
 function editAddress(id)
@@ -303,7 +355,7 @@ function setDefault(id)
 	$.ajax({
 		url:"controller/orderController.php?setDefaultAddress",
 		type:"POST", cache:"false", data:{ "id_address" : id, "id_order" : id_order },
-		success: function(rs){			
+		success: function(rs){
 			reloadAddressTable();
 		}
 	});
@@ -357,14 +409,14 @@ function saveAddress()
 				clearAddressField();
 			}
 		}
-	});			
+	});
 }
 
 
 function addNewAddress()
 {
 	clearAddressField();
-	$("#addressModal").modal('show');	
+	$("#addressModal").modal('show');
 }
 
 function clearAddressField()
@@ -378,7 +430,7 @@ function clearAddressField()
 	$("#postcode").val('');
 	$("#phone").val('');
 	$("#email").val('');
-	$("#alias").val('');	
+	$("#alias").val('');
 }
 
 
@@ -388,7 +440,7 @@ function valid_password(){
 	var password = $("#bill_password").val();
 	$.ajax({
 		url:"controller/orderController.php?check_password&password="+password,
-		type:"GET", cache:false, 
+		type:"GET", cache:false,
 		success: function(data){
 			if(data == "0"){
 				load_out();
@@ -408,7 +460,7 @@ function valid_approve()
 	var password = $("#edit_bill_password").val();
 	$.ajax({
 		url:"controller/orderController.php?check_password&password="+password,
-		type:"GET", cache:false, 
+		type:"GET", cache:false,
 		success: function(data){
 			if(data == "0"){
 				load_out();
@@ -443,7 +495,7 @@ function update_bill_discount(id_approve)
 				$("#edit_reduction").removeAttr("disabled");
 			}
 		}
-		
+
 	});
 }
 
@@ -476,7 +528,7 @@ function edit_discount()
 	$("#btn_edit_discount").css("display","none");
 	$("#btn_delete_discount").css("display","none");
 	$("#edit_reduction").attr("disabled", "disabled");
-	$("#btn_update_discount").css("display","");	
+	$("#btn_update_discount").css("display","");
 }
 
 function insert_discount(id_approve)
@@ -499,7 +551,7 @@ function insert_discount(id_approve)
 				$("#edit_reduction").removeAttr("disabled");
 			}
 		}
-		
+
 	});
 }
 
@@ -516,7 +568,7 @@ function add_discount()
 		return false;
 	}else{
 		load_out();
-		$("#modal_approve").modal("show");	
+		$("#modal_approve").modal("show");
 	}
 }
 
@@ -530,7 +582,7 @@ $("#btn_add_discount").click(function(e){
 
 
 $("#from_date").datepicker({
-	dateFormat: 'dd-mm-yy', 
+	dateFormat: 'dd-mm-yy',
 	onClose: function( selectedDate ) {
       $( "#to_date" ).datepicker( "option", "minDate", selectedDate );
 	  if( $(this).val() != '' && $("#to_date").val() == '' ){ $("#to_date").focus(); }
@@ -538,22 +590,22 @@ $("#from_date").datepicker({
 });
 
 $( "#to_date" ).datepicker({
-	dateFormat: 'dd-mm-yy',   
+	dateFormat: 'dd-mm-yy',
 	onClose: function( selectedDate ) {
         $( "#from_date" ).datepicker( "option", "maxDate", selectedDate );
       }
 });
- 
+
 
 $("#date").datepicker({  dateFormat: 'dd-mm-yy' });
 
-function validate() 
+function validate()
 {
 	var from_date	= $("#from_date").val();
 	var to_date 		= $("#to_date").val();
 	if( !isDate(from_date) || !isDate(to_date) ){ swal("วันที่ไม่ถูกต้อง"); return false; }
 	$("#form").submit();
-}	
+}
 
 function state_change()
 {
@@ -562,7 +614,7 @@ function state_change()
 	$("#state_change").submit();
 }
 
-var clipboard = new Clipboard('.btn');	
+var clipboard = new Clipboard('.btn');
 
 
 //-------------------------------------  New code ----------------------------------------//
@@ -578,7 +630,7 @@ function verifyDiscount(id, price)
 	if( unt == 'percent' && disc > 100 ){ swal("ส่วนลดต้องไม่เกิน 100%"); inp.val(0); }
 	if( unt == 'percent' && disc < 0 ){ swal("ส่วนลดต้องไม่น้อยกว่า 0%"); inp.val(0);}
 	if( unt == 'amount' && disc > price ){ swal("ส่วนลดต้องไม่เกินราคาขาย"); inp.val(0);}
-	if( unt == 'amount' && disc < 0 ){ swal("ส่วนลดต้องไม่ติดลบ"); inp.val(0); }		
+	if( unt == 'amount' && disc < 0 ){ swal("ส่วนลดต้องไม่ติดลบ"); inp.val(0); }
 }
 
 
@@ -598,7 +650,7 @@ function checkPassword(){
 	if( password == "" ){ return false; }
 	$.ajax({
 		url:"controller/orderController.php?check_password&password="+password,
-		type:"GET", cache:false, 
+		type:"GET", cache:false,
 		success: function(data){
 			load_out();
 			if(data == "0"){
@@ -714,7 +766,7 @@ function getViewCategory(id)
 				if( rs != 'no_product' ){
 					output.html(rs);
 				}else{
-					swal("ไม่พบข้อมูล", "ไม่พบข้อมูลสินค้าในหมวดหมู่ที่เลือก", "warning");		
+					swal("ไม่พบข้อมูล", "ไม่พบข้อมูลสินค้าในหมวดหมู่ที่เลือก", "warning");
 				}
 			}
 		});
@@ -726,9 +778,9 @@ function getProduct()
 {
 	var st 		= $("#sProduct").val();
 	var id_cus	= $("#id_customer").val();
-	
+
 	if( st == '' ){ swal("กรุณาระบุรหัสสินค้า"); return false; }
-	
+
 	load_in();
 	$.ajax({
 		url:"controller/orderController.php?getProductGrid",
@@ -746,9 +798,9 @@ function getProduct()
 				$("#order_grid").modal("show");
 			}else{
 				swal("ไม่พบสินค้า", "รหัสสินค้าไม่ถูกต้อง หรือ ไม่มีสินค้านี้ในระบบ กรุณาตรวจสอบ", "error");
-			}		
+			}
 		}
-	});		
+	});
 }
 
 
@@ -758,7 +810,7 @@ function viewProduct()
 {
 	var st 		= $("#vProduct").val();
 	if( st == '' ){ swal("กรุณาระบุรหัสสินค้า"); return false; }
-	
+
 	load_in();
 	$.ajax({
 		url:"controller/orderController.php?viewProductGrid",
@@ -776,9 +828,9 @@ function viewProduct()
 				$("#order_grid").modal("show");
 			}else{
 				swal("ไม่พบสินค้า", "รหัสสินค้าไม่ถูกต้อง หรือ ไม่มีสินค้านี้ในระบบ กรุณาตรวจสอบ", "error");
-			}		
+			}
 		}
-	});		
+	});
 }
 //----------------------  ลบรายการสินค้าในหน้าเพิ่ม  ------------------//
 function deleteRow(id, ref)
@@ -799,15 +851,15 @@ function deleteRow(id, ref)
 				success: function(rs){
 					var rs = $.trim(rs);
 					if( rs == 'success' ){
-						swal({ title : "สำเร็จ", text: "ลบรายการเรียบร้อยแล้ว", timer: 1000, type: "success" });	
+						swal({ title : "สำเร็จ", text: "ลบรายการเรียบร้อยแล้ว", timer: 1000, type: "success" });
 						var id_order = $("#id_order").val();
 						reloadOrderProduct(id_order);
 					}else{
-						swal("ข้อผิดพลาด!!", "ลบรายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง", "error");	
+						swal("ข้อผิดพลาด!!", "ลบรายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง", "error");
 					}
 				}
 			});
-		});	
+		});
 }
 
 //------------------------------  ลบรายการสินค้าในหน้า แสดงรายละเอียด  ---------------------//
@@ -829,15 +881,15 @@ function deleteItem(id, ref)
 				success: function(rs){
 					var rs = $.trim(rs);
 					if( rs == 'success' ){
-						swal({ title : "สำเร็จ", text: "ลบรายการเรียบร้อยแล้ว", timer: 1000, type: "success" });	
+						swal({ title : "สำเร็จ", text: "ลบรายการเรียบร้อยแล้ว", timer: 1000, type: "success" });
 						$("#row_"+id).remove();
 						recalOrder();
 					}else{
-						swal("ข้อผิดพลาด!!", "ลบรายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง", "error");	
+						swal("ข้อผิดพลาด!!", "ลบรายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง", "error");
 					}
 				}
 			});
-		});	
+		});
 }
 
 function recalOrder()
@@ -878,7 +930,7 @@ function newOrder()
 			if( rs == 'fail' ){
 				swal("ข้อผิดพลาด!!", "เพิ่มออเดอร์ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง", "error");
 			}else{
-				window.location.href = 'index.php?content=order_online&add&id_order='+rs;	
+				window.location.href = 'index.php?content=order_online&add&id_order='+rs;
 			}
 		}
 	});
@@ -891,6 +943,7 @@ function editOrder()
 	$("#customer_name").removeAttr("disabled");
 	$("#payment").removeAttr("disabled");
 	$("#online").removeAttr("disabled");
+	$("#btn-cod").removeAttr("disabled");
 	$("#comment").removeAttr("disabled");
 	$("#btnEdit").css("display","none");
 	$("#btnUpdate").css("display", "");
@@ -929,7 +982,7 @@ function updated()
 	$("#online").attr("disabled", "disabled");
 	$("#comment").attr("disabled", "disabled");
 	$("#btnUpdate").css("display", "none");
-	$("#btnEdit").css("display", "");	
+	$("#btnEdit").css("display", "");
 }
 
 
@@ -947,7 +1000,7 @@ function save(id)
 				swal({ title: "เรียบร้อย", text: "บันทึกออเดอร์เรียบร้อยแล้ว", type: "success", timer: 1000 });
 				setTimeout( function(){ goBack(); }, 1500);
 			}else{
-				swal("ข้อผิดพลาด!!", "บันทึกออเดอร์ไม่สำเร็จ กรุณาลองใหม่อีกครั้งภายหลัง", "error");	
+				swal("ข้อผิดพลาด!!", "บันทึกออเดอร์ไม่สำเร็จ กรุณาลองใหม่อีกครั้งภายหลัง", "error");
 			}
 		}
 	});
@@ -955,7 +1008,7 @@ function save(id)
 
 function goBack()
 {
-	window.location.href = 'index.php?content=order_online';	
+	window.location.href = 'index.php?content=order_online';
 }
 
 
@@ -966,7 +1019,7 @@ function addNew()
 		type:"GET", cache:"false", success: function(rs){
 			var rs = $.trim(rs);
 			if( rs == 'ok'){
-				window.location.href = 'index.php?content=order_online&add';	
+				window.location.href = 'index.php?content=order_online&add';
 			}else{
 				window.location.href = 'index.php?content=order_online&add&id_order='+rs+'&warning=ยังไม่ได้บันทึกออเดอร์นี้';
 			}
@@ -981,7 +1034,7 @@ function addNewOnline()
 		type:"GET", cache:"false", success: function(rs){
 			var rs = $.trim(rs);
 			if( rs == 'ok'){
-				window.location.href = 'index.php?content=order_online&add';	
+				window.location.href = 'index.php?content=order_online&add';
 			}else{
 				window.location.href = 'index.php?content=order_online&add&id_order='+rs+'&warning=ยังไม่ได้บันทึกออเดอร์นี้';
 			}
@@ -991,7 +1044,7 @@ function addNewOnline()
 
 function viewOrder(id)
 {
-	window.location.href = 'index.php?content=order_online&edit&view_detail&id_order='+id;	
+	window.location.href = 'index.php?content=order_online&edit&view_detail&id_order='+id;
 }
 
 function getEdit(id)
@@ -1002,13 +1055,13 @@ function getEdit(id)
 
 function viewStock()
 {
-	window.location.href = 'index.php?content=order&view_stock';	
+	window.location.href = 'index.php?content=order&view_stock';
 }
 
 
 $("#sProduct").autocomplete({
 	source: "controller/autoComplete.php?product_code",
-	autoFocus: true		
+	autoFocus: true
 });
 
 
@@ -1022,7 +1075,7 @@ $("#sProduct").keyup(function(e){
 
 $("#vProduct").autocomplete({
 	source: "controller/autoComplete.php?product_code",
-	autoFocus: true		
+	autoFocus: true
 });
 
 
@@ -1051,7 +1104,7 @@ $("#customer_name").autocomplete({
 			$(this).val('');
 		}
 	}
-});		
+});
 
 function getSearch()
 {
@@ -1124,7 +1177,7 @@ function getData(id_product){
 	var id_cus = $("#id_customer").val();
 	$.ajax({
 		url:"controller/orderController.php?getData&id_product="+id_product+"&id_customer="+id_cus,
-		type:"GET", cache:false, 
+		type:"GET", cache:false,
 		success: function(dataset){
 			if(dataset !=""){
 				var arr = dataset.split("|");
@@ -1137,14 +1190,14 @@ function getData(id_product){
 				$("#order_grid").modal('show');
 			}else{
 				alert("NO DATA");
-			}		
+			}
 		}
 	});
 }
 function view_data(id_product){
 	$.ajax({
 		url:"controller/orderController.php?view_stock_data&id_product="+id_product,
-		type:"GET", cache:false, 
+		type:"GET", cache:false,
 		success: function(dataset){
 			if(dataset !=""){
 				var arr = dataset.split("|");
@@ -1157,7 +1210,7 @@ function view_data(id_product){
 				$("#order_grid").modal('show');
 			}else{
 				swal("NO DATA");
-			}		
+			}
 		}
 	});
 }
@@ -1173,14 +1226,14 @@ function check_order(id)
 {
 	var wid = $(document).width();
 	var left = (wid - 1100) /2;
-	window.open("index.php?content=bill&id_order="+id+"&check_order&view_detail=y&nomenu", "_blank", "width=1100, height=800, left="+left+", location=no, scrollbars=yes");	
+	window.open("index.php?content=bill&id_order="+id+"&check_order&view_detail=y&nomenu", "_blank", "width=1100, height=800, left="+left+", location=no, scrollbars=yes");
 }
 
 function print_order(id)
 {
 	var wid = $(document).width();
 	var left = (wid - 900) /2;
-	window.open("controller/orderController.php?print_order&id_order="+id, "_blank", "width=900, height=1000, left="+left+", location=no, scrollbars=yes");	
+	window.open("controller/orderController.php?print_order&id_order="+id, "_blank", "width=900, height=1000, left="+left+", location=no, scrollbars=yes");
 }
 
 function getSummary()
@@ -1217,7 +1270,7 @@ function toggleMe()
 		$("#viewType").val(1);
 		$("#btn-view-me").addClass('btn-info');
 	}
-	getSearch();	
+	getSearch();
 }
 
 function toggleClosed()
@@ -1226,7 +1279,7 @@ function toggleClosed()
 	if( closed == 1 )
 	{
 		$("#closed").val(0);
-		$("#btn-closed").removeClass('btn-primary');	
+		$("#btn-closed").removeClass('btn-primary');
 	}else{
 		$("#closed").val(1);
 		$("#btn-closed").addClass('btn-primary');
@@ -1240,7 +1293,7 @@ function toggleDelivered()
 	if( delivered == 1 )
 	{
 		$("#delivered").val(0);
-		$("#btn-delivered").removeClass('btn-primary');	
+		$("#btn-delivered").removeClass('btn-primary');
 	}else{
 		$("#delivered").val(1);
 		$("#btn-delivered").addClass('btn-primary');

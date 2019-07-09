@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 function productName($id_pd)
 {
@@ -6,14 +6,14 @@ function productName($id_pd)
 	$rs 	= get_instance()->db->select('product_name')->where('id_product', $id_pd)->get('tbl_product');
 	if( $rs->num_rows() == 1 )
 	{
-		$name = $rs->row()->product_name;	
+		$name = $rs->row()->product_name;
 	}
 	return $name;
 }
 
 function itemName($id_pa)
 {
-	$id_pd 	= getIdProduct($id_pa);	
+	$id_pd 	= getIdProduct($id_pa);
 	$name 	= productName($id_pd);
 	return $name;
 }
@@ -35,14 +35,14 @@ function get_product_colors($id_pd)
 
 function get_product_sizes($id_pd)
 {
-	$sizes = FALSE; 
+	$sizes = FALSE;
 	$c 	=& get_instance();
 	$c->db->select('tbl_product_attribute.id_size, size_name')->from('tbl_size')->join('tbl_product_attribute', 'tbl_product_attribute.id_size = tbl_size.id_size');
 	$c->db->where('id_product', $id_pd)->group_by('tbl_product_attribute.id_size');
 	$rs	= $c->db->get();
 	if( $rs->num_rows() > 0 )
 	{
-		$sizes = $rs->result();	
+		$sizes = $rs->result();
 	}
 	return $sizes;
 }
@@ -63,7 +63,7 @@ function get_product_attributes($id_pd)
 
 function has_attribute($id_pd, $attribute = 'color')
 {
-	$rs = FALSE;	
+	$rs = FALSE;
 	switch( $attribute )
 	{
 		case 'color' :
@@ -82,7 +82,7 @@ function has_attribute($id_pd, $attribute = 'color')
 	$qs = get_instance()->db->where('id_product', $id_pd)->where($attr.' !=', 0)->limit(1)->get('tbl_product_attribute');
 	if( $qs->num_rows() == 1 )
 	{
-		$rs = TRUE; 
+		$rs = TRUE;
 	}
 	return $rs;
 }
@@ -103,22 +103,22 @@ function get_discount($id_cus = 0, $id_pd = 0)
 	{	// กรณี ส่วนลดในตัวสินค้า เป็น จำนวนเงิน
 		$cus_disc 	= ($cus_disc * 0.01) * $price;
 		$discount	=  $cus_disc > $a_disc ? $cus_disc : $a_disc;
-		$type			= 'amount';			
+		$type			= 'amount';
 	}
 	else
 	{
 		$discount 	= $cus_disc;
-		$type			= 'percent';	
+		$type			= 'percent';
 	}
 	$disc = array('discount' => $discount, 'type' => $type);
-	return $disc;		
+	return $disc;
 }
 
 
 function get_product_category($id_pd)
 {
 	/// ส่ง id_category ของ สินค้า กลับไปเป็น object  1 สินค้า อยู่ได้หลาย category
-	$rs = get_instance()->db->select('id_category')->where('id_product', $id_pd)->get('tbl_category_product');	
+	$rs = get_instance()->db->select('id_category')->where('id_product', $id_pd)->get('tbl_category_product');
 	if( $rs->num_rows() > 0 )
 	{
 		return $rs->result();
@@ -146,10 +146,10 @@ function getIdProduct($id_pa)
 	$rs = get_instance()->db->select('id_product')->where('id_product_attribute', $id_pa)->get('tbl_product_attribute');
 	if( $rs->num_rows() == 1 )
 	{
-		$id_pd = $rs->row()->id_product;	
+		$id_pd = $rs->row()->id_product;
 	}
-	
-	return $id_pd;		
+
+	return $id_pd;
 }
 
 function get_product_price($id_pd)
@@ -166,10 +166,10 @@ function get_product_price($id_pd)
 function itemPrice($id_pa)
 {
 	$price = 0;
-	$rs = get_instance()->db->select('price')->where('id_product_attribute', $id_pa)->get('tbl_product_attribute');	
+	$rs = get_instance()->db->select('price')->where('id_product_attribute', $id_pa)->get('tbl_product_attribute');
 	if( $rs->num_rows() == 1 )
 	{
-		$price = $rs->row()->price;	
+		$price = $rs->row()->price;
 	}
 	return $price;
 }
@@ -212,7 +212,7 @@ function is_new_product($id_pd)
 	$rs = get_instance()->db->select('id_product')->where('id_product', $id_pd)->where('date_add >', $date)->get('tbl_product');
 	if( $rs->num_rows() == 1 )
 	{
-		$is		= TRUE; 
+		$is		= TRUE;
 	}
 	return $is;
 }
@@ -223,7 +223,7 @@ function get_id_cover_image($id_pd)
 	$rs = get_instance()->db->where('id_product', $id_pd)->where('cover', 1)->get('tbl_image');
 	if( $rs->num_rows() > 0 )
 	{
-		$id_image = $rs->row()->id_image;	
+		$id_image = $rs->row()->id_image;
 	}
 	return $id_image;
 }
@@ -289,7 +289,7 @@ function get_image_path($id_image, $use_size = 2)
 	$count = strlen($id_image);
 	$path = str_split($id_image);
 	$image_path = base_url().'img/product';
-	$file_path	= FILE_PATH.'img/product';
+	$file_path	= FILE_PATH.'img/product'; 
 	$n = 0;
 	while($n<$count)
 	{
@@ -311,7 +311,7 @@ function get_image_path($id_image, $use_size = 2)
 	{
 		$image = no_image($use_size);
 	}
-	
+
 	return $image;
 }
 
@@ -330,7 +330,7 @@ function get_image_file($id_image, $size = '2')
 	$image	= '';
 	$pre_fix = prefix_image($size);
 	$file_path .= $pre_fix.$id_image.'.jpg';
-		
+
 	return $file_path;
 }
 function isAttrExists($id_pa, $attr = 'size')
@@ -343,7 +343,7 @@ function isAttrExists($id_pa, $attr = 'size')
 	}
 	else
 	{
-		return FALSE;	
+		return FALSE;
 	}
 }
 
@@ -355,7 +355,7 @@ function attrLabel($id_pa, $attr = 'size')
 	{
 		$id_attr = 'id_'.$attr;
 		$qs = 'SELECT '.$id_attr.' AS id FROM tbl_product_attribute WHERE id_product_attribute = '.$id_pa;
-		
+
 		$rs = get_instance()->db->query($qs);
 		if( $rs->num_rows() == 1 )
 		{
@@ -365,7 +365,7 @@ function attrLabel($id_pa, $attr = 'size')
 			}
 			else if( $attr == 'attribute' )
 			{
-				$res = attribute_name($rs->row()->id);	
+				$res = attribute_name($rs->row()->id);
 			}
 			else if( $attr == 'color' )
 			{
@@ -422,7 +422,7 @@ function color_name($id_color)
 	$rs 	= get_instance()->db->select('color_name')->where('id_color', $id_color)->get('tbl_color');
 	if( $rs->num_rows() == 1 )
 	{
-		$name = $rs->row()->color_name;	
+		$name = $rs->row()->color_name;
 	}
 	return $name;
 }

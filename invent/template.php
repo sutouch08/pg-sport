@@ -6,7 +6,7 @@ if (!defined('WEB_ROOT')) {
 $self = WEB_ROOT . 'index.php';
 if( isset( $_POST['get_rows'] ) )
 {
-	createCookie('get_rows', $_POST['get_rows'], 3600*24*60);	
+	createCookie('get_rows', $_POST['get_rows'], 3600*24*60);
 }
 
 function get_rows()
@@ -23,11 +23,11 @@ function get_page()
 
 function row_no()
 {
-	$no	= (get_rows() * (get_page() -1)) + 1 ;	
-	return $no;	
+	$no	= (get_rows() * (get_page() -1)) + 1 ;
+	return $no;
 }
 
-	
+
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -46,15 +46,15 @@ function row_no()
     <link href="<?php echo WEB_ROOT; ?>library/css/bootflat.css" rel="stylesheet">
      <link rel="stylesheet" href="<?php  echo WEB_ROOT;?>library/css/jquery-ui-1.10.4.custom.min.css" />
      <script src="<?php echo WEB_ROOT; ?>library/js/jquery.min.js"></script>
-     <script src="<?php echo WEB_ROOT; ?>library/js/handlebars-v3.js"></script> 
+     <script src="<?php echo WEB_ROOT; ?>library/js/handlebars-v3.js"></script>
   	<script src="<?php  echo WEB_ROOT;?>library/js/jquery-ui-1.10.4.custom.min.js"></script>
     <script src="<?php echo WEB_ROOT; ?>library/js/bootstrap.min.js"></script>
-     
-    
-    
+
+
+
     <!-- SB Admin CSS - Include with every page -->
     <link href="<?php echo WEB_ROOT; ?>library/css/sb-admin.css" rel="stylesheet">
-    <link href="<?php echo WEB_ROOT; ?>library/css/color.css" rel="stylesheet"> 
+    <link href="<?php echo WEB_ROOT; ?>library/css/color.css" rel="stylesheet">
     <link href="<?php echo WEB_ROOT; ?>library/css/template.css" rel="stylesheet">
    <script src="<?php echo WEB_ROOT; ?>library/js/sweet-alert.js"></script>
    <script src="<?php echo WEB_ROOT; ?>library/js/jquery.cookie.js"></script>
@@ -67,11 +67,11 @@ function row_no()
 
 <body style='padding-top:0px;' onLoad="checkerror();">
 <input type="hidden" name="id_user" id="id_user" value="<?php echo $_COOKIE['user_id']; ?>" />
-<?php 
+<?php
 if(isset($_GET['error'])){
 	$error_message = $_GET['error'];
 	echo "<input type='hidden' id='error' value='$error_message' />";
-} 
+}
 if(isset($_GET['message'])){
 	$message = $_GET['message'];
 	echo "<input type='hidden' id='success' value='$message' />";
@@ -88,7 +88,7 @@ checkError();
     <?php if(!isset($_GET['nomenu'])) : ?>
         <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style='position:relative;'>
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"> 
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -98,10 +98,10 @@ checkError();
             </div>
             <!-- /.navbar-header -->
             <div class="navbar-collapse collapse">
-            
+
             <?php include "../menu.php"; ?>
           <?php include "../user_menu.php"; ?>
-           </div> 
+           </div>
         </nav>
         <?php else : ?>
         <div style="width:100%; height:10px;">&nbsp;</div>
@@ -109,11 +109,11 @@ checkError();
    </div>
     <!-- /#wrapper -->
     <!--/.nav-collapse -->
-              
-    
+
+
 <div class="starter-template">
-  <?php   
-			include $content;	 
+  <?php
+			include $content;
 		?>
 </div>
 <div class='modal fade' id='xloader' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true' data-backdrop="static">
@@ -122,12 +122,12 @@ checkError();
             <div class='modal-body'>
             	<div style="width:100%; height:150px; padding-top:25px;">
                 	<div style="width:100%;  text-align:center; margin-bottom:10px;">
-            			<i class="fa fa-spinner fa-4x fa-pulse" style="color:#069; display:block;"></i> 
+            			<i class="fa fa-spinner fa-4x fa-pulse" style="color:#069; display:block;"></i>
                     </div>
                     <div style="width:100%; height:10px; background-color:#CCC;"></div>
                     <div id="preloader" style="margin-top:-10px; height:10px; width:1%; background-color:#09F;"></div>
-                    
-                    
+
+
                     <div style="width:100%;  text-align:center; margin-top:15px; font-size:12px;">
                 		<span><strong>Loading....</strong></span>
  					</div>
@@ -135,11 +135,11 @@ checkError();
             </div>
         </div>
     </div>
-</div> 
+</div>
 <div id="loader" style="position:absolute; padding: 15px 25px 15px 25px; background-color:#fff; opacity:0.0; box-shadow: 0px 0px 25px #CCC; top:-20px; display:none;">
         <center><i class="fa fa-spinner fa-5x fa-spin blue"></i></center>
         <center>กำลังโหลด....</center>
-</div> 
+</div>
 
 <script>
 var load_time;
@@ -154,14 +154,14 @@ function load_in(){
 			time += 0.01;
 		}
 		$("#preloader").css("width", time+"%");
-	}, 1000);		
+	}, 1000);
 }
 function load_out(){
 	$("#xloader").modal("hide");
 	window.clearInterval(load_time);
 	$("#preloader").css("width", "0%");
-}  
- 
+}
+
 function removeCommas(str) {
     while (str.search(",") >= 0) {
         str = (str + "").replace(',', '');
@@ -171,9 +171,9 @@ function removeCommas(str) {
 
 function addCommas(number){
 	 return (
-	 	input.toString()).replace(/^([-+]?)(0?)(\d+)(.?)(\d+)$/g, function(match, sign, zeros, before, decimal, after) { 
+	 	input.toString()).replace(/^([-+]?)(0?)(\d+)(.?)(\d+)$/g, function(match, sign, zeros, before, decimal, after) {
 	 		var reverseString = function(string) { return string.split('').reverse().join(''); };
-	 		var insertCommas  = function(string) { 
+	 		var insertCommas  = function(string) {
 					var reversed   = reverseString(string);
 					var reversedWithCommas = reversed.match(/.{1,3}/g).join(',');
 					return reverseString(reversedWithCommas);
@@ -184,14 +184,14 @@ function addCommas(number){
 function isDate(txtDate){
 	  var currVal = txtDate;
 	  if(currVal == '')
-	    return false;  
-	  //Declare Regex 
+	    return false;
+	  //Declare Regex
 	  var rxDatePattern = /^(\d{1,2})(\/|-)(\d{1,2})(\/|-)(\d{4})$/;
 	  var dtArray = currVal.match(rxDatePattern); // is format OK?
 	  if (dtArray == null){
 		     return false;
 	  }
-	  //Checks for mm/dd/yyyy format.	  
+	  //Checks for mm/dd/yyyy format.
 	  dtDay= dtArray[1];
 	  dtMonth = dtArray[3];
 	  dtYear = dtArray[5];
@@ -213,7 +213,7 @@ function isDate(txtDate){
 function validEmail(v) {
     var r = new RegExp("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
     return (v.match(r) == null) ? false : true;
-}	
+}
 
 jQuery.fn.numberOnly = function()
 						{
@@ -225,7 +225,7 @@ jQuery.fn.numberOnly = function()
 									// allow backspace, tab, delete, enter, arrows, numbers and keypad numbers ONLY
 									// home, end, period, and numpad decimal
 									return (
-										key == 8 || 
+										key == 8 ||
 										key == 9 ||
 										key == 13 ||
 										key == 46 ||
@@ -237,43 +237,43 @@ jQuery.fn.numberOnly = function()
 								});
 							});
 						};
-						
+
 						addCommas = function(input){
 						  // If the regex doesn't match, `replace` returns the string unmodified
 						  return (input.toString()).replace(
-							// Each parentheses group (or 'capture') in this regex becomes an argument 
+							// Each parentheses group (or 'capture') in this regex becomes an argument
 							// to the function; in this case, every argument after 'match'
 							/^([-+]?)(0?)(\d+)(.?)(\d+)$/g, function(match, sign, zeros, before, decimal, after) {
-						
+
 							  // Less obtrusive than adding 'reverse' method on all strings
 							  var reverseString = function(string) { return string.split('').reverse().join(''); };
-						
+
 							  // Insert commas every three characters from the right
-							  var insertCommas  = function(string) { 
-						
+							  var insertCommas  = function(string) {
+
 								// Reverse, because it's easier to do things from the left
 								var reversed           = reverseString(string);
-						
+
 								// Add commas every three characters
 								var reversedWithCommas = reversed.match(/.{1,3}/g).join(',');
-						
+
 								// Reverse again (back to normal)
 								return reverseString(reversedWithCommas);
 							  };
-						
+
 							  // If there was no decimal, the last capture grabs the final digit, so
 							  // we have to put it back together with the 'before' substring
 							  return sign + (decimal ? insertCommas(before) + decimal + after : insertCommas(before + after));
 							}
 						  );
 						};
-						
+
 						$.fn.addCommas = function() {
 							  $(this).each(function(){
 								$(this).val(addCommas($(this).val()));
 							  });
-							};	
-	
+							};
+
 function confirm_delete(title, text, url, confirm_text, cancle_text)
 {
 	var confirm_text = typeof confirm_text !== 'undefined' ? confirm_text : "ใช่";
@@ -290,7 +290,7 @@ function confirm_delete(title, text, url, confirm_text, cancle_text)
 	  function(isConfirm){
 	  if (isConfirm) {
 		window.location.href = url;
-	  } 
+	  }
 	});
 }
 
@@ -324,7 +324,7 @@ function render_prepend(source, data, output)
 {
 	var template		= Handlebars.compile(source);
 	var html			= template(data);
-	output.prepend(html);	
+	output.prepend(html);
 }
 
 var downloadTimer;
@@ -357,7 +357,7 @@ $("#get_rows").change(function(e) {
 
 function isJson(str){
 	try{
-		JSON.parse(str);	
+		JSON.parse(str);
 	}catch(e){
 		return false;
 	}
@@ -368,7 +368,14 @@ function printOut(url)
 {
 	var center = ($(document).width() - 800) /2;
 	window.open(url, "_blank", "width=800, height=900. left="+center+", scrollbars=yes");
-}	
+}
+
+function updateNo(){
+  $('.no').each(function(index){
+    index++;
+    $(this).text(index);
+  });
+}
 
 </script>
 

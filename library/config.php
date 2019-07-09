@@ -48,7 +48,8 @@ $company = new Company();
 $company->getCompany();
 define("COMPANY",$company->name);
 if(!isset($_COOKIE['get_rows'])){
-	setcookie("get_rows", 50,time()+(3600*24*365*30),'/');
+	//setcookie("get_rows", 50,time()+(3600*24*365*30),'/');
+	setCookie('get_row', 50);
 }
 
 ?>

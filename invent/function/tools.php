@@ -116,7 +116,7 @@ function employee_in($txt)
 //-------------------------  สร้าง cookie
 function createCookie($name, $value, $time = 3600, $path = '/')
 {
-	return setcookie($name, $value, time()+$time, $path);
+	return setcookie($name, $value, intval(time()+$time), $path);
 }
 
 
@@ -125,7 +125,7 @@ function createCookie($name, $value, $time = 3600, $path = '/')
 //----------------------------  ลบ cookie
 function deleteCookie($name, $path = '/')
 {
-	return setcookie($name, '', time()-3600, $path);
+	return setcookie($name, '', intval(time()-3600), $path);
 }
 
 
@@ -2075,8 +2075,10 @@ function drop_order_detail($id_order)
 
 
 
-
-
+function unValidOrder($id_order)
+{
+	return dbQuery("UPDATE tbl_order SET valid = 0 WHERE id_order = ".$id_order);
+}
 
 //--------------------------- เปลี่ยนสถานะออเดอร์ -------------------------//
 function order_state_change($id_order, $state, $id_emp)
@@ -2098,6 +2100,11 @@ function order_state_change($id_order, $state, $id_emp)
 		if($c_state > 3)
 		{
 			updateValidDetail($id_order);
+		}
+
+		if($state == 1 && $sc === TRUE)
+		{
+			unValidOrder($id_order); //--- เปลี่ยนเป็นยังไม่ชำระเงิน
 		}
 	}
 	else if($state == 8 )
@@ -2693,16 +2700,13 @@ function cancle_product($qty, $id_pd, $id_pa, $id_order, $id_zone, $id_wh, $id_e
 
 function check_cart($id_sale)
 {
-	$qs = dbQuery("SELECT id_cart, id_customer FROM tbl_cart WHERE id_sale = ".$id_sale." AND valid = 0 ");
+	$qs = dbQuery("SELECT id_cart, id_customer FROM tbl_cart WHERE id_sale = '".$id_sale."' AND valid = 0 ");
 	if(dbNumRows($qs) > 0 )
 	{
-		$rs = dbFetchArray($qs);
-		$cart['id_cart']	= $rs['id_cart'];
-		$cart['id_customer']	= $rs['id_customer'];
-	}else{
-		$cart = false;
+		return dbFetchArray($qs);
 	}
-	return $cart;
+
+	return FALSE;
 }
 
 

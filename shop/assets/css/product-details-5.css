@@ -522,9 +522,22 @@ nav.slider-nav a.next {
   font-size: 75%;
 }
 .color-value {
+  min-width: 30px;
+  display: inline-block;
+  padding: 5px;
+  border:solid 1px #CCC;
+  margin-right: 5px;
+  margin-bottom: 5px;
   color: #999999;
-  padding-left: 10px;
+  text-align: center;
 }
+
+.color-value:hover {
+  color:#000;
+  font-weight: bold;
+  background-color:#CCC;
+}
+
 .panel.panel-blank {
   border-bottom: 0 none;
   border-radius: 0;

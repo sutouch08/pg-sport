@@ -12,7 +12,7 @@ if(isset($_GET['get_zone'])&& isset($_REQUEST['term'])){
 		$data[] = $rs['id_zone'].":".$rs['zone_name'];
 	}
 	echo json_encode($data);
-	
+
 }
 function getSoldQty($id_order, $id_pa)
 {
@@ -45,7 +45,7 @@ function getOrderRole($id_order)
 	{
 		list( $sc ) = dbFetchArray($qs);
 	}
-	return $sc;		
+	return $sc;
 }
 
 
@@ -58,11 +58,11 @@ function getAction($prepared, $checked, $sold, $movement)
 	}
 	else if( $prepared > $checked && $checked == $sold && $sold == $movement )
 	{
-		$sc = 'move';	
+		$sc = 'move';
 	}
 	else if( $checked != $sold OR $sold != $movement )
 	{
-		$sc = 'rebill';	
+		$sc = 'rebill';
 	}
 	return $sc;
 }
@@ -109,7 +109,7 @@ if( isset( $_GET['verifyOrder'] ) )
 			{
 				$action		=  $act == 'delete' ? 'ลบ' : ( $act == 'move' ? 'ย้าย' : 'ย้อนกลับ');
 			}
-			
+
 			if( $act == 'move' ){ $move++; }else if( $act == 'rebill' ){ $rebill++; }
 			$sc .= '<tr id="row_'.$id_order .'_'. $id_pa.'" style="font-size:12px;">';
 			$sc .= '<td>'.get_product_reference($id_pa).'</td>';
@@ -119,14 +119,14 @@ if( isset( $_GET['verifyOrder'] ) )
 			$sc .= '<td align="center">'. number_format($sold_qty) .'</td>';
 			$sc .= '<td align="center">'. number_format($movement) .'</td>';
 			if( $role == 5 && $prepared == $checked && $checked == $movement )
-			{ 
+			{
 				$sc .= '<td align="center">'. $action .' &nbsp; <a href="javascript:void(0)" onClick="deleteCancleItem('.$id_order.', '.$id_pa.')">ลบ</a></td>';
 			}
 			else
 			{
 				$sc .= '<td align="center">'. $action .'</td>';
 			}
-			$sc .= '</tr>';			
+			$sc .= '</tr>';
 		}
 		if( $rebill == 0 && $move == 0 && $c_state != 8)
 		{
@@ -135,13 +135,13 @@ if( isset( $_GET['verifyOrder'] ) )
 			$sc .= '<td align="center><button type="button" class="btn btn-sm btn-danger btn-block" onClick="removeCancle('.$id_order.')">ลบ</button></td>';
 			$sc .= '</tr>';
 		}
-		
+
 	}
 	if( $c_state == 8 )
 	{
 		$sc .= '<tr>';
 		$sc .= '<td colspan="7" align="center">ออเดอร์นี้ถูกย้ายมาที่ Cancle เพราะออเดอร์ถูกยกเลิกหลังจากมีการจัดสินค้าไปแล้ว คุณต้อง "ย้ายสินค้ากลับเข้าโซนปกติ"</td>';
-		$sc .= '</tr>';	
+		$sc .= '</tr>';
 	}
 	$sc .= '</table>';
 	echo $sc;
@@ -157,7 +157,7 @@ if( isset( $_GET['removeItemsFromCancleZone'] ) )
 	{
 		$sc = 'success';
 	}
-	echo $sc;	
+	echo $sc;
 }
 
 if( isset( $_GET['deleteCancleItem'] ) )
@@ -183,7 +183,7 @@ if(isset($_GET['add'])&&isset($_POST['recieved_no'])){
 	$role = $_POST['role'];
 	if(dbQuery("INSERT INTO tbl_recieved_product (recieved_product_no, reference_no, date, id_employee, role) VALUES ('$recieved_no', '$reference', '$date_add', $employee_id, $role)")){
 		list($id_recieved_product)=dbFetchArray(dbQuery("SELECT id_recieved_product FROM tbl_recieved_product WHERE recieved_product_no = '$recieved_no'"));
-		$first_use = dbNumRows(dbQuery("SELECT id_stock_movement FROM tbl_stock_movement WHERE id_stock_movement = 1")); 
+		$first_use = dbNumRows(dbQuery("SELECT id_stock_movement FROM tbl_stock_movement WHERE id_stock_movement = 1"));
 		if($first_use<1){ $import = "&first=y"; }else{ $import="";}
 		if($id_recieved_product !=""){
 			header("location: ../index.php?content=product_in&add=y&id_recieved_product=$id_recieved_product&date_add=$date_add$import");
@@ -195,16 +195,16 @@ if(isset($_GET['add'])&&isset($_POST['recieved_no'])){
 }
 //********************************** เพิ่มรายการรับสินค้าเข้าทีละรายการ(ยังไม่บันทึกยอด) *****************************************//
 if(isset($_GET['add_detail'])&&isset($_GET['id_recieved_product'])){
-	$id_recieved_product = $_GET['id_recieved_product']; 
+	$id_recieved_product = $_GET['id_recieved_product'];
 	$barcode_item = trim($_POST['barcode_item']);
 	if(isset($_POST['barcode_zone'])){ 	$barcode_zone = trim($_POST['barcode_zone']); }else{ $barcode_zone = ""; }
 	if(isset($_POST['zone_name'])){ 	$zone_name = $_POST['zone_name']; }else{ $zone_name = "";}
 	if(isset($_POST['id_zone'])){ 	$id_zone = $_POST['id_zone']; }else{ $id_zone = "";}
-	$pos_qty = $_POST['qty']; 
+	$pos_qty = $_POST['qty'];
 	$id_warehouse = $_POST['id_warehouse'];
 	$product = new product();
     list($date_add) = dbFetchArray(dbQuery("SELECT date FROM tbl_recieved_product WHERE id_recieved_product = $id_recieved_product"));
-	$arr = $product->check_barcode($barcode_item); ///ดึง id_product_attribute และ จำนวน จากบาร์โค้ด คืนค่ามาเป็น array [id_product_attribute] และ [qty] ตามลำดับ 
+	$arr = $product->check_barcode($barcode_item); ///ดึง id_product_attribute และ จำนวน จากบาร์โค้ด คืนค่ามาเป็น array [id_product_attribute] และ [qty] ตามลำดับ
 	$id_product_attribute = $arr['id_product_attribute'];
 	$qty = $pos_qty*$arr['qty'];
 	if($id_product_attribute ==""){ // ตรวจสอบว่ามีรหัสสินค้าหรือไม่ ถ้าไม่มีให้แสดงข้อผิดพลาด
@@ -213,15 +213,15 @@ if(isset($_GET['add_detail'])&&isset($_GET['id_recieved_product'])){
 			exit;
 	}
 	if($id_zone ==""){
-		if($barcode_zone !=""){ // ตรวจสอบว่ารหัสโซนหรือชื่อโซนถูกต้องหรือไม่ 
-				list($id_zone) = dbFetchArray(dbQuery("SELECT id_zone FROM tbl_zone WHERE barcode_zone = '$barcode_zone' AND id_warehouse = $id_warehouse")); 	
+		if($barcode_zone !=""){ // ตรวจสอบว่ารหัสโซนหรือชื่อโซนถูกต้องหรือไม่
+				list($id_zone) = dbFetchArray(dbQuery("SELECT id_zone FROM tbl_zone WHERE barcode_zone = '$barcode_zone' AND id_warehouse = $id_warehouse"));
 		}else if($zone_name !=""){
 				list($id_zone) = dbFetchArray(dbQuery("SELECT id_zone FROM tbl_zone WHERE zone_name = '$zone_name' AND id_warehouse = $id_warehouse"));
 		}
 	}
 		list($barcode_zone, $name_zone) = dbFetchArray(dbQuery("SELECT barcode_zone, zone_name FROM tbl_zone WHERE id_zone = $id_zone"));
 	if($id_zone ==""){ ///ถ้าไม่มีรหัสหรือชื่อโซน ให้แจ้งข้อผิดพลาด
-			$message ="รหัสหรือชื่อโซนไม่ถูกต้อง หรือ ไม่มีโซนนี้ในคลังที่เลือกอยู่ กรุณาตรวจสอบ"; 
+			$message ="รหัสหรือชื่อโซนไม่ถูกต้อง หรือ ไม่มีโซนนี้ในคลังที่เลือกอยู่ กรุณาตรวจสอบ";
 			header("location: ../index.php?content=product_in&edit=y&id_recieved_product=$id_recieved_product&error=$message&id_warehouse=$id_warehouse&date_add=$date_add");
 	}
 	$check = dbQuery("SELECT id_recieved_detail, qty FROM tbl_recieved_detail WHERE id_recieved_product = $id_recieved_product AND id_product_attribute = $id_product_attribute AND id_zone = $id_zone AND status = 0");
@@ -257,7 +257,7 @@ if(isset($_GET['delete'])&&isset($_GET['id_recieved_detail'])){
 	if(dbQuery("DELETE FROM tbl_recieved_detail WHERE id_recieved_detail = $id_recieved_detail AND id_recieved_product = $id_recieved_product")){
 		header("location: ../index.php?content=product_in&add=y&id_recieved_product=$id_recieved_product&id_warehouse=$id_warehouse&date_add=$date_add");
 	}else{
-		$message = "ไม่สามารถลบรายการได้"; 
+		$message = "ไม่สามารถลบรายการได้";
 		header("location: ../index.php?content=product_in&add=y&id_recieved_product=$id_recieved_product&id_warehouse=$id_warehouse&date_add=$date_add&error=$message");
 	}
 }
@@ -283,7 +283,7 @@ if(isset($_GET['delete_stocked'])&&isset($_GET['id_recieved_detail'])){
 				}else{
 					$message = "ลบรายการรับสินค้าเข้าแล้ว แต่ ลบยอดสินค้าออกจากสต็อกไม่สำเร็จ";
 					header("location: ../index.php?content=product_in&edit=y&id_recieved_product=$id_recieved_product&error=$message");
-				}			
+				}
 		}else{
 			$message = "ทำรายการไม่สำเร็จ";
 			header("location: ../index.php?content=product_in&edit=y&id_recieved_product=$id_recieved_product&error=$message");
@@ -292,7 +292,7 @@ if(isset($_GET['delete_stocked'])&&isset($_GET['id_recieved_detail'])){
 			if(dbQuery("UPDATE tbl_stock SET qty = $new_qty  WHERE id_zone = $id_zone AND id_product_attribute = $id_product_attribute")){
 				if(dbQuery("DELETE FROM tbl_recieved_detail WHERE id_recieved_detail = $id_recieved_detail")){
 					dbQuery("DELETE FROM tbl_stock_movement WHERE id_product_attribute = $id_product_attribute AND reference = '$recieved_no'");
-					header("location: ../index.php?content=product_in&edit=y&id_recieved_product=$id_recieved_product&message=$message");	
+					header("location: ../index.php?content=product_in&edit=y&id_recieved_product=$id_recieved_product&message=$message");
 			}else{
 			$message = "ลบรายการรับสินค้าเข้าแล้ว แต่ ลบยอดสินค้าออกจากสต็อกไม่สำเร็จ";
 			header("location: ../index.php?content=product_in&edit=y&id_recieved_product=$id_recieved_product&error=$message");
@@ -304,7 +304,7 @@ if(isset($_GET['delete_stocked'])&&isset($_GET['id_recieved_detail'])){
 			}
 	}
 }
-				
+
 
 //********************************************* บันทึกยอดสินค้ารับเข้าไปยังสต็อกจริง ************************************************//
 if(isset($_GET['add'])&&isset($_POST['id_recieved_product'])){
@@ -321,7 +321,7 @@ if(isset($_GET['add'])&&isset($_POST['id_recieved_product'])){
 			list($stock_qty) = dbFetchArray($qr);
 			$result = dbNumRows($qr);
 			$new_qty = $stock_qty + $qty; // ยอดสต็อกใหม่ ได้มาจาก ยอดเก่า + ยอดใหม่ที่เพิ่มเข้าไป
-			if($result <1){	//ถ้าไม่มียอดเก่าอยู่ให้เพิ่ม		
+			if($result <1){	//ถ้าไม่มียอดเก่าอยู่ให้เพิ่ม
 				if(dbQuery("INSERT INTO tbl_stock (id_zone, id_product_attribute, qty) VALUES ($id_zone, $id_product_attribute, $qty)")){
 					if(stock_movement("in",1,$id_product_attribute,$id_warehouse,$qty, $recieved_no, $date, $id_zone)){ // บันทึกความเคลื่อนไหวของสินค้า
 					dbQuery("UPDATE tbl_recieved_detail SET status=1 WHERE id_recieved_detail = $id_recieved_detail AND status=0"); // เปลี่ยนสถานะในรายการให้เป็นบันทึกแล้ว
@@ -352,7 +352,7 @@ if(isset($_GET['add'])&&isset($_POST['id_recieved_product'])){
 				}
 		}
 		header("location: ../index.php?content=product_in");
-		
+
 	}else{
 		$message = "ไม่สามารถบันทึกยอดสต็อกได้ เนื่องจากไม่มีรายการให้บันทึก";
 		header("location: ../index.php?content=product_in&add=y&id_recieved_product=$id_recieved_product&id_warehouse=$id_warehouse&date_add=$date_add&error=$message");
@@ -392,7 +392,7 @@ if(isset($_GET['edit'])&&isset($_POST['id_recieved_product'])){
 			list($stock_qty) = dbFetchArray($qr);
 			$result = dbNumRows($qr);
 			$new_qty = $stock_qty + $qty; // ยอดสต็อกใหม่ ได้มาจาก ยอดเก่า + ยอดใหม่ที่เพิ่มเข้าไป
-			if($result <1){	//ถ้าไม่มียอดเก่าอยู่ให้เพิ่ม	
+			if($result <1){	//ถ้าไม่มียอดเก่าอยู่ให้เพิ่ม
 				if(dbQuery("INSERT INTO tbl_stock (id_zone, id_product_attribute, qty) VALUES ($id_zone, $id_product_attribute, $qty)")){
 					if(stock_movement("in",1,$id_product_attribute,$id_warehouse, $qty, $recieved_no, $date,$id_zone)){
 					dbQuery("UPDATE tbl_recieved_detail SET status=1 WHERE id_recieved_detail = $id_recieved_detail AND status=0");
@@ -423,7 +423,7 @@ if(isset($_GET['edit'])&&isset($_POST['id_recieved_product'])){
 				}
 		}
 		header("location: ../index.php?content=product_in");
-		
+
 	}else{
 		if(dbQuery("UPDATE tbl_recieved_product SET date = '$date' WHERE id_recieved_product= $id_recieved_product")){
 			if(dbQuery("UPDATE tbl_recieved_detail SET date = '$date' WHERE id_recieved_product=$id_recieved_product")){
@@ -470,7 +470,7 @@ if(isset($_GET['delete'])&&isset($_GET['id_recieved_product'])){
 							$message = "ลบรายการสินค้าสำเร็จ แต่ ไม่สามารถบันทึกความเคลื่อนไหวสินค้าได้";
 							header("location: ../index.php?content=product_in&error=$message");
 						}
-							
+
 					}else{
 						$message = "ลบยอดสินค้าสำเร็จ แต่ ลบรายการรับเข้าไม่สำเร็จและไม่สามารถบันทึกความเคลื่อนไหวสินค้าได้";
 						header("location: ../index.php?content=product_in&error=$message");
@@ -490,7 +490,7 @@ if(isset($_GET['delete'])&&isset($_GET['id_recieved_product'])){
 					$message="ไม่สามารถลบรายการได้";
 					header("location: ../index.php?content=product_in&error=$message");
 				}
-			}	
+			}
 		}
 	}else if($row==0){
 		if(dbQuery("DELETE FROM tbl_recieved_product WHERE id_recieved_product = $id_recieved_product")){
@@ -501,11 +501,11 @@ if(isset($_GET['delete'])&&isset($_GET['id_recieved_product'])){
 					$message="ไม่สามารถลบรายการได้";
 					header("location: ../index.php?content=product_in&error=$message");
 				}
-	}			
-	
+	}
+
 }
 if(isset($_GET['print'])&&isset($_GET['id_recieved_product'])){
-	$id_recieved_product = $_GET['id_recieved_product']; 
+	$id_recieved_product = $_GET['id_recieved_product'];
 	$company = new company();
 	$sql = dbQuery("SELECT * FROM tbl_recieved_product WHERE id_recieved_product = '$id_recieved_product'");
 	$data = dbFetchArray($sql);
@@ -540,7 +540,7 @@ if(isset($_GET['print'])&&isset($_GET['id_recieved_product'])){
 					 <link rel='stylesheet' href='../../library/css/jquery-ui-1.10.4.custom.min.css' />
 					 <script src='../../library/js/jquery.min.js'></script>
 					<script src='../../library/js/jquery-ui-1.10.4.custom.min.js'></script>
-					<script src='../../library/js/bootstrap.min.js'></script>  
+					<script src='../../library/js/bootstrap.min.js'></script>
 					<!-- SB Admin CSS - Include with every page -->
 					<link href='../../library/css/sb-admin.css' rel='stylesheet'>
 					<link href='../../library/css/template.css' rel='stylesheet'>
@@ -579,7 +579,7 @@ if(isset($_GET['print'])&&isset($_GET['id_recieved_product'])){
 				<tr><td style='width:35%; padding:10px; height:5mm; vertical-align:text-top;'>พนักงาน :</td><td style='padding:10px; vertical-align:text-top; height:5mm;'>$employee_name</td></tr>
 				</table>	</div></td></tr>
 	</table>
-	
+
 		<table class='table table-striped' align='center' style='width:100%; table-layout:fixed; margin-top:5px;' id='order_detail'>
 			<tr>
 				<td style='width:10%; text-align:center; border:solid 1px #AAA; padding:10px;'>ลำดับ</td>
@@ -604,14 +604,14 @@ if(isset($_GET['print'])&&isset($_GET['id_recieved_product'])){
 					<td><div class='col-lg-12' style='border: solid 1px #AAA; font-size: 8px; border-radius:10px;'><p style='text-align:center;'>&nbsp;</p><p>&nbsp;</p><p><hr style='margin:0px; border-style:dotted; border-color:#CCC;'/></p><p >วันที่...............................</p></div>
 				</td></tr></table></div>
 				"; return $result; }
-	
+
 	if($rs>0){
 		echo $html.$doc_body_top.doc_head($date, $recieved_product_no, $reference, $employee_name, $page, $total_page);
 	while($i<$rs){
 		list($id_product_attribute, $qty, $id_warehouse, $id_zone)= dbFetchArray($sqr);
 		$product = new product();
-		$id_product = $product->getProductId($id_product_attribute);	
-		$product->product_detail($id_product);	
+		$id_product = $product->getProductId($id_product_attribute);
+		$product->product_detail($id_product);
 		$product->product_attribute_detail($id_product_attribute);
 		if($count+1 >$row){  $css_row ="border-bottom: solid 1px #AAA; border-top: 0px;";  }else{ $css_row ="border-top: 0px;";}
 		echo"<tr style='height:9mm;'>
@@ -625,8 +625,8 @@ if(isset($_GET['print'])&&isset($_GET['id_recieved_product'])){
 				</tr>";
 				$total_qty = $total_qty+$qty;
 				$i++; $count++;
-				if($n==$rs){ 
-				$ba_row = $row - $count; 
+				if($n==$rs){
+				$ba_row = $row - $count;
 				$ba = 0;
 				if($ba_row >0){
 					while($ba <= $ba_row){
@@ -643,16 +643,16 @@ if(isset($_GET['print'])&&isset($_GET['id_recieved_product'])){
 					}
 				}
 				echo footer(number_format($total_qty));
-				
+
 				}else{
 				if($count>$row){  $page++; echo footer().doc_head($date, $recieved_product_no, $reference, $employee_name, $page, $total_page); $count = 1; }
 				}
-				$n++; 
+				$n++;
 	}
 	}else{
 		echo"<tr><td colspan='8' align='center'><h3>ยังไมีมีรายการสินค้า</h3></td></tr></table>";
 	}
-	echo "</div></body></html>";	
+	echo "</div></body></html>";
 }
 //**************************************************** ******************************************************  รับคืนสินค้า **************************************************************************************** ******************************************//
 //******************************** เพิ่มหัวเอกสารการรับคืนสินค้า ***************************************//
@@ -687,17 +687,17 @@ if(isset($_GET['edit'])&&isset($_GET['id_return'])&&isset($_GET['id_customer']))
 }
 //********************************** เพิ่มรายการรับคืนสินค้าทีละรายการ(ยังไม่บันทึกยอด) *****************************************//
 if(isset($_GET['add_detail'])&&isset($_GET['id_return_order'])){
-	$id_return_order = $_GET['id_return_order']; 
+	$id_return_order = $_GET['id_return_order'];
 	$ro = new return_order($id_return_order);
 	$barcode_item = trim($_POST['barcode_item']);
 	if(isset($_POST['barcode_zone'])){ 	$barcode_zone = trim($_POST['barcode_zone']); }else{ $barcode_zone = ""; }
 	if(isset($_POST['zone_name'])){ 	$zone_name = $_POST['zone_name']; }else{ $zone_name = "";}
 	if(isset($_POST['id_zone'])){ 	$id_zone = $_POST['id_zone']; }else{ $id_zone = "";}
-	$pos_qty = $_POST['qty']; 
+	$pos_qty = $_POST['qty'];
 	$id_warehouse = $_POST['id_warehouse'];
 	$product = new product();
     $date_add = $ro->date_add;
-	$arr = $product->check_barcode($barcode_item); ///ดึง id_product_attribute และ จำนวน จากบาร์โค้ด คืนค่ามาเป็น array [id_product_attribute] และ [qty] ตามลำดับ 
+	$arr = $product->check_barcode($barcode_item); ///ดึง id_product_attribute และ จำนวน จากบาร์โค้ด คืนค่ามาเป็น array [id_product_attribute] และ [qty] ตามลำดับ
 	$id_product_attribute = $arr['id_product_attribute'];
 	$qty = $pos_qty*$arr['qty'];
 	$status = 0;
@@ -707,15 +707,15 @@ if(isset($_GET['add_detail'])&&isset($_GET['id_return_order'])){
 			exit;
 	}
 	if($id_zone ==""){
-		if($barcode_zone !=""){ // ตรวจสอบว่ารหัสโซนหรือชื่อโซนถูกต้องหรือไม่ 
-				list($id_zone) = dbFetchArray(dbQuery("SELECT id_zone FROM tbl_zone WHERE barcode_zone = '$barcode_zone' AND id_warehouse = $id_warehouse")); 	
+		if($barcode_zone !=""){ // ตรวจสอบว่ารหัสโซนหรือชื่อโซนถูกต้องหรือไม่
+				list($id_zone) = dbFetchArray(dbQuery("SELECT id_zone FROM tbl_zone WHERE barcode_zone = '$barcode_zone' AND id_warehouse = $id_warehouse"));
 		}else if($zone_name !=""){
 				list($id_zone) = dbFetchArray(dbQuery("SELECT id_zone FROM tbl_zone WHERE zone_name = '$zone_name' AND id_warehouse = $id_warehouse"));
 		}
 	}
 		list($barcode_zone, $name_zone) = dbFetchArray(dbQuery("SELECT barcode_zone, zone_name FROM tbl_zone WHERE id_zone = $id_zone"));
 	if($id_zone ==""){ ///ถ้าไม่มีรหัสหรือชื่อโซน ให้แจ้งข้อผิดพลาด
-			$message ="รหัสหรือชื่อโซนไม่ถูกต้อง หรือ ไม่มีโซนนี้ในคลังที่เลือกอยู่ กรุณาตรวจสอบ"; 
+			$message ="รหัสหรือชื่อโซนไม่ถูกต้อง หรือ ไม่มีโซนนี้ในคลังที่เลือกอยู่ กรุณาตรวจสอบ";
 			header("location: ../index.php?content=order_return&edit=y&id_return_order=$id_return_order&error=$message&id_warehouse=$id_warehouse&date_add=$date_add");
 	}
 	$check = dbQuery("SELECT id_return_order_detail, qty FROM tbl_return_order_detail WHERE id_return_order = $id_return_order AND id_product_attribute = $id_product_attribute AND id_zone = $id_zone AND status = 0");
@@ -761,7 +761,7 @@ if(isset($_GET['add'])&&isset($_GET['id_return_order'])){
 			list($stock_qty) = dbFetchArray($qr);
 			$result = dbNumRows($qr);
 			$new_qty = $stock_qty + $qty; // ยอดสต็อกใหม่ ได้มาจาก ยอดเก่า + ยอดใหม่ที่เพิ่มเข้าไป
-			if($result <1){	//ถ้าไม่มียอดเก่าอยู่ให้เพิ่ม		
+			if($result <1){	//ถ้าไม่มียอดเก่าอยู่ให้เพิ่ม
 				if(dbQuery("INSERT INTO tbl_stock (id_zone, id_product_attribute, qty) VALUES ($id_zone, $id_product_attribute, $qty)")){
 					$id_warehouse = get_warehouse_by_zone($id_zone); //ดึง id_warehouse จาก โซน เพื่อบันทึก movement
 					if(stock_movement("in",1,$id_product_attribute,$id_warehouse,$qty, $reference, $date, $id_zone)){ // บันทึกความเคลื่อนไหวของสินค้า
@@ -812,7 +812,7 @@ if(isset($_GET['add'])&&isset($_GET['id_return_order'])){
 				}
 		}
 		header("location: ../index.php?content=order_return");
-		
+
 	}else{
 		$message = "ไม่สามารถบันทึกยอดสต็อกได้ เนื่องจากไม่มีรายการให้บันทึก";
 		header("location: ../index.php?content=order_return&add=y&id_return_order=$id_return_order&id_warehouse=$id_warehouse&date_add=$date_add&error=$message");
@@ -834,7 +834,7 @@ if(isset($_GET['edit'])&&isset($_GET['id_return_order'])){
 			list($stock_qty) = dbFetchArray($qr);
 			$result = dbNumRows($qr);
 			$new_qty = $stock_qty + $qty; // ยอดสต็อกใหม่ ได้มาจาก ยอดเก่า + ยอดใหม่ที่เพิ่มเข้าไป
-			if($result <1){	//ถ้าไม่มียอดเก่าอยู่ให้เพิ่ม	
+			if($result <1){	//ถ้าไม่มียอดเก่าอยู่ให้เพิ่ม
 				if(dbQuery("INSERT INTO tbl_stock (id_zone, id_product_attribute, qty) VALUES ($id_zone, $id_product_attribute, $qty)")){
 					$id_warehouse = get_warehouse_by_zone($id_zone); //ดึง id_warehouse จาก โซน เพื่อบันทึก movement
 					if(stock_movement("in",1,$id_product_attribute,$id_warehouse, $qty, $reference, $date, $id_zone)){
@@ -885,7 +885,7 @@ if(isset($_GET['edit'])&&isset($_GET['id_return_order'])){
 				}
 		}
 		header("location: ../index.php?content=order_return");
-		
+
 	}else{
 		$message = "ปรับปรุงรายการเรียบร้อยแล้ว";
 		header("location: ../index.php?content=order_return&edit=y&id_return_order=$id_return_order&id_warehouse=$id_warehouse&date_add=$date_add&message=$message");
@@ -901,7 +901,7 @@ if(isset($_GET['delete'])&&isset($_GET['id_return_order_detail'])){
 	if(dbQuery("DELETE FROM tbl_return_order_detail WHERE id_return_order_detail = $id_return_order_detail AND id_return_order = $id_return_order")){
 		header("location: ../index.php?content=order_return&add=y&id_return_order=$id_return_order&id_warehouse=$id_warehouse");
 	}else{
-		$message = "ไม่สามารถลบรายการได้"; 
+		$message = "ไม่สามารถลบรายการได้";
 		header("location: ../index.php?content=order_return&add=y&id_return_order=$id_return_order&id_warehouse=$id_warehouse&date_add=$date_add&error=$message");
 	}
 }
@@ -934,7 +934,7 @@ if(isset($_GET['delete_stocked'])&&isset($_GET['id_return_order_detail'])){
 				}else{
 					$message = "ลบรายการรับสินค้าเข้าแล้ว แต่ ลบยอดสินค้าออกจากสต็อกไม่สำเร็จ";
 					header("location: ../index.php?content=order_return&edit=y&id_return_order=$id_return_order&error=$message");
-				}			
+				}
 		}else{
 			$message = "ทำรายการไม่สำเร็จ";
 			header("location: ../index.php?content=order_return&edit=y&id_return_order=$id_return_order&error=$message");
@@ -959,7 +959,7 @@ if(isset($_GET['delete_stocked'])&&isset($_GET['id_return_order_detail'])){
 	}
 		}else{
 			$message = "ไม่สามารถลบสินค้าได้เนื่องจากสินค้าในโซนนี้มีการเคลื่อนไหวเเล้ว";
-			header("location: ../index.php?content=order_return&edit=y&id_return_order=$id_return_order&error=$message");	
+			header("location: ../index.php?content=order_return&edit=y&id_return_order=$id_return_order&error=$message");
 		}
 	}
 }
@@ -993,7 +993,7 @@ if(isset($_GET['delete'])&&isset($_GET['id_return_order'])){
 									$fail++;
 								//	header("location: ../index.php?content=order_return&error=$message");
 								}
-							
+
 							}else{
 								$message = "ลบยอดสินค้าสำเร็จ แต่ ลบรายการรับเข้าไม่สำเร็จและไม่สามารถบันทึกความเคลื่อนไหวสินค้าได้";
 								$result .= $message."</br>";
@@ -1017,7 +1017,7 @@ if(isset($_GET['delete'])&&isset($_GET['id_return_order'])){
 							$fail++;
 							//header("location: ../index.php?content=order_return&error=$message");
 						}
-							
+
 					}else{
 						$message = "ลบยอดสินค้าสำเร็จ แต่ ลบรายการรับเข้าไม่สำเร็จและไม่สามารถบันทึกความเคลื่อนไหวสินค้าได้";
 						$result .= $message."</br>";
@@ -1040,7 +1040,7 @@ if(isset($_GET['delete'])&&isset($_GET['id_return_order'])){
 					$message="ไม่สามารถลบรายการได้ </br> $result";
 					header("location: ../index.php?content=order_return&error=$message");
 				}
-			}	
+			}
 		}
 	}else if($row==0 ){
 		if(dbQuery("DELETE FROM tbl_return_order WHERE id_return_order = $id_return_order")){
@@ -1050,11 +1050,11 @@ if(isset($_GET['delete'])&&isset($_GET['id_return_order'])){
 					$message="ไม่สามารถลบรายการได้";
 					header("location: ../index.php?content=order_return&error=$message");
 				}
-	}			
-	
+	}
+
 }
 if(isset($_GET['print'])&&isset($_GET['id_return_order'])){
-	$id_return_order = $_GET['id_return_order']; 
+	$id_return_order = $_GET['id_return_order'];
 	$ro = new return_order($id_return_order);
 	$company = new company();
 	$reference = $ro->reference;
@@ -1088,7 +1088,7 @@ if(isset($_GET['print'])&&isset($_GET['id_return_order'])){
 					 <link rel='stylesheet' href='../../library/css/jquery-ui-1.10.4.custom.min.css' />
 					 <script src='../../library/js/jquery.min.js'></script>
 					<script src='../../library/js/jquery-ui-1.10.4.custom.min.js'></script>
-					<script src='../../library/js/bootstrap.min.js'></script>  
+					<script src='../../library/js/bootstrap.min.js'></script>
 					<!-- SB Admin CSS - Include with every page -->
 					<link href='../../library/css/sb-admin.css' rel='stylesheet'>
 					<link href='../../library/css/template.css' rel='stylesheet'>
@@ -1128,7 +1128,7 @@ if(isset($_GET['print'])&&isset($_GET['id_return_order'])){
 				<tr><td style='width:35%; padding:10px; height:5mm; vertical-align:text-top;'>สาเหตุ :</td><td style='padding:10px; vertical-align:text-top; height:5mm;'>$reason</td></tr>
 				</table>	</div></td></tr>
 	</table>
-	
+
 		<table class='table table-striped' align='center' style='width:100%; table-layout:fixed; margin-top:5px;' id='order_detail'>
 			<tr>
 				<td style='width:10%; text-align:center; border:solid 1px #AAA; padding:10px;'>ลำดับ</td>
@@ -1154,7 +1154,7 @@ if(isset($_GET['print'])&&isset($_GET['id_return_order'])){
 					<td><div class='col-lg-12' style='border: solid 1px #AAA; font-size: 8px; border-radius:10px;'><p style='text-align:center;'>&nbsp;</p><p>&nbsp;</p><p><hr style='margin:0px; border-style:dotted; border-color:#CCC;'/></p><p >วันที่...............................</p></div>
 				</td></tr></table></div>
 				"; return $result; }
-	
+
 	if($rs>0){
 		echo $html.$doc_body_top.doc_head($date, $reference, $customer_name, $employee_name, $page, $total_page, $reason);
 	while($i<$rs){
@@ -1163,7 +1163,7 @@ if(isset($_GET['print'])&&isset($_GET['id_return_order'])){
 		$product = new product();
 		$id_product = $product->getProductId($id_product_attribute);
 		$product->product_detail($id_product);
-		$product->product_attribute_detail($id_product_attribute);	
+		$product->product_attribute_detail($id_product_attribute);
 		if($count+1 >$row){  $css_row ="border-bottom: solid 1px #AAA; border-top: 0px;";  }else{ $css_row ="border-top: 0px;";}
 		echo"<tr style='height:9mm;'>
 				<td style='text-align:center; vertical-align:middle; padding:3px; $css_row border-left: solid 1px #AAA; font-size: 8px;'>$n</td>
@@ -1177,8 +1177,8 @@ if(isset($_GET['print'])&&isset($_GET['id_return_order'])){
 				</tr>";
 				$total_qty += $qty;
 				$i++; $count++;
-				if($n==$rs){ 
-				$ba_row = $row - $count; 
+				if($n==$rs){
+				$ba_row = $row - $count;
 				$ba = 0;
 				if($ba_row >0){
 					while($ba <= $ba_row){
@@ -1195,15 +1195,105 @@ if(isset($_GET['print'])&&isset($_GET['id_return_order'])){
 					}
 				}
 				echo footer($total_qty);
-				
+
 				}else{
 				if($count>$row){  $page++; echo footer().doc_head($date, $reference, $customer_name, $employee_name, $page, $total_page, $reason); $count = 1; }
 				}
-				$n++; 
+				$n++;
 	}
 	}else{
 		echo"<tr><td colspan='8' align='center'><h3>ยังไมีมีรายการสินค้า</h3></td></tr></table>";
 	}
-	echo "</div></body></html>";	
+	echo "</div></body></html>";
+}
+
+
+
+if(isset($_GET['addNewStock']))
+{
+  $sc = TRUE;
+  $id_pd = $_POST['id_product'];
+  $id_zone = $_POST['id_zone'];
+  $qty = $_POST['qty'];
+
+  $qs = dbQuery("SELECT id_stock FROM tbl_stock WHERE id_product_attribute = '".$id_pd."' AND id_zone = '".$id_zone."'");
+  if(dbNumRows($qs) > 0)
+  {
+    $sc = FALSE;
+    $message = 'มีสินค้านี้ในโซนแล้ว ไม่สามารถเพิ่มใหม่ได้';
+  }
+  else
+  {
+    $qr  = "INSERT INTO tbl_stock (id_zone, id_product_attribute, qty) ";
+    $qr .= "VALUES ('".$id_zone."', '".$id_pd."', ".$qty.")";
+    $qs = dbQuery($qr);
+
+    if(! $qs)
+    {
+      $sc = FALSE;
+      $message = 'เพิ่มสต็อกไม่สำเร็จ';
+    }
+  }
+
+  echo $sc === TRUE ? 'success' : $message;
+}
+
+
+
+if(isset($_GET['updateStock']))
+{
+  $sc = TRUE;
+
+  $id = $_POST['id_stock'];
+  $qty = $_POST['qty'];
+
+  $qr = "UPDATE tbl_stock SET qty = ".$qty." WHERE id_stock = ".$id;
+  if( dbQuery($qr) !== TRUE)
+  {
+    $sc = FALSE;
+    $message = 'update fail';
+  }
+
+  echo $sc === TRUE ? 'success' : $message;
+}
+
+
+
+if(isset($_GET['deleteStock']))
+{
+  $sc = TRUE;
+  $id = $_POST['id_stock'];
+
+  $qr = "DELETE FROM tbl_stock WHERE id_stock = ".$id;
+
+  if( dbQuery($qr) !== TRUE)
+  {
+    $sc = FALSE;
+    $message = 'ลบรายการไม่สำเร็จ';
+  }
+
+  echo $sc === TRUE ? 'success' : $message;
+}
+
+
+
+
+if(isset($_GET['clearFilter']) && isset($_GET['stock_movement']))
+{
+	deleteCookie('reference');
+	deleteCookie('pdCode');
+	deleteCookie('whCode');
+	deleteCookie('zoneCode');
+	deleteCookie('fromDate');
+	deleteCookie('toDate');
+	echo "done";
+}
+
+
+if(isset($_GET['clearFilter']) && isset($_GET['stock']))
+{
+	deleteCookie('pdCode');
+	deleteCookie('zoneCode');
+	echo "done";
 }
 ?>

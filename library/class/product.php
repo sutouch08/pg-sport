@@ -1760,7 +1760,7 @@ private function orderAttributeGridOneAttribute($id_pd, $attr, $isVisual, $id_or
 		$sc 		.= $i%2 == 0 ? '<tr>' : '';
 		$stock 		= $isVisual === FALSE ? ( $active == 1 ? $this->stock_qty($id_pa) : 0 ) : 0; //--- สต็อกทุกคลัง
 		$orderQty 	= $isVisual === FALSE ? ( $active == 1 ? $this->orderQty($id_pa) : 0 ) : 0; //--- ออเดอร์ค้างส่ง
-		$all_qty 		= $isVisual === FALSE ? ( $active == 1 ? (($stock - $orderQty) < 0 ? 0 : $stock - $orderQty) : 0) : 0;
+		//$all_qty 		= $isVisual === FALSE ? ( $active == 1 ? (($stock - $orderQty) < 0 ? 0 : $stock - $orderQty) : 0) : 0;
 		$qty        = $isVisual === FALSE ? ( $active == 1 ? $this->available_order_qty($id_pa, $id_order) : FALSE ) : FALSE; //---- ถ้าเป็นสินค้าเสมือนไม่ต้องมีสต็อก
 
 
@@ -1773,7 +1773,7 @@ private function orderAttributeGridOneAttribute($id_pd, $attr, $isVisual, $id_or
 		$sc 	.= '</td>';
 
 		$sc 	.= '<td class="middle" style="width:100px; padding-right:10px; border-left:0px;">';
-		$sc 	.= $isVisual === FALSE ? '<center><span style="color:blue; font-size:10px;">('.$all_qty.')</span></center>':'';
+		//$sc 	.= $isVisual === FALSE ? '<center><span style="color:blue; font-size:10px;">('.$all_qty.')</span></center>':'';
 		$sc 	.= '<input type="text" class="form-control" title="'.$id_pa.'" name="qty[0]['.$id_pa.']" id="qty_'.$id_pa.'" onkeyup="valid_qty($(this), '.($qty === FALSE ? 1000000 : $qty).')" '.$disabled.' />';
 		$sc 	.= '</td>';
 
@@ -1820,13 +1820,13 @@ private function orderAttributeGridTwoAttribute($id_pd, $color, $size, $attr, $i
 				{
 					$stock 		= $isVisual === FALSE && $active == 1 ? $this->stock_qty($id_pa) : 0; //--- สต็อกทุกคลัง
 					$orderQty 	= $isVisual === FALSE && $active == 1 ? $this->orderQty($id_pa) : 0; //--- ออเดอร์ค้างส่ง
-					$all_qty 		= $isVisual === FALSE && $active == 1 ? (($stock - $orderQty) < 0 ? 0 : $stock - $orderQty ) : 0;
+					//$all_qty 		= $isVisual === FALSE && $active == 1 ? (($stock - $orderQty) < 0 ? 0 : $stock - $orderQty ) : 0;
 					$qty        	= $isVisual === FALSE && $active == 1 ? $this->available_order_qty($id_pa, $id_order) : FALSE; //---- ถ้าเป็นสินค้าเสมือนไม่ต้องมีสต็อก
 					$disabled 	= $isVisual === TRUE && $active == 1 ? '' : ($qty < 1 ? 'disabled' : ( $active == 1 ? '' : 'disabled' ));
 					$available 	= $qty === FALSE && $active == 1 ? '' : (($qty < 1 || $active == 0) ? '<span style="color:red;">สินค้าหมด</span>' : $qty);
 
 					$sc 	.= '<td class="middle text-center" style="width:70px; padding:5px;">';
-					$sc 	.= $isVisual === FALSE ? '<center><span style="color:blue; font-size:10px;">('.$all_qty.')</span></center>' : '';
+					//$sc 	.= $isVisual === FALSE ? '<center><span style="color:blue; font-size:10px;">('.$all_qty.')</span></center>' : '';
 					$sc 	.= '<input type="text" class="form-control" title="'. $id_pa .'" name="qty['.$rd['id'].']['.$id_pa.']" id="qty_'.$id_pa.'" onkeyup="valid_qty($(this), '.($qty === FALSE ? 1000000 : $qty).')" '.$disabled.' />';
 					$sc 	.= $isVisual === FALSE ? '<center>'.$available.'</center>' : '';
 					$sc 	.= '</td>';
@@ -1862,13 +1862,13 @@ private function orderAttributeGridTwoAttribute($id_pd, $color, $size, $attr, $i
 				{
 					$stock 		= $isVisual === FALSE && $active == 1 ? $this->stock_qty($id_pa) : 0; //--- สต็อกทุกคลัง
 					$orderQty 	= $isVisual === FALSE && $active == 1 ? $this->orderQty($id_pa) : 0; //--- ออเดอร์ค้างส่ง
-					$all_qty 		= $isVisual === FALSE && $active == 1 ? (($stock - $orderQty) < 0 ? 0 : $stock - $orderQty) : 0;
+					//$all_qty 		= $isVisual === FALSE && $active == 1 ? (($stock - $orderQty) < 0 ? 0 : $stock - $orderQty) : 0;
 					$qty       	= $isVisual === FALSE && $active == 1 ? $this->available_order_qty($id_pa, $id_order) : FALSE; //---- ถ้าเป็นสินค้าเสมือนไม่ต้องมีสต็อก
 					$disabled 	= $isVisual === TRUE && $active == 1 ? '' : ($qty < 1 ? 'disabled' : '');
 					$available 	= $qty === FALSE && $active == 1 ? '' : (($qty < 1 OR $active == 0) ? '<span style="color:red;">สินค้าหมด</span>' : $qty);
 
 					$sc 	.= '<td class="middle text-center" style="width:70px; padding:5px;">';
-					$sc 	.= $isVisual === FALSE ? '<center><span style="color:blue; font-size:10px;">('.$all_qty.')</span></center>' : '';
+					//$sc 	.= $isVisual === FALSE ? '<center><span style="color:blue; font-size:10px;">('.$all_qty.')</span></center>' : '';
 					$sc 	.= '<input type="text" class="form-control" title="'.$id_pa.'" name="qty['.$rd['id'].']['.$id_pa.']" id="qty_'.$id_pa.'" onkeyup="valid_qty($(this), '.$qty === FALSE ? 1000000 : $qty.')" '.$disabled.' />';
 					$sc 	.= $isVisual === FALSE ? '<center>'.$available.'</center>' : '';
 					$sc 	.= '</td>';
@@ -1917,13 +1917,13 @@ private function orderAttributeGridThreeAttribute($id_pd, $id_attr, $isVisual, $
 			{
 				$stock 		= $isVisual === FALSE && $active == 1 ? $this->stock_qty($id_pa) : 0; //--- สต็อกทุกคลัง
 				$orderQty 	= $isVisual === FALSE && $active == 1 ? $this->orderQty($id_pa) : 0; //--- ออเดอร์ค้างส่ง
-				$all_qty 		= $isVisual === FALSE && $active == 1 ? (($stock - $orderQty) < 0 ? 0 : $stock - $orderQty ) : 0;
+				//$all_qty 		= $isVisual === FALSE && $active == 1 ? (($stock - $orderQty) < 0 ? 0 : $stock - $orderQty ) : 0;
 				$qty        	= $isVisual === FALSE && $active == 1 ? $this->available_order_qty($id_pa, $id_order) : FALSE; //---- ถ้าเป็นสินค้าเสมือนไม่ต้องมีสต็อก
 				$disabled 	= $isVisual === TRUE && $active == 1 ? '' : ($qty < 1 ? 'disabled' : '');
 				$available 	= $qty === FALSE && $active == 1 ? '' : (($qty < 1 OR $active == 0) ? '<span style="color:red;">สินค้าหมด</span>' : $qty);
 
 				$sc 	.= '<td class="middle text-center" style="width:70px; padding:5px;">';
-				$sc 	.= '<center><span style="color:blue; font-size:10px;">('.$all_qty.')</span></center>';
+				//$sc 	.= '<center><span style="color:blue; font-size:10px;">('.$all_qty.')</span></center>';
 				$sc 	.= '<input type="text" class="form-control" title="'.$id_pa.'" name="qty['.$rd['id'].']['.$id_pa.']" id="qty_'.$id_pa.'" onkeyup="valid_qty($(this), '.($qty === FALSE ? 1000000 : $qty).')" '.$disabled.' />';
 				$sc 	.= '<center>'.$available.'</center>';
 				$sc 	.= '</td>';

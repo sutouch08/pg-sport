@@ -34,6 +34,7 @@ class order{
 	public $reduction_amount;
 	public $discount_amount;
 	public $final_price;
+	public $isCOD;
 
 	public function __construct($id_order="")
 	{
@@ -59,6 +60,7 @@ class order{
 			$this->date_add 		= $order['date_add'];
 			$this->date_upd 		= $order['date_upd'];
 			$this->order_status 	= $order['order_status'];
+			$this->isCOD = $order['isCOD'];
 			$this->getTotalOrder($id_order);
 			$this->state_color 	= $this->state_color();
 		}
@@ -721,9 +723,9 @@ class order{
 		echo"
 		<table id='product_table' class='table' style='width:100%; padding:10px; border: 1px solid #ccc;'><thead><th style='width:10%'>รูปภาพ</th><th>สินค้า</th><th style='width:10%; text-align:center;'>ราคา</th><th style='width:10%; text-align:center;'>จำนวน</th><th style='width:20%; text-align:center;'>จำนวนเงิน</th></thead>";
 		if($row>0){
-			$discount ="";
-			$amount = "";
-			$total_amount = "";
+			$discount = 0;
+			$amount = 0;
+			$total_amount = 0;
 			while($i = dbFetchArray($sql)){
 				$product = new product();
 				$total = $i['product_price']*$i['product_qty'];

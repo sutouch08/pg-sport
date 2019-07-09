@@ -71,7 +71,9 @@ if(isset($_GET['add'])) :
 	$payment 			= isset($_GET['id_order']) ? $order->payment : '';
 	$onlineCustomer	= isset($_GET['id_order']) ? getCustomerOnlineReference($id_order) : '';
 	$date_add  = isset($_GET['id_order']) ? thaiDate($order->date_add) : date('d-m-Y');
-
+	$isCOD 	= isset($_GET['id_order']) ? $order->isCOD : 0;
+	$cod = $isCOD == 1 ? 'btn-success' : '';
+	$cod_text = $isCOD == 1 ? '<i class="fa fa-check"></i> เก็บเงินปลายทาง' : 'เก็บเงินปลายทาง';
 ?>
 <form id='addForm'>
 <div class='row'>
@@ -79,6 +81,7 @@ if(isset($_GET['add'])) :
     <input type='hidden' name='id_order' id='id_order' value='<?php echo $id_order; ?>' />
     <input type='hidden' name='id_customer' id='id_customer' value='<?php echo $id_customer; ?>' />
     <input type="hidden" name="role" id="role" value="1" />
+		<input type="hidden" name="isCOD" id="isCOD" value="<?php echo $isCOD; ?>" />
 	<div class='col-sm-2'>
     	<label>เลขที่เอกสาร</label>
         <input type='text' id='doc_id' class='form-control input-sm' value='<?php echo $new_ref; ?>' disabled='disabled'/>
@@ -102,6 +105,10 @@ if(isset($_GET['add'])) :
         <label>การชำระเงิน</label>
         <select name='payment' id='payment' class='form-control input-sm' <?php echo $active; ?> ><?php echo paymentMethod($payment); ?></select>
     </div>
+		<div class="col-sm-2">
+			<label style="display:block; visibility:hidden;">COD</label>
+			<button type="button" class="btn btn-sm <?php echo $cod; ?>" id="btn-cod" onclick="toggleCOD()" <?php echo $active; ?>><?php echo $cod_text; ?></button>
+		</div>
     <?php endif; ?>
 	<div class='col-sm-10'>
 		<label>หมายเหตุ</label>
