@@ -20,7 +20,7 @@ class paginator{
 
 	}
 
-	
+
 	function paginator()
 	{
 		$this->current_page = 1;
@@ -138,7 +138,7 @@ class paginator{
 		echo "<br><br></form>";
 	}
 	function setcookie_rows($get_rows){
-		setcookie("get_rows", $get_rows,time()+(3600*24*365*30),'/');
+		setcookie("get_rows", $get_rows,intval(time()+(3600*24*365*30)),'/');
 	}
 }
 ?>

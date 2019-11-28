@@ -1005,7 +1005,7 @@ function get_max_role_reference($config_name, $role, $date=""){
 		$str = $rs['max'];
 		$s = 7; // start from "0" (nth) char
 		$l = 7; // get "3" chars
-		$str2 = substr_unicode($str, $s ,5)+1;
+		$str2 = intval(substr_unicode($str, $s ,5)) + 1;
 		$str1 = substr_unicode($str, 0 ,$l);
 		if($str1=="$prefix-$sumtdate$m"){
 		$reference_no = "$prefix-$sumtdate$m".sprintf("%05d",$str2)."";

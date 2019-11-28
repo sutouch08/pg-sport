@@ -1,4 +1,4 @@
-<?php 
+<?php
 	$pageName	= "รายการยอดต่าง";
 	$id_tab 		= 11;
 	$id_profile 	= getCookie('profile_id');
@@ -7,7 +7,7 @@
 	$add 			= $pm['add'];
 	$edit 			= $pm['edit'];
 	$delete 		= $pm['delete'];
-	accessDeny($view); 
+	accessDeny($view);
 	require 'function/adjust_helper.php';
 	$qs = dbQuery("SELECT * FROM tbl_diff WHERE status_diff = 0");
 ?>
@@ -27,10 +27,10 @@
         	<button type="button" class="btn btn-sm btn-warning" onClick="goToAdjust()"><i class="fa fa-arrow-left"></i> กลับ</button>
             <?php if( dbNumRows($qs) > 0 ) : ?>
         	<button type="button" class="btn btn-sm btn-danger" onClick="confirmDelete()" ><i class="fa fa-trash"></i> ลบรายการ</button>
-            <button type="button" class="btn btn-sm btn-info" onClick="toggleCheckAll()"><i class="fa fa-check-square"></i> <span id="btn-label">เลือกทั้งหมด</span></button>      
+            <button type="button" class="btn btn-sm btn-info" onClick="toggleCheckAll()"><i class="fa fa-check-square"></i> <span id="btn-label">เลือกทั้งหมด</span></button>
             <?php endif; ?>
         <?php endif; ?>
-        
+
         </p>
     </div>
 </div><!--/ row -->
@@ -73,7 +73,7 @@
                     <th style="width:25%;">โซน</th>
                     <th style="width:10%; text-align:center;">จำนวนเพิ่ม</th>
                     <th style="width:10%; text-align:center;">จำนวนลด</th>
-                    <th style="width:15%; text-align:center;">วันที่</th> 
+                    <th style="width:15%; text-align:center;">วันที่</th>
                 </tr>
             </thead>
             <tbody>
@@ -91,11 +91,12 @@
                     <td><?php echo get_zone($rs->id_zone); ?></td>
                     <td align="center"><?php echo $rs->qty_add; ?></td>
                     <td align="center"><?php echo $rs->qty_minus; ?></td>
-                    <td align="center"><?php echo thaiDateTime($rs->date_diff); ?></td>                    
+                    <td align="center"><?php echo thaiDateTime($rs->date_diff); ?></td>
                 </tr>
+	  <?php  $n++; ?>
     <?php	endwhile; ?>
-    <?php endif; ?>            	
-            </tbody>            
+    <?php endif; ?>
+            </tbody>
         </table>
         </form>
     </div>
@@ -156,7 +157,7 @@ function loadDiff(id)
 			if(rs == 'success' ){
 				goBack(id);
 			}else{
-				swal("ข้อผิดพลาด !", rs, "error");	
+				swal("ข้อผิดพลาด !", rs, "error");
 			}
 		}
 	});
@@ -176,17 +177,17 @@ function doChecking()
 	if( $("#check-all").is(":checked") ){
 		$(".chk").prop("checked", true);
 	}else{
-		$(".chk").prop("checked", false);	
+		$(".chk").prop("checked", false);
 	}
 }
 
 function goBack(id)
 {
-	window.location.href = "index.php?content=ProductAdjust&add&id_adjust="+id;	
+	window.location.href = "index.php?content=ProductAdjust&add&id_adjust="+id;
 }
 
 function goToAdjust()
 {
-	window.location.href = "index.php?content=ProductAdjust";	
+	window.location.href = "index.php?content=ProductAdjust";
 }
 </script>

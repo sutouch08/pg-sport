@@ -9,7 +9,8 @@ if($id === FALSE)
     'id_customer' => 0,
     'id_employee' => getCookie('user_id'),
     'reference' => $order->getNewReference(),
-    'pos_id' => getConfig('POS_ID')
+    'pos_id' => getConfig('POS_ID'),
+    'date_add' => date('Y-m-d H:i:s')
   );
 
   $id = $order->add($arr);

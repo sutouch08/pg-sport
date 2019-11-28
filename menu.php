@@ -13,16 +13,16 @@
                 	<ul class="dropdown-menu">
                     	<li><a href="index.php?content=order_return"><i class="fa fa-download"></i>&nbsp; รับคืนสินค้า จากการขาย(ปัจจุบัน)	</a>
                         <li><a href="index.php?content=order_return2"><i class="fa fa-download"></i>&nbsp; รับคืนสินค้า จากการขาย(อดีต)</a>
-                        <li><a href="index.php?content=support_return"><i class="fa fa-download"></i>&nbsp; รับคืนสินค้า จากอภินันท์</a>
-                        <li><a href="index.php?content=sponsor_return"><i class="fa fa-download"></i>&nbsp; รับคืนสินค้า จากสปอนเซอร์</a>
+                        <!--<li><a href="index.php?content=support_return"><i class="fa fa-download"></i>&nbsp; รับคืนสินค้า จากอภินันท์</a>
+                        <li><a href="index.php?content=sponsor_return"><i class="fa fa-download"></i>&nbsp; รับคืนสินค้า จากสปอนเซอร์</a> -->
                     </ul>
                 </li>
-                 <li class="divider"></li>
-                <li><a href="index.php?content=requisition">		<i class="fa fa-upload"></i>&nbsp; เบิกสินค้าเพื่อแปรรูป		</a></li>
-                <!--<li><a href="index.php?content=order_transform"><i class="fa fa-upload"></i>&nbsp; เบิกสินค้าเพื่อแปรสภาพ</a></li> -->
-                <li><a href="index.php?content=order_support"><i class="fa fa-upload"></i>&nbsp; เบิกอภินันทนาการ</a></li>
-                <li><a href="index.php?content=lend"><i class="fa fa-upload"></i>&nbsp; ยืมสินค้า</a></li>
                 <li class="divider"></li>
+                <!--<li><a href="index.php?content=requisition">		<i class="fa fa-upload"></i>&nbsp; เบิกสินค้าเพื่อแปรรูป		</a></li> -->
+                <!--<li><a href="index.php?content=order_transform"><i class="fa fa-upload"></i>&nbsp; เบิกสินค้าเพื่อแปรสภาพ</a></li> -->
+                <!--<li><a href="index.php?content=order_support"><i class="fa fa-upload"></i>&nbsp; เบิกอภินันทนาการ</a></li>
+                <li><a href="index.php?content=lend"><i class="fa fa-upload"></i>&nbsp; ยืมสินค้า</a></li>
+                <li class="divider"></li> -->
                 <li><a href="index.php?content=tranfer"><i class="fa fa-recycle"></i>&nbsp; โอนสินค้าระหว่างคลัง</a></li>
                 <li><a href="index.php?content=ProductMove"><i class="fa fa-recycle"></i>&nbsp; ย้ายพื้นที่จัดเก็บ</a></li>
                 <li><a href="index.php?content=ProductCheck"><i class="fa fa-check-square-o"></i>&nbsp; ตรวจนับสินค้า</a></li>
@@ -38,31 +38,33 @@
           <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-shopping-bag"></i>&nbsp; ระบบขาย</a>
               <ul class="dropdown-menu">
                 <li><a href="index.php?content=order"><i class="fa fa-shopping-bag"></i>&nbsp; ออเดอร์</a></li>
-                <li><a href="index.php?content=order_sponsor"><i class="fa fa-ticket"></i>&nbsp; สปอนเซอร์ สโมสร</a></li>
-                <li><a href="index.php?content=consignment"><i class="fa fa-cloud-upload"></i>&nbsp; ฝากขาย</a></li>
+                <!--<li><a href="index.php?content=order_sponsor"><i class="fa fa-ticket"></i>&nbsp; สปอนเซอร์ สโมสร</a></li>
+                <li><a href="index.php?content=consignment"><i class="fa fa-cloud-upload"></i>&nbsp; ฝากขาย</a></li> -->
                 <li><a href="index.php?content=order_online"><i class="fa fa-desktop"></i>&nbsp; ขายออนไลน์</a></li>
                  <li class="divider"></li>
                 <li><a href="index.php?content=prepare"><i class="fa fa-shopping-basket"></i>&nbsp; จัดสินค้า</a></li>
                 <li><a href="index.php?content=qc"><i class="fa fa-check-square-o"></i>&nbsp; ตรวจสินค้า</a></li>
                 <?php if($fast_qc) : ?>
-                 	<li><a href="index.php?content=qc2"><i class="fa fa-check-square-o"></i>&nbsp; ตรวจสินค้า จากข้างนอก</a></li>
-                 <?php endif; ?>
+                 	<!--<li><a href="index.php?content=qc2"><i class="fa fa-check-square-o"></i>&nbsp; ตรวจสินค้า จากข้างนอก</a></li>-->
+                <?php endif; ?>
                 <li><a href="index.php?content=bill"><i class="fa fa-file-text-o"></i>&nbsp; ออเดอร์รอเปิดบิล</a></li>
                 <li><a href="index.php?content=order_closed"><i class="fa fa-file-text-o"></i>&nbsp; ออเดอร์เปิดบิลแล้ว</a></li>
-                 <li class="divider"></li>
-                 <!-- <li><a href="index.php?content=request"><i class="fa fa-thumb-tack"></i>&nbsp; ร้องขอสินค้า</a></li> -->
-                 <li><a href="index.php?content=order_monitor"><i class="fa fa-exclamation-triangle"></i>&nbsp; ตรวจสอบออเดอร์</a></li>
+                <!--
+                <li class="divider"></li>
+                <li><a href="index.php?content=request"><i class="fa fa-thumb-tack"></i>&nbsp; ร้องขอสินค้า</a></li>
+                <li><a href="index.php?content=order_monitor"><i class="fa fa-exclamation-triangle"></i>&nbsp; ตรวจสอบออเดอร์</a></li>
+              -->
               </ul>
             </li>
 
              <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-credit-card"></i>&nbsp; บัญชี</a>
               <ul class="dropdown-menu">
                 <!-- <li><a href="index.php?content=consign&consign_check=y"><i class="fa fa-check-square-o"></i>&nbsp; กระทบยอดสินค้า</a></li> -->
-                <li><a href="index.php?content=consign_check"><i class="fa fa-check-square-o"></i>&nbsp; กระทบยอดสินค้าฝากขาย</a></li>
+                <!--<li><a href="index.php?content=consign_check"><i class="fa fa-check-square-o"></i>&nbsp; กระทบยอดสินค้าฝากขาย</a></li>
                 <li><a href="index.php?content=consign"><i class="fa fa-check-square-o"></i>&nbsp; ตัดยอดฝากขาย</a></li>
-                <li class="divider"></li>
+                <li class="divider"></li> -->
                 <li><a href="index.php?content=payment_order"><i class="fa fa-check-square-o"></i>&nbsp; ตรวจสอบยอดชำระเงิน</a></li>
-                <li class="divider"></li>
+                <!--<li class="divider"></li>
                 <li class="dropdown-submenu"> <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-archive"></i>&nbsp; ตรวจนับสินค้า (ภายใน)</a>
                 	<ul class="dropdown-menu">
                     	<li><a href="index.php?content=checkstock"><i class="fa fa-check-square-o"></i>&nbsp; ตรวจนับสินค้า</a></li>
@@ -77,7 +79,7 @@
                     	<li><a href="index.php?content=export_consign_stock"><i class="fa fa-file-text-o"></i>&nbsp; ส่งออกยอดตั้งต้น</a></li>
                         <li><a href="#"><i class="fa fa-download"></i>&nbsp; นำเข้ายอดตรวจนับ(ห้ามใช้)</a></li>
                     </ul>
-                </li>
+                </li>-->
               </ul>
             </li>
 

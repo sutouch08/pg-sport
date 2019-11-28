@@ -1,4 +1,4 @@
-<?php 
+<?php
 require "../../library/config.php";
 require "../../library/functions.php";
 require "../function/tools.php";
@@ -10,7 +10,7 @@ if( isset( $_GET['get_zone']) && isset( $_POST['zone'] ) )
 	if(dbNumRows($qs) == 1 )
 	{
 		list($id_zone) = dbFetchArray($qs);
-		echo $id_zone;	
+		echo $id_zone;
 	}
 	else
 	{
@@ -91,6 +91,7 @@ if( isset( $_GET['editqty'] ) && isset( $_POST['id_zone'] ) )
 	$id_zone = $_POST['id_zone'];
 	$qty = $_POST['qty'];
 	$qty_check = $_POST['qty_check'];
+	$filter = $_POST['filter'];
 	foreach( $qty_check as $id => $val )
 	{
 		$diff = $val - $qty[$id];
@@ -99,7 +100,7 @@ if( isset( $_GET['editqty'] ) && isset( $_POST['id_zone'] ) )
 		if($diff > 0)
 		{
 			if($row == 0 )
-			{		
+			{
 				dbQuery("INSERT INTO tbl_diff ( id_zone, id_product_attribute, qty_add, qty_minus, id_employee, status_diff ) VALUES (".$id_zone.", ".$id.", ".$diff.", 0, ".$id_employee.", 0)");
 			}
 			else if( $row == 1 )
@@ -146,7 +147,7 @@ if( isset( $_GET['editqty'] ) && isset( $_POST['id_zone'] ) )
 		}
 		$i++;
 	}
-	header("location: ../index.php?content=ProductCheck&id_zone=$id_zone&saved");
+	header("location: ../index.php?content=ProductCheck&id_zone=$id_zone&pdCode=$filter&saved");
 }
 
 
@@ -191,8 +192,8 @@ if( isset( $_GET['add'] ) && isset( $_POST['barcode'] ) )
 	}
 	else
 	{
-		echo "noproduct";	
+		echo "noproduct";
 	}
 }
-	
+
 ?>
