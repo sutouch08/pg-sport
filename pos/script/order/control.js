@@ -101,6 +101,21 @@ $('#barcode-item').keyup(function(e){
 });
 
 
+$('#barcode-item').autocomplete({
+  source:"controller/posController.php?get_product_code_and_barcode",
+  autofocus:true,
+  close:function(){
+    var arr = $(this).val();
+    var rs = arr.split(' | ');
+    if(rs.length === 2){
+      $(this).val(rs[1]);
+    }else{
+      $(this).val('');
+    }
+  }
+});
+
+
 function deleteRow(id, pdCode){
   var id_order = $('#id_order').val();
   swal({

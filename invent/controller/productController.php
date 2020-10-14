@@ -6,6 +6,23 @@ require "../function/product_helper.php";
 
 //------------------------------------- NEW CODE -----------------------------------//
 //----- Product DB Report-----//
+if(isset($_GET['createBarcodeFromReference']) && $_GET['id_pd'])
+{
+	$id_pd = $_GET['id_pd'];
+	$qr = "UPDATE tbl_product_attribute SET barcode = reference WHERE id_product = {$id_pd}";
+	$rs = dbQuery($qr);
+	if($rs)
+	{
+		echo 'success';
+	}
+	else
+	{
+		echo 'failed';
+	}
+}
+
+
+
 if( isset( $_GET['getProductDB'] ) && isset( $_GET['report'] ) )
 {
 	$sc = 'nodata';
@@ -13,7 +30,7 @@ if( isset( $_GET['getProductDB'] ) && isset( $_GET['report'] ) )
 	$costQuery		= $_GET['showCost'] == 1 ? ", cost" : "";
 	$id_category	= $_GET['id_category'];
 	$isAll				=  $id_category == 0 ? TRUE : FALSE;
-	
+
 	if( $isAll )
 	{
 		$qr =	"SELECT barcode, reference, product_name ".$costQuery . $priceQuery." FROM tbl_product_attribute ";
@@ -24,16 +41,16 @@ if( isset( $_GET['getProductDB'] ) && isset( $_GET['report'] ) )
 		$pdIn = productInCategory($id_category);
 		if( $pdIn === FALSE )
 		{
-			$qr = "SELECT * FROM tbl_product_attribute WHERE id_product_attribute = 0"; 
+			$qr = "SELECT * FROM tbl_product_attribute WHERE id_product_attribute = 0";
 			//---- เพื่อให้ได้ Numrows = 0
 		}
 		else
 		{
 			$qr = "SELECT barcode, reference, product_name ". $costQuery . $priceQuery . " FROM tbl_product_attribute ";
-			$qr .= "JOIN tbl_product ON tbl_product_attribute.id_product = tbl_product.id_product WHERE tbl_product_attribute.id_product IN(".$pdIn.")";	
+			$qr .= "JOIN tbl_product ON tbl_product_attribute.id_product = tbl_product.id_product WHERE tbl_product_attribute.id_product IN(".$pdIn.")";
 		}
 	}
-	
+
 	//echo $qr;
 	$qs = dbQuery($qr);
 	if( dbNumRows( $qs ) > 0 )
@@ -50,8 +67,8 @@ if( isset( $_GET['getProductDB'] ) && isset( $_GET['report'] ) )
 						'cost'			=> $_GET['showCost'] == 1 ? number_format($rs->cost, 2) : '-',
 						'price'			=> $_GET['showPrice'] == 1 ? number_format($rs->price, 2) : '-'
 						);
-			array_push($ds, $arr);						
-			$no++;	
+			array_push($ds, $arr);
+			$no++;
 		}
 		$sc = json_encode($ds);
 	}
@@ -67,7 +84,7 @@ if( isset( $_GET['getProductDB'] ) && isset( $_GET['export'] ) )
 	$showPrice		= $_GET['showPrice'] == 1 ? TRUE : FALSE;
 	$id_category	= $_GET['id_category'];
 	$isAll				=  $id_category == 0 ? TRUE : FALSE;
-	
+
 	if( $isAll )
 	{
 		$qr =	"SELECT barcode, reference, product_name ".$costQuery . $priceQuery." FROM tbl_product_attribute ";
@@ -78,20 +95,20 @@ if( isset( $_GET['getProductDB'] ) && isset( $_GET['export'] ) )
 		$pdIn = productInCategory($id_category);
 		if( $pdIn === FALSE )
 		{
-			$qr = "SELECT * FROM tbl_product_attribute WHERE id_product_attribute = 0"; 
+			$qr = "SELECT * FROM tbl_product_attribute WHERE id_product_attribute = 0";
 			//---- เพื่อให้ได้ Numrows = 0
 		}
 		else
 		{
 			$qr = "SELECT barcode, reference, product_name ". $costQuery . $priceQuery . " FROM tbl_product_attribute ";
-			$qr .= "JOIN tbl_product ON tbl_product_attribute.id_product = tbl_product.id_product WHERE tbl_product_attribute.id_product IN(".$pdIn.")";	
+			$qr .= "JOIN tbl_product ON tbl_product_attribute.id_product = tbl_product.id_product WHERE tbl_product_attribute.id_product IN(".$pdIn.")";
 		}
 	}
-	
+
 	$excel	= new PHPExcel();
 	$excel->setActiveSheetIndex(0);
 	$excel->getActiveSheet()->setTitle('ฐานข้อมูลสินค้า');
-	
+
 	$excel->getActiveSheet()->setCellValue('A1', 'ลำดับ');
 	$excel->getActiveSheet()->setCellValue('B1', 'บาร์โค้ด');
 	$excel->getActiveSheet()->setCellValue('C1', 'รหัสสินค้า');
@@ -113,15 +130,15 @@ if( isset( $_GET['getProductDB'] ) && isset( $_GET['export'] ) )
 			$excel->getActiveSheet()->setCellValue('C'.$row, $rs->reference);
 			$excel->getActiveSheet()->setCellValue('D'.$row, $rs->product_name);
 			$excel->getActiveSheet()->setCellValue('E'.$row, $cost);
-			$excel->getActiveSheet()->setCellValue('F'.$row, $price);				
-			$no++;	
+			$excel->getActiveSheet()->setCellValue('F'.$row, $price);
+			$no++;
 			$row++;
 		}
 		$excel->getActiveSheet()->getStyle('B2:B'.$row)->getNumberFormat()->setFormatCode('0');
 		$excel->getActiveSheet()->getStyle('E2:F'.$row)->getNumberFormat()->setFormatCode('#,##0.00');
 	}
-	
-	setcookie("file_download_token", $_GET['token'], time() +3600,"/"); //-- setToken($_GET['token']);	
+
+	setcookie("file_download_token", $_GET['token'], time() +3600,"/"); //-- setToken($_GET['token']);
 	$file_name = "ฐานข้อมูลสินค้า-".getConfig('COMPANY_NAME').".xlsx";
 	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); /// form excel 2007 XLSX
 	header('Content-Disposition: attachment;filename="'.$file_name.'"');
@@ -167,7 +184,7 @@ if( isset( $_GET['getProductGroupDetail'] ) )
 	if( dbNumRows($qs) == 1 )
 	{
 		$rs = dbFetchArray($qs);
-		$sc = $rs['id'].' | '.$rs['name'];	
+		$sc = $rs['id'].' | '.$rs['name'];
 	}
 	echo $sc;
 }
@@ -196,12 +213,12 @@ if( isset( $_GET['addProductGroup'] ) )
 {
 	$sc 		= 'fail';
 	$id 		= isset( $_POST['id'] ) ? $_POST['id'] : '';
-	$name	= $_POST['name'];	
+	$name	= $_POST['name'];
 	if( $id != '' )
 	{
 		if( isProductGroupExists($name, $id) === TRUE )
 		{
-			$sc = 1;	
+			$sc = 1;
 		}
 		else
 		{
@@ -213,7 +230,7 @@ if( isset( $_GET['addProductGroup'] ) )
 	{
 		if( isProductGroupExists($name) === TRUE )
 		{
-			$sc = 1;	
+			$sc = 1;
 		}
 		else
 		{
@@ -243,7 +260,7 @@ if( isset( $_GET['validProductCode'] ) )
 	$pCode	= $_POST['product_code'];
 	if( $id_pd != '' )
 	{
-		$qs = dbQuery("SELECT id_product FROM tbl_product WHERE id_product != ".$id_pd." AND product_code = '".$pCode."'");	
+		$qs = dbQuery("SELECT id_product FROM tbl_product WHERE id_product != ".$id_pd." AND product_code = '".$pCode."'");
 	}
 	else
 	{
@@ -275,10 +292,10 @@ if( isset( $_GET['addNewProduct'] ) )
 					'date_add'		=> date('Y-m-d H:i:s'),
 					'id_product_group'		=> $_POST['pGroup'],
 					'show_in_shop'	=> $_POST['inShop'],
-					'is_visual'		=> $_POST['isVisual']					
-				);	
+					'is_visual'		=> $_POST['isVisual']
+				);
 	$cat 		= $_POST['category_id'];
-	$desc	= $_POST['description'];				
+	$desc	= $_POST['description'];
 	$product	= new product();
 	$rs 		= $product->addProduct($ds); //----- ถ้าสำเร็จ ได้ id_product กลับมา
 	if( $rs !== FALSE )
@@ -287,7 +304,7 @@ if( isset( $_GET['addNewProduct'] ) )
 		$product->setProductCategory($rs, $cat);
 		$product->setProductDescription($rs, $desc);
 	}
-	echo $sc;				
+	echo $sc;
 }
 
 
@@ -312,20 +329,20 @@ if( isset( $_GET['updateProduct'] ) )
 					'date_add'		=> date('Y-m-d H:i:s'),
 					'id_product_group'		=> $_POST['pGroup'],
 					'show_in_shop'	=> $_POST['inShop'],
-					'is_visual'		=> $_POST['isVisual']					
-				);		
+					'is_visual'		=> $_POST['isVisual']
+				);
 		$cat 		= $_POST['category_id'];
-		$desc	= $_POST['description'];				
-		$product	= new product();	
+		$desc	= $_POST['description'];
+		$product	= new product();
 		$rs		= $product->updateProduct($id_pd, $ds);
 		if( $rs !== FALSE )
 		{
 			$sc = 'success';
 			$product->setProductCategory($id_pd, $cat);
 			$product->setProductDescription($id_pd, $desc);
-		}					
+		}
 	}
-	echo $sc;		
+	echo $sc;
 }
 
 
@@ -340,7 +357,7 @@ if( isset( $_GET['deleteProduct'] ) )
 	{
 		$sc = $product->error;
 	}
-	
+
 	echo $sc;
 }
 
@@ -352,11 +369,11 @@ if( isset( $_GET['upload'] ) )
 	require '../../library/class/class.upload.php';
 	if( ! empty( $_FILES ) )
 	{
-		
+
 		$files 			= $_FILES['file'];
 		if( is_string($files['name']) )
 		{
-			$rs = doUpload($files, $id_pd);	
+			$rs = doUpload($files, $id_pd);
 		}
 		else if( is_array($files['name']) )
 		{
@@ -373,7 +390,7 @@ if( isset( $_GET['upload'] ) )
 				$rs = doUpload($file, $id_pd);
 				if( $rs !== TRUE )
 				{
-					$sc = 'fail';	
+					$sc = 'fail';
 				}
 			}//--------- For Loop
 		}//----- endif
@@ -406,9 +423,9 @@ if( isset( $_GET['getItemDetail'] ) )
 							'weight'			=> $rs['weight'],
 							'width'				=> $rs['width'],
 							'height'			=> $rs['height'],
-							'length'			=> $rs['length']							
+							'length'			=> $rs['length']
 						);
-		$sc = json_encode($ds);						
+		$sc = json_encode($ds);
 	}
 	echo $sc;
 }
@@ -444,15 +461,15 @@ if( isset( $_GET['updateItem'] ) && isset( $_GET['id_pd'] ) )
 		$rs = $pd->updateProductAttribute($id_pa, $ds);
 		if( $rs === TRUE )
 		{
-			$sc = 'success';	
+			$sc = 'success';
 		}
 	}
 	else
 	{
-		$sc = $bc === FALSE ? 'บาร์โค้ดสินค้าซ้ำ' : ($ref === FALSE ? 'รหัสสินค้าซ้ำ' : ($attrs === FALSE ? 'สี ไซส์ และ คุณลักษณะอื่นๆ ซ้ำกับรายการอื่นในสินค้าเดียวกัน' : ''));	
+		$sc = $bc === FALSE ? 'บาร์โค้ดสินค้าซ้ำ' : ($ref === FALSE ? 'รหัสสินค้าซ้ำ' : ($attrs === FALSE ? 'สี ไซส์ และ คุณลักษณะอื่นๆ ซ้ำกับรายการอื่นในสินค้าเดียวกัน' : ''));
 	}
-	
-	echo $sc;	
+
+	echo $sc;
 }
 
 
@@ -474,8 +491,8 @@ if( isset( $_GET['deleteItem'] ) && isset( $_POST['id_product_attribute'] ) )
 			$sc .= 'มีความเคลื่อนไหวของสินค้าเกิดขึ้นแล้ว';
 		}
 	}
-	
-	echo $sc;	
+
+	echo $sc;
 }
 
 
@@ -491,7 +508,7 @@ if( isset( $_GET['setCoverImage'] ) )
 		$qr = dbQuery("UPDATE tbl_image SET cover = 1 WHERE id_image = ".$id_image);
 		if( ! $qr )
 		{
-			$sc = 'fail';	
+			$sc = 'fail';
 		}
 	}
 	echo $sc;
@@ -512,10 +529,10 @@ if( isset( $_GET['removeImage'] ) )
 	$rs			= deleteImage($id_image);
 	if( $cover )
 	{
-		newCover($id_pd);	
+		newCover($id_pd);
 	}
 	if( ! $rd OR ! $rc ){ $sc = 'fail'; }
-	echo $sc;	
+	echo $sc;
 }
 
 //-------------------  Load Image Table ----------------//
@@ -538,11 +555,11 @@ if( isset( $_GET['getImageTable'] ) )
 							'isCover'		=> $cover
 						);
 			array_push($sc, $ds);
-		}				
+		}
 	}
 	else
 	{
-		$sc = array("noimage" => "noimage");	
+		$sc = array("noimage" => "noimage");
 	}
 	echo json_encode($sc);
 }
@@ -560,11 +577,11 @@ if( isset( $_GET['doMappingImageWithProductAttribute'] ) )
 			$qr = dbQuery("SELECT * FROM tbl_product_attribute_image WHERE id_product_attribute = ".$id_pa);
 			if( dbNumRows($qr) > 0 )
 			{
-				$qs = dbQuery("UPDATE tbl_product_attribute_image SET id_image = ".$id_image." WHERE id_product_attribute = ".$id_pa);	
+				$qs = dbQuery("UPDATE tbl_product_attribute_image SET id_image = ".$id_image." WHERE id_product_attribute = ".$id_pa);
 			}
 			else
 			{
-				$qs = dbQuery("INSERT INTO tbl_product_attribute_image (id_product_attribute, id_image) VALUES (".$id_pa.", ".$id_image.")");	
+				$qs = dbQuery("INSERT INTO tbl_product_attribute_image (id_product_attribute, id_image) VALUES (".$id_pa.", ".$id_image.")");
 			}
 			if( ! $qs ){ $sc = 'fail'; }
 		}
@@ -612,7 +629,7 @@ if( isset( $_GET['setActive'] ) )
 		$qr = dbQuery("UPDATE tbl_product SET active = ".$active." WHERE id_product = ".$id_pd);
 		if( $qr )
 		{
-			$sc = isActived($active);	
+			$sc = isActived($active);
 		}
 	}
 	echo $sc;
@@ -631,7 +648,7 @@ if( isset( $_GET['setShowInShop'] ) )
 		$qr			= dbQuery("UPDATE tbl_product SET show_in_shop = ".$show." WHERE id_product = ".$id_pd);
 		if( $qr )
 		{
-			$sc = isActived($show);	
+			$sc = isActived($show);
 		}
 	}
 	echo $sc;
@@ -652,7 +669,7 @@ if( isset( $_GET['validBarcodePack'] ) )
 	$id_pa	= $_POST['id_pa'];
 	$bc		= $_POST['barcode'];
 	$sc		= validBarcodePack($bc, $id_pa) === TRUE ? 'ok' : 'duplicated';
-	
+
 	echo $sc;
 }
 
@@ -662,11 +679,11 @@ if( isset( $_GET['updateBarcode'] ) )
 {
 	$sc 		= 'success';
 	$bc		= $_POST['barcode'];
-	$id_pa	= $_POST['id_pa'];	
+	$id_pa	= $_POST['id_pa'];
 	$qs 		= dbQuery("UPDATE tbl_product_attribute SET barcode = '".$bc."' WHERE id_product_attribute = ".$id_pa);
 	if( $qs === FALSE )
 	{
-		$sc = 'fail';	
+		$sc = 'fail';
 	}
 	echo $sc;
 }
@@ -675,7 +692,7 @@ if( isset( $_GET['updateBarcodePack'] ) )
 {
 	$sc 		= 'success';
 	$bc		= $_POST['barcode'];
-	$id_pa	= $_POST['id_pa'];	
+	$id_pa	= $_POST['id_pa'];
 	$qr		= dbQuery("SELECT * FROM tbl_product_pack WHERE id_product_attribute = ".$id_pa);
 	if( dbNumRows($qr) > 0 )
 	{
@@ -683,21 +700,21 @@ if( isset( $_GET['updateBarcodePack'] ) )
 	}
 	else
 	{
-		$qs	= dbQuery("INSERT INTO tbl_product_pack (id_product_attribute, qty, barcode_pack) VALUES (".$id_pa.", 1, '".$bc."')");	
+		$qs	= dbQuery("INSERT INTO tbl_product_pack (id_product_attribute, qty, barcode_pack) VALUES (".$id_pa.", 1, '".$bc."')");
 	}
-	
+
 	if( $qs === FALSE )
 	{
-		$sc = 'fail';	
+		$sc = 'fail';
 	}
-	echo $sc;	
+	echo $sc;
 }
 
 if( isset( $_GET['updatePackQty'] ) )
 {
 	$sc 		= 'success';
 	$qty		= $_POST['qty'];
-	$id_pa	= $_POST['id_pa'];	
+	$id_pa	= $_POST['id_pa'];
 	$qr		= dbQuery("SELECT qty FROM tbl_product_pack WHERE id_product_attribute = ".$id_pa);
 	if( dbNumRows($qr) > 0 )
 	{
@@ -709,7 +726,7 @@ if( isset( $_GET['updatePackQty'] ) )
 	}
 	else
 	{
-		$sc = 'nopack';	
+		$sc = 'nopack';
 	}
 	echo $sc;
 }
@@ -717,7 +734,7 @@ if( isset( $_GET['updatePackQty'] ) )
 if( isset( $_GET['getImageAttributeGrid'] ) )
 {
 	$id_pd = $_POST['id_pd'];
-	echo imageAttributeGrid($id_pd);	
+	echo imageAttributeGrid($id_pd);
 }
 
 
@@ -726,7 +743,7 @@ if( isset( $_GET['getImageAttributeGrid'] ) )
 if( isset($_GET['available_product_qty']) && isset( $_GET['id_product'] ))
 {
 	$product = new product();
-	echo $product->available_product_qty($_GET['id_product']);	
+	echo $product->available_product_qty($_GET['id_product']);
 }
 ///********************* Auto Complete ********************//
 if(isset($_REQUEST['term'])){
@@ -737,7 +754,7 @@ if(isset($_REQUEST['term'])){
 	}
 	echo json_encode($data);
 }
-		
+
 
 
 
@@ -746,7 +763,7 @@ if(isset($_REQUEST['term'])){
 if(isset($_GET['edit'])&&isset($_POST['id_product_attribute'])){
 	$id_product = $_POST['id_product'];
 	$product = new product();
-	$data = array(	$_POST['id_product_attribute'], $_POST['reference'], $_POST['barcode'], $_POST['id_color'], $_POST['id_size'], $_POST['id_attribute'], $_POST['cost'], $_POST['price'], $_POST['weight'], $_POST['width'], 
+	$data = array(	$_POST['id_product_attribute'], $_POST['reference'], $_POST['barcode'], $_POST['id_color'], $_POST['id_size'], $_POST['id_attribute'], $_POST['cost'], $_POST['price'], $_POST['weight'], $_POST['width'],
 						$_POST['length'], $_POST['height'],$_POST['id_image'], $_POST['barcode_pack'], $_POST['qty'] );
 	if($product->edit_product_attribute($data)){
 		header("location: ../index.php?content=product&edit=y&id_product=$id_product&tab=2");
@@ -760,7 +777,7 @@ if(isset($_GET['edit'])&&isset($_POST['id_product_attribute'])){
 if(isset($_GET['add'])&&isset($_POST['id_product'])){
 	$id_product = $_POST['id_product'];
 	$product = new product();
-	$data = array(	$id_product, $_POST['reference'], $_POST['barcode'], $_POST['id_color'], $_POST['id_size'], $_POST['id_attribute'], $_POST['cost'], $_POST['price'], $_POST['weight'], $_POST['width'], 
+	$data = array(	$id_product, $_POST['reference'], $_POST['barcode'], $_POST['id_color'], $_POST['id_size'], $_POST['id_attribute'], $_POST['cost'], $_POST['price'], $_POST['weight'], $_POST['width'],
 						$_POST['length'], $_POST['height'],$_POST['id_image'], $_POST['barcode_pack'], $_POST['qty'] );
 	if($product->add_product_attribute($data)){
 		header("location: ../index.php?content=product&edit=y&id_product=$id_product&tab=2");
@@ -781,12 +798,12 @@ if( isset( $_GET['generateProductAttribute'] ) )
 	$setColor	= isset( $_POST['set_color'] ) ? $_POST['set_color'] : FALSE;  		//---- ลำดับของรหัสสี 1-3
 	$setSize		= isset( $_POST['set_size'] ) ? $_POST['set_size'] : FALSE;			//---- ลำดับของรหัสไซส์ 1-3
 	$setAttr		= isset( $_POST['set_attribute'] ) ? $_POST['set_attribute'] : FALSE;	//---- ลำดับของรหัสอื่นๆ 1-3
-	$images		= isset( $_POST['image'] ) ? $_POST['image'] : FALSE;	//---- จับคู่รูปภาพ ได้ค่าเป็น Array 
+	$images		= isset( $_POST['image'] ) ? $_POST['image'] : FALSE;	//---- จับคู่รูปภาพ ได้ค่าเป็น Array
 	$colors		= isset( $_POST['color'] ) ? $_POST['color'] : FALSE;
-	$sizes		= isset( $_POST['size'] ) ? $_POST['size'] : FALSE; 
-	$attrs			= isset( $_POST['attribute'] ) ? $_POST['attribute'] : FALSE; 
+	$sizes		= isset( $_POST['size'] ) ? $_POST['size'] : FALSE;
+	$attrs			= isset( $_POST['attribute'] ) ? $_POST['attribute'] : FALSE;
 	$matching	= $_POST['matching'];
-	
+
 	//--------------  ดึงข้อมูลสินค้าต้นแบบ  -------------//
 	$product		= new product();
 	$product	->product_detail($id_pd);  //------  ดึงข้อมูลสินค้าจากฐานข้อมูล
@@ -799,11 +816,11 @@ if( isset( $_GET['generateProductAttribute'] ) )
 	$pHeight		= $product->height;
 	$sp			= '-';
 	$barcode	= '';
-	
+
 	//-------------- ตรวจสอบจำนวน Attribute -------//
 	if( $options == 1 )
 	{
-		$data 	= $colors !== FALSE ? $colors : ( $sizes !== FALSE ? $sizes : $attrs) ; 
+		$data 	= $colors !== FALSE ? $colors : ( $sizes !== FALSE ? $sizes : $attrs) ;
 		foreach( 	$data as $id )
 		{
 			$ops	= $colors !== FALSE ? get_color_code($id) : ( $sizes !== FALSE ? get_size_name($id) : get_attribute_name($id) );
@@ -826,7 +843,7 @@ if( isset( $_GET['generateProductAttribute'] ) )
 			if( $rs === FALSE ){ $sc = FALSE; }
 		}
 	} //---- if option == 1
-	
+
 	if( $options == 2 )
 	{
 		$opsA	= $setColor == 1 ? $colors : ( $setSize == 1 ? $sizes : $attrs);
@@ -852,14 +869,14 @@ if( isset( $_GET['generateProductAttribute'] ) )
 								"width"			=> $pWidth,
 								"length"			=> $pLength,
 								"height"			=> $pHeight
-								);										
+								);
 				$rs = $product->addProductAttribute($ds);
 				if( $rs === FALSE ){ $sc = FALSE; }
-							
-			}				
-		}	
+
+			}
+		}
 	}//--- if option == 2
-	
+
 	if( $options == 3 )
 	{
 		$opsA	= $setColor == 1 ? $colors : ( $setSize == 1 ? $sizes : $attrs );
@@ -889,12 +906,12 @@ if( isset( $_GET['generateProductAttribute'] ) )
 									"width"			=> $pWidth,
 									"length"			=> $pLength,
 									"height"			=> $pHeight
-									);													
+									);
 				$rs = $product->addProductAttribute($ds);
-				if( $rs === FALSE ){ $sc = FALSE; }				
-				}	
+				if( $rs === FALSE ){ $sc = FALSE; }
+				}
 			}
-		}	
+		}
 	}//--- if option == 3
 	//matching รูป
 	if( $images !== FALSE )
@@ -907,32 +924,32 @@ if( isset( $_GET['generateProductAttribute'] ) )
 			{
 				while( $rs = dbFetchArray($qr) )
 				{
-					$qs = dbQuery("INSERT INTO tbl_product_attribute_image ( id_product_attribute, id_image) VALUES ( ".$rs['id_product_attribute'].", ".$id_image." )");	
+					$qs = dbQuery("INSERT INTO tbl_product_attribute_image ( id_product_attribute, id_image) VALUES ( ".$rs['id_product_attribute'].", ".$id_image." )");
 				}
 			}
-		}		
+		}
 	}
-	
+
 	if( $sc === TRUE )
 	{
 		$sc = 'success';
 	}
 	else
 	{
-		$sc = 'fail';	
+		$sc = 'fail';
 	}
-	
-	echo $sc;	
+
+	echo $sc;
 }
 
 
-	
-	
+
+
 	///// อัพเดตบาร์โค้ด////
 	if(isset($_GET['check'])&&isset($_GET['code'])){
 	$barcode = $_GET['code'];
 	$id_product_attribute = $_GET['id_product_attribute'];
-	$row = dbNumRows(dbQuery("SELECT barcode FROM tbl_product_attribute LEFT JOIN tbl_product_pack ON tbl_product_attribute.id_product_attribute = tbl_product_pack.id_product_attribute 
+	$row = dbNumRows(dbQuery("SELECT barcode FROM tbl_product_attribute LEFT JOIN tbl_product_pack ON tbl_product_attribute.id_product_attribute = tbl_product_pack.id_product_attribute
 								WHERE (barcode = '$barcode' OR barcode_pack = '$barcode') AND tbl_product_attribute.id_product_attribute != $id_product_attribute"));
 	if($row >0){
 		$message ="1";
@@ -940,7 +957,7 @@ if( isset( $_GET['generateProductAttribute'] ) )
 			if(dbQuery("UPDATE tbl_product_attribute SET barcode = '$barcode' WHERE id_product_attribute = $id_product_attribute")){
 				$message = "0";
 			}else{
-				$message = "2";	
+				$message = "2";
 			}
 	}
 	echo $message;
@@ -975,7 +992,7 @@ if(isset($_GET['check_pack'])&&isset($_GET['code'])){
 			}
 		}
 	}
-	
+
 }
 if(isset($_GET['check_qty'])&&isset($_GET['qty'])){
 	$qty = $_GET['qty'];
@@ -1005,7 +1022,7 @@ if(isset($_GET['text'])){
     list($view, $add, $edit, $delete)=dbFetchArray(checkAccess($id_profile, $id_tab));
 	if($add==1){ $can_add = "";}else{ $can_add = "style='display:none;'"; }
 	if($edit==1){ $can_edit = "";}else{ $can_edit = "style='display:none;'"; }
-	if($delete==1){ $can_delete = "";}else{ $can_delete ="style='display:none;'"; }	
+	if($delete==1){ $can_delete = "";}else{ $can_delete ="style='display:none;'"; }
 	$text = $_GET['text'];
 //	$html = $header;
 	/////////////////////////////////
@@ -1014,7 +1031,7 @@ if(isset($_GET['text'])){
 	$query = "WHERE product_code LIKE '%$text%' OR product_name LIKE '%$text%'";
 	$paginator->Per_Page("tbl_product",$query,$get_rows);
 	$Page_Start = $paginator->Page_Start;
-	$Per_Page = $paginator->Per_Page; 
+	$Per_Page = $paginator->Per_Page;
 	$sql = dbQuery("SELECT id_product FROM tbl_product  WHERE product_code LIKE '%$text%' OR product_name LIKE '%$text%' LIMIT $Page_Start , $Per_Page");
 	//$sql = dbQuery("SELECT * FROM product_table WHERE product_code LIKE '%$text%' OR product_name LIKE '%$text%' OR category_name LIKE '%$text%' LIMIT $Page_Start , $Per_Page");
 	//////////////////////////////////////
@@ -1056,7 +1073,7 @@ if(isset($_GET['text'])){
 			</td>
 		</tr>";
 		$i++;
-	}			
+	}
 $html .="</table>";
 $html .= $paginator->display_pages();
 $html .="</div></div>"; $html .= "<br><br>";

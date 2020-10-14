@@ -226,6 +226,7 @@
                             <button type="button" class="btn btn-sm btn-default" onClick="editBarcode()">แก้ไขบาร์โค้ด</button>
                             <button type="button" class="btn btn-sm btn-default" onClick="editBarcodePack()">แก้ไขบาร์โค้ดแพ็ค</button>
                             <button type="button" class="btn btn-sm btn-default" onClick="editPackQty()">แก้ไขจำนวนในแพ็ค</button>
+														<button type="button" class="btn btn-sm btn-default" onclick="createBarcodeByReference(<?php echo $id_pd; ?>)">สร้างบาร์โค้ดจากรหัสสินค้า</button>
 						</p>
                     </div>
                 </div>
@@ -829,6 +830,37 @@ function setColorbox()
 <script src="../library/js/jquery.forcenumber.js"></script>
 <script src="script/product.js"></script>
 <script>
+function createBarcodeByReference(id){
+	load_in();
+	$.ajax({
+		url:'controller/productController.php?createBarcodeFromReference&id_pd='+id,
+		type:'POST',
+		cache:false,
+		success:function(rs){
+			load_out();
+			if(rs === 'success'){
+				swal({
+					title:'Success',
+					text:'',
+					type:'success',
+					timer:1000
+				});
+				setTimeout(function(){
+					window.location.reload();
+				}, 1200);
+
+			}else{
+				swal({
+					title:'Error!',
+					text:rs,
+					type:'error'
+				});
+			}
+		}
+	})
+}
+
+
 function confirmRemove(id_pd, pCode)
 {
 	swal({

@@ -44,5 +44,33 @@ if(isset($_GET['getPauseList']))
 }
 
 
+if(isset($_GET['get_product_code_and_barcode']) && isset($_REQUEST['term']))
+{
+  $ds = array();
+  $txt = trim($_REQUEST['term']);
+  $qr  = "SELECT reference, barcode ";
+  $qr .= "FROM tbl_product_attribute ";
+  $qr .= "WHERE reference LIKE '%{$txt}%' ";
+  $qr .= "OR barcode LIKE '%{$txt}%' ";
+  $qr .= "ORDER BY reference ASC ";
+  $qr .= "LIMIT 50";
+  $qs = dbQuery($qr);
+  $row = dbNumRows($qs);
+  if($row > 0)
+  {
+    while($rs = dbFetchObject($qs))
+    {
+      $ds[] = $rs->reference ." | ".(empty($rs->barcode) ? $rs->reference : $rs->barcode);
+    }
+  }
+  else
+  {
+    $ds[] = 'no items';
+  }
+
+  echo json_encode($ds);
+}
+
+
 
  ?>

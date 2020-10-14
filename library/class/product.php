@@ -1116,7 +1116,7 @@ public function getIdProductAttributeByBarcode($barcode)
 public function getProductAttributeByBarcode($barcode)
 {
 	$sc = FALSE;
-	$qs = dbQuery("SELECT * FROM tbl_product_attribute WHERE barcode = '".$barcode."'");
+	$qs = dbQuery("SELECT * FROM tbl_product_attribute WHERE barcode = '".$barcode."' OR reference = '{$barcode}'");
 	if(dbNumRows($qs) == 1)
 	{
 		$sc = dbFetchObject($qs);

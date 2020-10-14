@@ -21,68 +21,60 @@ if( isset( $_GET['get_zone']) && isset( $_POST['zone'] ) )
 if( isset($_GET['save_checked']) && isset($_POST['id_zone']) )
 {
 	$diff = $_POST['qty_check'] - $_POST['qty'] ;
-	$rs = false;
-	$qs = dbQuery("SELECT id_diff FROM tbl_diff WHERE id_zone = ".$_POST['id_zone']." AND id_product_attribute = ".$_POST['id_product_attribute']." AND status_diff = 0");
-	$row = dbNumRows($qs);
-	if($diff != 0 )
+	$sc = TRUE;
+	if($diff != 0)
 	{
-		if($diff > 0 )
+		$qr = "SELECT id_diff FROM tbl_diff ";
+		$qr .= "WHERE id_zone = {$_POST['id_zone']} ";
+		$qr .= "AND id_product_attribute = {$_POST['id_product_attribute']} ";
+		$qr .= "AND status_diff = 0";
+
+		$qs = dbQuery($qr);
+
+		if(dbNumRows($qs) === 1)
 		{
-			if($row == 0 )
+			$ds = dbFetchObject($qs);
+			if($diff < 0)
 			{
-				$rs = dbQuery("INSERT INTO tbl_diff ( id_zone, id_product_attribute, qty_add, qty_minus, id_employee, status_diff ) VALUES (".$_POST['id_zone'].", ".$_POST['id_product_attribute'].", ".$diff.", 0, ".$id_employee.", 0 )");
-			}
-			else if( $row == 1 )
-			{
-				$rd = dbFetchArray($qs);
-				$rs = dbQuery("UPDATE tbl_diff SET qty_add = ".$diff.", qty_minus = 0, id_employee = ".$id_employee." WHERE id_diff = ".$rd['id_diff']);
+				$qty = $diff *-1;
+				$qc = "UPDATE tbl_diff SET qty_add = 0, qty_minus = {$qty} WHERE id_diff = $ds->id_diff";
 			}
 			else
 			{
-				$qr = dbQuery("DELETE FROM tbl_diff WHERE id_zone = ".$_POST['id_zone']." AND id_product_attribute = ".$_POST['id_product_attribute']." AND status_diff = 0 ");
-				if($qr)
-				{
-					$rs = dbQuery("INSERT INTO tbl_diff ( id_zone, id_product_attribute, qty_add, qty_minus, id_employee, status_diff ) VALUES (".$_POST['id_zone'].", ".$_POST['id_product_attribute'].", ".$diff.", 0, ".$id_employee.", 0 )");
-				}
+				$qty = $diff;
+				$qc = "UPDATE tbl_diff SET qty_add = {$qty}, qty_minus = 0 WHERE id_diff = $ds->id_diff";
 			}
 		}
-		else if($diff < 0 )
+		else
 		{
-			$diff = $diff * -1;  /// ทำให้เป็นจำนวนเต็มไม่ติดลบ
-			if($row == 0 )
+			if($diff < 0)
 			{
-				$rs = dbQuery("INSERT INTO tbl_diff ( id_zone, id_product_attribute, qty_add, qty_minus, id_employee, status_diff ) VALUES (".$_POST['id_zone'].", ".$_POST['id_product_attribute'].", 0, ".$diff.", ".$id_employee.", 0 )");
-			}
-			else if( $row == 1 )
-			{
-				$rd = dbFetchArray($qs);
-				$rs = dbQuery("UPDATE tbl_diff SET qty_add = 0, qty_minus = ".$diff.", id_employee = ".$id_employee." WHERE id_diff = ".$rd['id_diff']);
+				$qty = $diff * -1;
+				$qc = "INSERT INTO tbl_diff (id_zone, id_product_attribute, qty_add, qty_minus, id_employee, status_diff) ";
+				$qc .= "VALUES ({$_POST['id_zone']}, {$_POST['id_product_attribute']}, 0, {$qty}, {$id_employee}, 0)";
 			}
 			else
 			{
-				$qr = dbQuery("DELETE FROM tbl_diff WHERE id_zone = ".$_POST['id_zone']." AND id_product_attribute = ".$_POST['id_product_attribute']." AND status_diff = 0 ");
-				if($qr)
-				{
-					$rs = dbQuery("INSERT INTO tbl_diff ( id_zone, id_product_attribute, qty_add, qty_minus, id_employee, status_diff ) VALUES (".$_POST['id_zone'].", ".$_POST['id_product_attribute'].", 0, ".$diff.", ".$id_employee.", 0 )");
-				}
+				$qty = $diff;
+				$qc = "INSERT INTO tbl_diff (id_zone, id_product_attribute, qty_add, qty_minus, id_employee, status_diff) ";
+				$qc .= "VALUES ({$_POST['id_zone']}, {$_POST['id_product_attribute']}, {$qty}, 0, {$id_employee}, 0)";
 			}
 		}
 	}
-	else if($diff == 0 )
+	else
 	{
-		if($row > 0 )
-		{
-			$rs = dbQuery("DELETE FROM tbl_diff WHERE id_zone = ".$_POST['id_zone']." AND id_product_attribute = ".$_POST['id_product_attribute']." AND status_diff = 0 ");
-		}else{
-			$rs = true;
-		}
+		$qc = "DELETE FROM tbl_diff ";
+		$qc .= "WHERE id_zone = {$_POST['id_zone']} ";
+		$qc .= "AND id_product_attribute = {$_POST['id_product_attribute']} ";
+		$qc .= "AND status_diff = 0";
 	}
-	if($rs)
+
+	if(! dbQuery($qc))
 	{
-		echo $diff;
-	}else{
-		echo "fail";
+		$sc = FALSE;
 	}
+
+	echo $sc === TRUE ? $diff : "fail";
 }
 
 

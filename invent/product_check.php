@@ -20,24 +20,22 @@
 		if( $edit ){ $btn .= "<button type='button' class='btn btn-success btn-sm' onclick=\"save_edit()\"><i class='fa fa-save'></i>&nbsp; บันทึก</button>"; }
 	}
 
-	function get_diff($id_product_attribute, $id_zone)
+	function get_diff($id_pa, $id_zone)
 	{
-		$diff = 0;
-		$qs = dbQuery("SELECT qty_add, qty_minus FROM tbl_diff WHERE id_product_attribute = ".$id_product_attribute." AND id_zone = ".$id_zone." AND status_diff = 0");
-		if(dbNumRows($qs) > 0 )
+		$qr  = "SELECT qty_add, qty_minus FROM tbl_diff ";
+		$qr .= "WHERE id_product_attribute = {$id_pa} ";
+		$qr .= "AND id_zone = {$id_zone} ";
+		$qr .= "AND status_diff = 0";
+		$qs = dbQuery($qr);
+
+		if(dbNumRows($qs) === 1 )
 		{
-			list($qty_add, $qty_minus) = dbFetchArray($qs);
-			$diff = $qty_add - $qty_minus;
-			// if($qty_add == 0 && $qty_minus > 0)
-			// {
-			// 	$diff = $qty_minus;
-			// }
-			// else if($qty_add > 0 && $qty_minus == 0)
-			// {
-			// 	$diff = $qty_add;
-			// }
+			$rs = dbFetchObject($qs);
+
+			return $rs->qty_add + ($rs->qty_minus * -1);
 		}
-		return $diff;
+
+		return 0;
 	}
 
 	$filter = !empty($_GET['pdCode']) ? $_GET['pdCode'] : '';

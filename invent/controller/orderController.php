@@ -1348,7 +1348,14 @@ if( isset( $_GET['print_order']) && isset( $_GET['id_order'] ) )
 	$print->add_header($header);
 	$detail 		= dbQuery("SELECT * FROM tbl_order_detail WHERE id_order = ".$id_order);
 	$total_row 	= dbNumRows($detail);
-	$config 		= array("footer"=>false, "total_row"=>$total_row, "font_size"=>10, "sub_total_row"=>4);
+	$deliFee			= getDeliveryFee($id_order);
+	$sub_total_row = $deliFee == 0 ? 4 : 5;
+	$config 		= array(
+		"footer" => false,
+		"total_row" => $total_row,
+		"font_size" => 10,
+		"sub_total_row" => $sub_total_row
+	);
 	$print->config($config);
 	$row 			= $print->row;
 	$total_page 	= $print->total_page;
@@ -1426,7 +1433,7 @@ if( isset( $_GET['print_order']) && isset( $_GET['id_order'] ) )
 					$qty 			= number_format($total_qty);
 					$amount 		= number_format($total_price,2);
 					$all_disc		= number_format($total_discount+$bill_discount,2);
-					$net_amount	= number_format($total_amount - $bill_discount ,2);
+					$net_amount	= number_format(($total_amount + $deliFee) - $bill_discount ,2);
 					$remark 		= $order->comment;
 				}else{
 					$qty 			= "";
@@ -1435,18 +1442,28 @@ if( isset( $_GET['print_order']) && isset( $_GET['id_order'] ) )
 					$net_amount	= "";
 					$remark 		= "";
 				}
-				$sub_total = array(
-						array("<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-bottom:0px; border-left:0px; width:60%; text-align:center;'>**** ส่วนลดท้ายบิล : ".number_format($bill_discount,2)." ****</td>
-								<td style='width:20%; height:".$print->row_height."mm; border: solid 1px #ccc;'><strong>จำนวนรวม</strong></td>
-								<td style='width:20%; height:".$print->row_height."mm; border: solid 1px #ccc; border-right:0px; text-align:right;'>".$qty."</td>"),
-						array("<td rowspan='3' style='height:".$print->row_height."mm; border-top: solid 1px #ccc; border-bottom-left-radius:10px; width:55%; font-size:10px;'><strong>หมายเหตุ : </strong>".$remark."</td>
-								<td style='width:20%; height:".$print->row_height."mm; border: solid 1px #ccc;'><strong>ราคารวม</strong></td>
-								<td style='width:20%; height:".$print->row_height."mm; border: solid 1px #ccc; border-right:0px; text-align:right;'>".$amount."</td>"),
-						array("<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-bottom:0px;'><strong>ส่วนลดรวม</strong></td>
-						<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-right:0px; border-bottom:0px; border-bottom-right-radius:10px; text-align:right;'>".$all_disc."</td>"),
-						array("<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-bottom:0px;'><strong>ยอดเงินสุทธิ</strong></td>
-						<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-right:0px; border-bottom:0px; border-bottom-right-radius:10px; text-align:right;'>".$net_amount."</td>")
-						);
+
+				$sub_total = array();
+				$sub_total[1] = array("<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-bottom:0px; border-left:0px; width:60%; text-align:center;'>**** ส่วนลดท้ายบิล : ".number_format($bill_discount,2)." ****</td>
+						<td style='width:20%; height:".$print->row_height."mm; border: solid 1px #ccc;'><strong>จำนวนรวม</strong></td>
+						<td style='width:20%; height:".$print->row_height."mm; border: solid 1px #ccc; border-right:0px; text-align:right;'>".$qty."</td>");
+
+				$sub_total[2] = array("<td rowspan='".($sub_total_row -1)."' style='height:".$print->row_height."mm; border-top: solid 1px #ccc; border-bottom-left-radius:10px; width:55%; font-size:10px;'><strong>หมายเหตุ : </strong>".$remark."</td>
+						<td style='width:20%; height:".$print->row_height."mm; border: solid 1px #ccc;'><strong>ราคารวม</strong></td>
+						<td style='width:20%; height:".$print->row_height."mm; border: solid 1px #ccc; border-right:0px; text-align:right;'>".$amount."</td>");
+
+				$sub_total[3] = array("<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-bottom:0px;'><strong>ส่วนลดรวม</strong></td>
+				<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-right:0px; border-bottom:0px; border-bottom-right-radius:10px; text-align:right;'>".$all_disc."</td>");
+
+				if($deliFee > 0)
+				{
+					$sub_total[4] = array("<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-bottom:0px;'><strong>ค่าจัดส่ง</strong></td>
+					<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-right:0px; border-bottom:0px; border-bottom-right-radius:10px; text-align:right;'>".number_format($deliFee,2)."</td>");
+				}
+
+				$sub_total[5] = array("<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-bottom:0px;'><strong>ยอดเงินสุทธิ</strong></td>
+				<td style='height:".$print->row_height."mm; border: solid 1px #ccc; border-right:0px; border-bottom:0px; border-bottom-right-radius:10px; text-align:right;'>".$net_amount."</td>");
+
 			echo $print->print_sub_total($sub_total);
 			echo $print->content_end();
 			echo $print->footer;
